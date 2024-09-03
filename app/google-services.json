@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "260728293947",
+    "project_id": "smart-appointment-99e2c",
+    "storage_bucket": "smart-appointment-99e2c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:260728293947:android:234727d56bcb58e3aeea1e",
+        "android_client_info": {
+          "package_name": "com.ahsan.smartappointment"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXnxwpBuqIktuzDhdvrQrO-uniD_ELGhU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
