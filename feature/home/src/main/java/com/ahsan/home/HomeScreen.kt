@@ -25,10 +25,7 @@ import com.ahsan.composable.ThemeFloatingActionButton
 import com.ahsan.composable.ThemeText
 import com.ahsan.core.DestinationRoute
 import com.ahsan.core.extension.toFormattedTime
-import com.ahsan.data.models.Appointment
 import com.ahsan.data.models.AppointmentAndClient
-import com.ahsan.data.models.Client
-import java.util.Date
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -45,29 +42,36 @@ fun HomeScreen(navController: NavController) {
 }
 
 @Composable
-fun HomeUI(list: List<AppointmentAndClient>, onAddClicked: () -> Unit, onItemClick: (Int) -> Unit){
-    Box(modifier = Modifier.fillMaxSize().padding(8.dp)){
-        if(list.isEmpty())
-            ThemeText(text = stringResource(id = R.string.no_appointments), modifier = Modifier.align(Alignment.Center))
-        LazyColumn(modifier = Modifier
-            .fillMaxSize()
-            .padding(8.dp)) {
-            items(list){
-                AppointmentRow(it){
+fun HomeUI(list: List<AppointmentAndClient>, onAddClicked: () -> Unit, onItemClick: (Int) -> Unit) {
+    Box(modifier = Modifier.fillMaxSize().padding(8.dp)) {
+        if (list.isEmpty())
+            ThemeText(
+                text = stringResource(id = R.string.no_appointments),
+                modifier = Modifier.align(Alignment.Center)
+            )
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp)
+        ) {
+            items(list) {
+                AppointmentRow(it) {
                     onItemClick(it.appointment.id)
                 }
             }
         }
-        ThemeFloatingActionButton(modifier = Modifier
-            .align(Alignment.BottomEnd)
-            .padding(16.dp)) {
+        ThemeFloatingActionButton(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+        ) {
             onAddClicked()
         }
     }
 }
 
 @Composable
-fun AppointmentRow(appointmentAndClient: AppointmentAndClient, onClick: () -> Unit){
+fun AppointmentRow(appointmentAndClient: AppointmentAndClient, onClick: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.clickable {
         onClick()
     }.fillMaxWidth()) {

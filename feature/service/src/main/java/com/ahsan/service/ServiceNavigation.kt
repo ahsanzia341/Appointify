@@ -12,7 +12,7 @@ fun NavGraphBuilder.serviceNavigation(navController: NavController) {
     composable(DestinationRoute.SERVICE_CREATE_ROUTE) {
         ServiceCreateScreen(navController)
     }
-    composable(DestinationRoute.SERVICE_DETAIL_ROUTE) {
-        ServiceDetailScreen(navController)
+    composable(DestinationRoute.SERVICE_SELECT_ROUTE) {
+        SelectServicesScreen(navController)
     }
 }

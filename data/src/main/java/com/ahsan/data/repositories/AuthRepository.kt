@@ -1,14 +1,12 @@
 package com.ahsan.data.repositories
 
 import com.ahsan.data.AuthUiState
-import com.google.firebase.auth.ActionCodeSettings
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.actionCodeSettings
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
-class AuthRepository @Inject constructor(){
+class AuthRepository @Inject constructor() {
 
     private val auth = FirebaseAuth.getInstance()
     fun login(email: String, password: String): Flow<AuthUiState?> {
@@ -18,7 +16,7 @@ class AuthRepository @Inject constructor(){
                 uiState.value = AuthUiState.Success
             }.addOnFailureListener {
                 uiState.value = AuthUiState.Failure(it.message ?: "Something went wrong.")
-        }
+            }
         return uiState
     }
 
@@ -26,9 +24,7 @@ class AuthRepository @Inject constructor(){
         val uiState = MutableStateFlow<AuthUiState?>(null)
         auth.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener {
-                auth.sendSignInLinkToEmail(email, actionCodeSettings {
-                    handleCodeInApp = true
-                })
+                it.user?.sendEmailVerification()
                 uiState.value = AuthUiState.Success
             }.addOnFailureListener {
                 uiState.value = AuthUiState.Failure(it.message ?: "Something went wrong.")
@@ -36,11 +32,29 @@ class AuthRepository @Inject constructor(){
         return uiState
     }
 
-    fun resetPassword(email: String){
+    fun resetPassword(email: String) {
         auth.sendPasswordResetEmail(email)
+            .addOnSuccessListener {
+
+            }
+            .addOnFailureListener {
+                it.message
+            }
     }
 
-    fun isLoggedIn(): Boolean{
+    fun isLoggedIn(): Boolean {
         return auth.currentUser != null
+    }
+
+    fun isEmailVerified(): Boolean{
+        return auth.currentUser?.isEmailVerified == true
+    }
+
+    fun logout(){
+        auth.signOut()
+    }
+
+    fun delete(){
+        auth.currentUser?.delete()
     }
 }

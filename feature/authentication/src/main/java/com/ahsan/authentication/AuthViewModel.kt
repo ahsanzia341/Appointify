@@ -33,8 +33,8 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             loginUseCase(email, password).collect {
                 when (it) {
-                    is AuthUiState.Failure -> ViewState(loginState = false, error = it.error)
-                    AuthUiState.Success -> ViewState(loginState = true, error = null)
+                    is AuthUiState.Failure -> updateState(ViewState(loginState = false, error = it.error))
+                    AuthUiState.Success -> updateState(ViewState(loginState = true, error = null))
                     null -> {}
                 }
             }
@@ -46,8 +46,8 @@ class AuthViewModel @Inject constructor(
             viewModelScope.launch {
                 registerUseCase(email, password).collect {
                     when (it) {
-                        is AuthUiState.Failure -> ViewState(loginState = false, error = it.error)
-                        AuthUiState.Success -> ViewState(loginState = true, error = null)
+                        is AuthUiState.Failure -> updateState(ViewState(loginState = false, error = it.error))
+                        AuthUiState.Success -> updateState(ViewState(loginState = true, error = null))
                         null -> {}
                     }
                 }

@@ -35,7 +35,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(project(mapOf("path" to ":common:composable")))
     implementation(project(mapOf("path" to ":data")))

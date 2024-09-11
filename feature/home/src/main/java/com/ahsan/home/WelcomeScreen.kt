@@ -33,7 +33,7 @@ fun WelcomeScreen(navController: NavController) {
 fun WelcomeUI(onSignUpPress: () -> Unit, onSignInPress: () -> Unit, onButtonPress: () -> Unit) {
     Scaffold(topBar = {
         TopBar(
-            title = "Welcome to Smart Appointment.",
+            title = "Welcome to Appointify.",
             navIcon = null
         )
     }, modifier = Modifier.padding(8.dp)) {

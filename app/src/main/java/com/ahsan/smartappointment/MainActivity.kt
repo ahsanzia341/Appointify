@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.ahsan.core.Constant
 import com.ahsan.core.DestinationRoute
 import com.ahsan.smartappointment.ui.theme.SmartAppointmentTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,12 +22,13 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //installSplashScreen()
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
             val currentBackStackEntryAsState by navController.currentBackStackEntryAsState()
             val currentDestination = currentBackStackEntryAsState?.destination
-            val sharedPref = getSharedPreferences("pref", Context.MODE_PRIVATE)
+            val sharedPref = getSharedPreferences(Constant.SHARED_PREF_KEY, Context.MODE_PRIVATE)
             var startDestination = DestinationRoute.HOME_ROUTE
             if (sharedPref.getString("isFirstTime", "true") == "true") {
                 startDestination = DestinationRoute.WELCOME_ROUTE

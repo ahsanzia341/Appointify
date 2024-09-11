@@ -20,6 +20,6 @@ class DatabaseModule {
             appContext,
             AppDatabase::class.java,
             "my_db"
-        ).build()
+        ).createFromAsset("my_db.db").build()
     }
 }

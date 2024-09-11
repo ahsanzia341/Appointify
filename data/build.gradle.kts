@@ -41,6 +41,8 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.storage)
+    implementation(libs.gson)
+    implementation(project(mapOf("path" to ":core")))
     ksp(libs.room.compiler)
     implementation(libs.bundles.hilt)
     ksp(libs.hilt.compiler)

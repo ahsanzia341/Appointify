@@ -16,6 +16,7 @@ fun ClientSelectScreen(navController: NavController) {
         viewModel.onTriggerEvent(ClientEvent.GetClients)
     }
     ClientListUI(list = viewState?.clients ?: listOf(), onFilterTextChanged = {}, onItemClicked = {
+        navController.previousBackStackEntry?.savedStateHandle?.set(DestinationRoute.PassedKey.CLIENT_ID, it.id)
         navController.popBackStack()
     }) {
         navController.navigate(DestinationRoute.CREATE_CLIENT_ROUTE)

@@ -15,10 +15,13 @@ object DestinationRoute {
     const val REGISTER_ROUTE = "register_route"
     const val FORGOT_PASSWORD_ROUTE = "forgot_password_route"
     const val SERVICE_LIST_ROUTE = "service_list_route"
+    const val SERVICE_SELECT_ROUTE = "service_select_route"
     const val SERVICE_CREATE_ROUTE = "service_create_route/{${PassedKey.ID}}"
     const val SERVICE_DETAIL_ROUTE = "service_detail_route/{${PassedKey.ID}}"
     const val SETTINGS_ROUTE = "settings_route"
     object PassedKey{
         const val ID = "id"
+        const val CLIENT_ID = "client_id"
+        const val SERVICE_IDS = "service_ids"
     }
 }

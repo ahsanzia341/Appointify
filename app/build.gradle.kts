@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.bundles.hilt)
     implementation(libs.firebase.crashlytics)
+    //implementation(libs.splash.screen)
     kapt(libs.hilt.compiler)
     implementation(project(mapOf("path" to ":core")))
     implementation(project(mapOf("path" to ":common:composable")))

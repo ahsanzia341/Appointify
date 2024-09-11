@@ -4,17 +4,18 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Update
-import com.ahsan.data.models.Appointment
-import com.ahsan.data.models.AppointmentAndClient
 import com.ahsan.data.models.Service
+import com.ahsan.data.models.ServiceAndCurrency
 
 @Dao
 interface ServiceDao {
 
     @Query("Select * from service")
-    suspend fun getAll(): List<Service>
+    suspend fun getAll(): List<ServiceAndCurrency>
+
+    @Query("Select * from service where id in (:ids)")
+    suspend fun getByIds(ids: List<Int>): List<ServiceAndCurrency>
 
     @Insert
     suspend fun insert(service: Service)

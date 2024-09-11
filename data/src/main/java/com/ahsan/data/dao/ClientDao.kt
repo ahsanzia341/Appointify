@@ -11,6 +11,9 @@ interface ClientDao {
     @Query("Select * from client")
     suspend fun getAll(): List<Client>
 
+    @Query("Select * from client where id == :id")
+    suspend fun findById(id: Int): Client
+
     @Insert
     suspend fun insert(client: Client)
 

@@ -13,7 +13,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ahsan.composable.ThemeButton
 import com.ahsan.composable.TopBar
+import com.ahsan.core.DestinationRoute
 import com.ahsan.data.models.Appointment
+import com.ahsan.data.models.AppointmentStatus
 
 @Composable
 fun AppointmentDetailScreen(navController: NavController, id: Int) {
@@ -22,13 +24,17 @@ fun AppointmentDetailScreen(navController: NavController, id: Int) {
     LaunchedEffect(key1 = true) {
         viewModel.onTriggerEvent(AppointmentEvent.FindById(id))
     }
-    AppointmentDetailUI(viewState?.appointment?.appointment ?: Appointment()){
+    AppointmentDetailUI(viewState?.appointment?.appointment ?: Appointment(), onCancelPress = {
+        viewModel.onTriggerEvent(AppointmentEvent.UpdateAppointment(it))
+    }, onUpdatePress = {
+        navController.navigate(DestinationRoute.UPDATE_APPOINTMENT_ROUTE)
+    }){
         navController.popBackStack()
     }
 }
 
 @Composable
-fun AppointmentDetailUI(appointment: Appointment, onBackPressed: () -> Unit) {
+fun AppointmentDetailUI(appointment: Appointment, onUpdatePress: (Appointment) -> Unit, onCancelPress: (Appointment) -> Unit, onBackPressed: () -> Unit) {
     Scaffold(topBar = {
         TopBar(title = appointment.title, onClickNavIcon = {
             onBackPressed()
@@ -36,10 +42,11 @@ fun AppointmentDetailUI(appointment: Appointment, onBackPressed: () -> Unit) {
     }) {
         Column(Modifier.padding(it)) {
             ThemeButton(text = "Cancel Appointment") {
-
+                appointment.status = AppointmentStatus.CANCELED
+                onCancelPress(appointment)
             }
             ThemeButton(text = "Update Appointment") {
-
+                onUpdatePress(appointment)
             }
         }
     }
@@ -48,7 +55,7 @@ fun AppointmentDetailUI(appointment: Appointment, onBackPressed: () -> Unit) {
 @Composable
 @Preview
 fun AppointmentDetailPreview(){
-    AppointmentDetailUI(Appointment()){
+    AppointmentDetailUI(Appointment(), {}, {}){
 
     }
 }

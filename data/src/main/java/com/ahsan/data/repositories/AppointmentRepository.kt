@@ -9,7 +9,11 @@ import javax.inject.Inject
 
 class AppointmentRepository @Inject constructor(private val db: AppDatabase, private val alarmManager: AlarmManager, private val alarmIntent: PendingIntent) {
     suspend fun insert(appointment: Appointment) {
-        alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, appointment.startDate.time, alarmIntent)
+        alarmManager.set(
+            AlarmManager.ELAPSED_REALTIME_WAKEUP,
+            appointment.startDate.time,
+            alarmIntent
+        )
         db.getAppointmentDao().insert(appointment)
     }
 
@@ -17,15 +21,15 @@ class AppointmentRepository @Inject constructor(private val db: AppDatabase, pri
         return db.getAppointmentDao().getAll()
     }
 
-    fun update(appointment: Appointment){
+    suspend fun update(appointment: Appointment) {
         db.getAppointmentDao().update(appointment)
     }
 
-    suspend fun findById(id: Int): AppointmentAndClient{
+    suspend fun findById(id: Int): AppointmentAndClient {
         return db.getAppointmentDao().findById(id)
     }
 
-    suspend fun getAppointmentHistory(): List<AppointmentAndClient>{
+    suspend fun getAppointmentHistory(): List<AppointmentAndClient> {
         return db.getAppointmentDao().getAppointmentHistory()
     }
 }

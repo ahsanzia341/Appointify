@@ -6,7 +6,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.ahsan.data.models.Appointment
 
 @Composable
 fun UpdateAppointmentScreen(navController: NavController, appointmentId: Int) {
@@ -15,9 +14,9 @@ fun UpdateAppointmentScreen(navController: NavController, appointmentId: Int) {
     LaunchedEffect(true) {
         viewModel.onTriggerEvent(AppointmentEvent.FindById(appointmentId))
     }
-    CreateAppointmentUI(viewState?.appointment?.appointment ?: Appointment(), clientAddClick = {}, servicesAddClick = {}, onCreate = {
+    /*CreateAppointmentUI(viewState?.appointment?.appointment ?: Appointment(), clientAddClick = {}, servicesAddClick = {}, onCreate = {
         viewModel.onTriggerEvent(AppointmentEvent.UpdateAppointment(it))
     }){
         navController.popBackStack()
-    }
+    }*/
 }

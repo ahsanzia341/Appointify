@@ -6,7 +6,7 @@ import com.ahsan.data.models.Appointment
 import com.ahsan.domain.appointment.FindByIdAppointmentsUseCase
 import com.ahsan.domain.appointment.PostAppointmentUseCase
 import com.ahsan.domain.appointment.UpdateAppointmentUseCase
-import com.ahsan.domain.client.GetClientsUseCase
+import com.ahsan.domain.client.FindClientByIdUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,14 +16,14 @@ class AppointmentViewModel @Inject constructor(
     private val postAppointmentUseCase: PostAppointmentUseCase,
     private val updateAppointmentUseCase: UpdateAppointmentUseCase,
     private val findByIdAppointmentsUseCase: FindByIdAppointmentsUseCase,
-    private val getClientsUseCase: GetClientsUseCase): BaseViewModel<ViewState, AppointmentEvent>() {
+    private val findClientByIdUseCase: FindClientByIdUseCase): BaseViewModel<ViewState, AppointmentEvent>() {
 
     override fun onTriggerEvent(event: AppointmentEvent) {
         when (event) {
             is AppointmentEvent.PostAppointment -> postAppointment(event.appointment)
             is AppointmentEvent.UpdateAppointment -> updateAppointment(event.appointment)
             is AppointmentEvent.FindById -> findById(event.id)
-            AppointmentEvent.GetClients -> getClients()
+            is AppointmentEvent.FindClientById -> findClientById(event.id)
         }
     }
 
@@ -37,7 +37,9 @@ class AppointmentViewModel @Inject constructor(
 
     private fun updateAppointment(appointment: Appointment){
         if(appointment.title.isNotEmpty() && appointment.startDate.time > 0 && appointment.clientId > 0){
-            updateAppointmentUseCase(appointment)
+            viewModelScope.launch {
+                updateAppointmentUseCase(appointment)
+            }
         }
     }
 
@@ -46,9 +48,9 @@ class AppointmentViewModel @Inject constructor(
             updateState(ViewState(appointment = findByIdAppointmentsUseCase(id)))
         }
     }
-    private fun getClients(){
+    private fun findClientById(id: Int){
         viewModelScope.launch {
-            updateState(ViewState(clients = getClientsUseCase()))
+            updateState(ViewState(client = findClientByIdUseCase(id)))
         }
     }
 }

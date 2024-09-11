@@ -12,7 +12,7 @@ import com.ahsan.data.models.AppointmentAndClient
 @Dao
 interface AppointmentDao {
     @Transaction
-    @Query("Select * from appointment")
+    @Query("Select * from appointment where status == 1")
     suspend fun getAll(): List<AppointmentAndClient>
 
     @Transaction
@@ -20,15 +20,15 @@ interface AppointmentDao {
     suspend fun findById(id: Int): AppointmentAndClient
 
     @Transaction
-    @Query("Select * from appointment where status == 2")
+    @Query("Select * from appointment where status == 2 or status == 3")
     suspend fun getAppointmentHistory(): List<AppointmentAndClient>
 
     @Insert
     suspend fun insert(appointment: Appointment)
 
     @Update
-    fun update(appointment: Appointment)
+    suspend fun update(appointment: Appointment)
 
     @Delete
-    fun delete(appointment: Appointment)
+    suspend fun delete(appointment: Appointment)
 }

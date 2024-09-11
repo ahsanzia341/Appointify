@@ -1,16 +1,12 @@
 package com.ahsan.client
 
-import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.viewModelScope
 import com.ahsan.core.BaseViewModel
-import com.ahsan.data.models.Appointment
 import com.ahsan.data.models.Client
-import com.ahsan.domain.appointment.PostAppointmentUseCase
 import com.ahsan.domain.client.GetClientsUseCase
 import com.ahsan.domain.client.PostClientUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel

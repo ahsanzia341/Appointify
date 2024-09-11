@@ -7,7 +7,7 @@ import javax.inject.Inject
 class UpdateAppointmentUseCase @Inject constructor(
     private val repository: AppointmentRepository,
 ) {
-    operator fun invoke(appointment: Appointment){
+    suspend operator fun invoke(appointment: Appointment){
         return repository.update(appointment)
     }
 }
