@@ -6,6 +6,7 @@ import javax.inject.Inject
 class IsEmailVerifiedUseCase @Inject constructor(
     private val repository: AuthRepository,
 ) {
-    operator fun invoke(): Boolean{
+    operator fun invoke(): Boolean {
         return repository.isEmailVerified()
     }
+}
