@@ -28,12 +28,9 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ThemeTextField(modifier: Modifier = Modifier, label: String = "", value: String = "", isReadOnly: Boolean = false,
-                   enabled: Boolean = true, keyboardType: KeyboardType = KeyboardType.Text, isPassword: Boolean = false, trailingIcon: Int = 0, onClick: () -> Unit = {}, onChanged: (text: String) -> Unit) {
+                   enabled: Boolean = true, errorMessage: String = "", keyboardType: KeyboardType = KeyboardType.Text, trailingIcon: Int = 0, onClick: () -> Unit = {}, onChanged: (text: String) -> Unit) {
     var text by remember {
         mutableStateOf(value)
-    }
-    var isError by remember {
-        mutableStateOf(false)
     }
     if(value.isNotEmpty()){
         text = value
@@ -42,17 +39,18 @@ fun ThemeTextField(modifier: Modifier = Modifier, label: String = "", value: Str
         TextField(value = text, onValueChange = {
             text = it
             onChanged(text)
-        }, modifier
-            .border(1.dp, Color.Black, RoundedCornerShape(4.dp))
-            .fillMaxWidth()
-            .onFocusChanged {
-                if (it.hasFocus) {
-                    onClick()
-                }
-            },
+        },
+            modifier
+                .border(1.dp, Color.Black, RoundedCornerShape(4.dp))
+                .fillMaxWidth()
+                .onFocusChanged {
+                    if (it.hasFocus) {
+                        onClick()
+                    }
+                },
             enabled = enabled,
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
-            visualTransformation = if(isPassword) PasswordVisualTransformation() else VisualTransformation.None,
+            visualTransformation = if(keyboardType == KeyboardType.Password) PasswordVisualTransformation() else VisualTransformation.None,
             readOnly = isReadOnly,
             trailingIcon = {
                 if(trailingIcon != 0)
@@ -67,15 +65,22 @@ fun ThemeTextField(modifier: Modifier = Modifier, label: String = "", value: Str
                 focusedIndicatorColor = Color.White, unfocusedIndicatorColor = Color.White,
                 errorContainerColor = Color.White)
         )
-        if(isError){
-            ThemeText(text = "$label field is required.", color = Color.Red)
+        if(errorMessage.isNotEmpty()){
+            ThemeText(text = errorMessage, color = Color.Red)
         }
     }
 }
 
 @Composable
-fun PasswordTextField(onChanged: (text: String) -> Unit){
-    ThemeTextField(label = stringResource(id = R.string.password), keyboardType = KeyboardType.Password, isPassword = true) {
+fun PasswordTextField(errorMessage: String = "", onChanged: (text: String) -> Unit){
+    ThemeTextField(label = stringResource(id = R.string.password), keyboardType = KeyboardType.Password, errorMessage = errorMessage) {
+        onChanged(it)
+    }
+}
+
+@Composable
+fun EmailTextField(errorMessage: String = "", onChanged: (text: String) -> Unit){
+    ThemeTextField(label = stringResource(id = R.string.email), keyboardType = KeyboardType.Email, errorMessage = errorMessage) {
         onChanged(it)
     }
 }

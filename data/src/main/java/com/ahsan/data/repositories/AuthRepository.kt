@@ -7,10 +7,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor() {
-
+    private val uiState = MutableStateFlow<AuthUiState?>(null)
     private val auth = FirebaseAuth.getInstance()
     fun login(email: String, password: String): Flow<AuthUiState?> {
-        val uiState = MutableStateFlow<AuthUiState?>(null)
         auth.signInWithEmailAndPassword(email, password)
             .addOnSuccessListener {
                 uiState.value = AuthUiState.Success
@@ -21,7 +20,7 @@ class AuthRepository @Inject constructor() {
     }
 
     fun register(email: String, password: String): Flow<AuthUiState?> {
-        val uiState = MutableStateFlow<AuthUiState?>(null)
+
         auth.createUserWithEmailAndPassword(email, password)
             .addOnSuccessListener {
                 it.user?.sendEmailVerification()
@@ -32,18 +31,19 @@ class AuthRepository @Inject constructor() {
         return uiState
     }
 
-    fun resetPassword(email: String) {
+    fun resetPassword(email: String): Flow<AuthUiState?> {
         auth.sendPasswordResetEmail(email)
             .addOnSuccessListener {
-
+                uiState.value = AuthUiState.Success
             }
             .addOnFailureListener {
-                it.message
+                uiState.value = AuthUiState.Failure(it.message.toString())
             }
+        return uiState
     }
 
-    fun isLoggedIn(): Boolean {
-        return auth.currentUser != null
+    fun isLoggedIn(): String? {
+        return if(auth.currentUser == null) null else auth.currentUser?.email
     }
 
     fun isEmailVerified(): Boolean{

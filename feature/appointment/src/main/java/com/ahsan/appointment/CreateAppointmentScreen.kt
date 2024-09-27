@@ -21,9 +21,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.ahsan.composable.InfoDialog
 import com.ahsan.composable.ThemeButton
 import com.ahsan.composable.ThemeDatePicker
-import com.ahsan.composable.ThemeDialog
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.ThemeTextField
 import com.ahsan.composable.TopBar
@@ -52,7 +52,7 @@ fun CreateAppointmentScreen(navController: NavController) {
         clientAddClick = {
             navController.navigate(DestinationRoute.SELECT_CLIENT_ROUTE)
         }, servicesAddClick = {
-            navController.navigate(DestinationRoute.SELECT_SERVICES_ROUTE)
+            navController.navigate(DestinationRoute.SERVICE_SELECT_ROUTE)
         }, onCreate = {
             viewModel.onTriggerEvent(AppointmentEvent.PostAppointment(it))
         }) {
@@ -149,7 +149,7 @@ fun CreateAppointmentUI(appointment: Appointment, client: Client?, servicesAddCl
                     showSuccessDialog = true
                 }
                 if (showSuccessDialog) {
-                    ThemeDialog(
+                    InfoDialog(
                         title = stringResource(id = com.ahsan.composable.R.string.success),
                         text = "Appointment created"
                     ) {

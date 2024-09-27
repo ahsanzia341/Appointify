@@ -10,6 +10,10 @@ object Validator {
     }
 
     fun isValidPassword(text: String): Boolean {
-        return text.isNotEmpty() && text.length > 5
+        return !isPasswordEmpty(text) && text.length > 5
+    }
+
+    fun isPasswordEmpty(text: String): Boolean{
+        return text.isEmpty()
     }
 }

@@ -18,3 +18,8 @@ fun ThemeText(modifier: Modifier = Modifier, text: String, color: Color = Color.
 fun ThemeHeaderText(modifier: Modifier = Modifier, text: String){
     ThemeText(text = text, modifier = modifier, textStyle = MaterialTheme.typography.titleLarge)
 }
+
+@Composable
+fun ErrorText(modifier: Modifier = Modifier, text: String){
+    ThemeText(modifier, text = text, color = Color.Red)
+}

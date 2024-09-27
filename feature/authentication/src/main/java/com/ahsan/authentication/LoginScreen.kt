@@ -14,17 +14,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
+import com.ahsan.composable.EmailTextField
 import com.ahsan.composable.PasswordTextField
 import com.ahsan.composable.ThemeButton
 import com.ahsan.composable.ThemeText
-import com.ahsan.composable.ThemeTextField
 import com.ahsan.composable.TopBar
 import com.ahsan.core.DestinationRoute
 
@@ -32,24 +32,29 @@ import com.ahsan.core.DestinationRoute
 fun LoginScreen(navController: NavController) {
     val viewModel = hiltViewModel<AuthViewModel>()
     val viewState by viewModel.viewState.collectAsState()
+    val context = LocalContext.current
     if(viewState?.loginState == true){
         navController.navigate(route = DestinationRoute.HOME_ROUTE, navOptions = NavOptions.Builder().setPopUpTo(DestinationRoute.HOME_ROUTE, false).build(),
             navigatorExtras = null)
     }
-    LoginUI(viewState?.error ?: "", viewState?.isLoading == true,
+
+    LoginUI(viewState?.error ?: "", viewState?.emailValidationError ?: "", viewState?.passwordValidationError ?: "",
+        viewState?.isLoading == true,
         onRegisterClick = {
             navController.navigate(DestinationRoute.REGISTER_ROUTE, NavOptions.Builder().setPopUpTo(DestinationRoute.REGISTER_ROUTE, true).build())
         }, onForgotPasswordClick = {
             navController.navigate(DestinationRoute.FORGOT_PASSWORD_ROUTE)
         },
         onLoginPress = { email, password ->
-        viewModel.onTriggerEvent(AuthEvent.Login(email, password))
+        viewModel.onTriggerEvent(AuthEvent.ValidateForLogin(context, email, password))
     }) {
         navController.popBackStack()
     }
 }
+
 @Composable
-fun LoginUI(error: String, isLoading: Boolean, onForgotPasswordClick: () -> Unit, onRegisterClick: () -> Unit, onLoginPress: (String, String) -> Unit, onBackPress: () -> Unit) {
+fun LoginUI(error: String, emailValidationError: String, passwordValidationError: String, isLoading: Boolean, onForgotPasswordClick: () -> Unit, onRegisterClick: () -> Unit,
+            onLoginPress: (String, String) -> Unit, onBackPress: () -> Unit) {
     Scaffold(topBar = {
         TopBar(title = stringResource(id = com.ahsan.composable.R.string.login),
             onClickNavIcon = {
@@ -69,16 +74,13 @@ fun LoginUI(error: String, isLoading: Boolean, onForgotPasswordClick: () -> Unit
                 .padding(padding), verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ThemeTextField(
-                keyboardType = KeyboardType.Email,
-                label = stringResource(id = com.ahsan.composable.R.string.email)
-            ) {
+            EmailTextField(emailValidationError) {
                 email = it
             }
-            PasswordTextField {
+            PasswordTextField(passwordValidationError) {
                 password = it
             }
-            ThemeButton(text = "Forgot Password?"){
+            ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.forgot_password)){
                 onForgotPasswordClick()
             }
             ThemeButton(enabled = !isLoading, text = stringResource(id = com.ahsan.composable.R.string.login)) {
@@ -95,12 +97,13 @@ fun LoginUI(error: String, isLoading: Boolean, onForgotPasswordClick: () -> Unit
         }
     }
 }
+
 @Composable
 @Preview
 fun LoginPreview(){
-    LoginUI("", false, onRegisterClick = {
+    LoginUI("", "", "", false, onRegisterClick = {
 
-    }, onForgotPasswordClick = {}, onLoginPress = { e, p ->
+    }, onForgotPasswordClick = {}, onLoginPress = { _, _ ->
 
     }){
 

@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 
 @Composable
-fun ThemeDialog(title: String, text: String, okClick: () -> Unit) {
+private fun ThemeDialog(title: String, text: String, okClick: () -> Unit) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(8.dp)) {
         ThemeHeaderText(text = title)
         ThemeText(text = text)
@@ -25,12 +25,24 @@ fun ThemeDialog(title: String, text: String, okClick: () -> Unit) {
 }
 
 @Composable
+fun InfoDialog(title: String, text: String, onDismiss: () -> Unit){
+    Dialog(onDismissRequest = { onDismiss() }) {
+        ThemeDialog(title = title, text = text) {
+            onDismiss()
+        }
+    }
+}
+
+@Composable
 fun ConfirmationDialog(title: String, text: String, positiveClick: () -> Unit, negativeClick: () -> Unit, onDismiss: () -> Unit){
     Dialog(onDismissRequest = {
         onDismiss()
     }) {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.padding(8.dp).background(
-            Color.White)) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier
+            .padding(8.dp)
+            .background(
+                Color.White
+            )) {
             ThemeHeaderText(text = title)
             ThemeText(text = text)
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {

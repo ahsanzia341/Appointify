@@ -3,6 +3,7 @@ package com.ahsan.appointment
 import androidx.lifecycle.viewModelScope
 import com.ahsan.core.BaseViewModel
 import com.ahsan.data.models.Appointment
+import com.ahsan.domain.appointment.CancelAppointmentUseCase
 import com.ahsan.domain.appointment.FindByIdAppointmentsUseCase
 import com.ahsan.domain.appointment.PostAppointmentUseCase
 import com.ahsan.domain.appointment.UpdateAppointmentUseCase
@@ -16,6 +17,7 @@ class AppointmentViewModel @Inject constructor(
     private val postAppointmentUseCase: PostAppointmentUseCase,
     private val updateAppointmentUseCase: UpdateAppointmentUseCase,
     private val findByIdAppointmentsUseCase: FindByIdAppointmentsUseCase,
+    private val cancelAppointmentUseCase: CancelAppointmentUseCase,
     private val findClientByIdUseCase: FindClientByIdUseCase): BaseViewModel<ViewState, AppointmentEvent>() {
 
     override fun onTriggerEvent(event: AppointmentEvent) {
@@ -40,6 +42,12 @@ class AppointmentViewModel @Inject constructor(
             viewModelScope.launch {
                 updateAppointmentUseCase(appointment)
             }
+        }
+    }
+
+    private fun cancel(appointment: Appointment){
+        viewModelScope.launch {
+            cancelAppointmentUseCase(appointment)
         }
     }
 

@@ -1,6 +1,8 @@
 package com.ahsan.smartappointment
 
+import android.Manifest
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.core.app.ActivityCompat
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ahsan.core.Constant
@@ -33,6 +36,9 @@ class MainActivity : ComponentActivity() {
             if (sharedPref.getString("isFirstTime", "true") == "true") {
                 startDestination = DestinationRoute.WELCOME_ROUTE
                 sharedPref.edit().putString("isFirstTime", "false").apply()
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0)
             }
             SmartAppointmentTheme {
                 Scaffold(bottomBar = {

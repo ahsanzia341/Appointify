@@ -25,10 +25,10 @@ class SettingViewModel @Inject constructor(private val backupUseCase: PostBackup
 
     private fun logout(){
         logoutUseCase()
-        updateState(ViewState(isLoggedIn = false, setting = ""))
+        updateState(ViewState(email = null, setting = ""))
     }
 
     private fun isLoggedIn(){
-        updateState(ViewState(isLoggedIn = isLoggedInUseCase(), setting = ""))
+        updateState(ViewState(email = isLoggedInUseCase(), setting = ""))
     }
 }

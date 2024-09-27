@@ -13,32 +13,34 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.ahsan.composable.EmailTextField
+import com.ahsan.composable.ErrorText
 import com.ahsan.composable.PasswordTextField
 import com.ahsan.composable.ThemeButton
 import com.ahsan.composable.ThemeText
-import com.ahsan.composable.ThemeTextField
 import com.ahsan.composable.TopBar
 
 @Composable
 fun RegisterScreen(navController: NavController) {
     val viewModel = hiltViewModel<AuthViewModel>()
+    val context = LocalContext.current
     val viewState by viewModel.viewState.collectAsState()
-    RegisterUI(viewState?.error ?: "", viewState?.isLoading == true, onLoginPress = { email, password ->
-        viewModel.onTriggerEvent(AuthEvent.Register(email, password))
+    RegisterUI(viewState?.error ?: "", viewState?.emailValidationError ?: "", viewState?.passwordValidationError ?: "",
+        viewState?.isLoading == true, onLoginPress = { email, password ->
+        viewModel.onTriggerEvent(AuthEvent.ValidateForRegister(context, email, password))
     }) {
         navController.popBackStack()
     }
 }
 
 @Composable
-fun RegisterUI(error: String, isLoading: Boolean, onLoginPress: (String, String) -> Unit, onBackPress: () -> Unit) {
+fun RegisterUI(error: String, emailValidationError: String, passwordValidationError: String, isLoading: Boolean, onLoginPress: (String, String) -> Unit, onBackPress: () -> Unit) {
     Scaffold(topBar = {
         TopBar(title = stringResource(id = com.ahsan.composable.R.string.register),
             onClickNavIcon = {
@@ -58,19 +60,16 @@ fun RegisterUI(error: String, isLoading: Boolean, onLoginPress: (String, String)
                 .padding(padding), verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ThemeTextField(
-                keyboardType = KeyboardType.Email,
-                label = stringResource(id = com.ahsan.composable.R.string.email)
-            ) {
+            EmailTextField(emailValidationError) {
                 email = it
             }
-            PasswordTextField {
+            PasswordTextField(passwordValidationError) {
                 password = it
             }
             ThemeButton(enabled = !isLoading, text = stringResource(id = com.ahsan.composable.R.string.create_account)) {
                 onLoginPress(email, password)
             }
-            ThemeText(text = error, color = Color.Red)
+            ErrorText(text = error)
             ThemeText(text = "Already have an account? Sign In")
         }
     }
@@ -79,7 +78,7 @@ fun RegisterUI(error: String, isLoading: Boolean, onLoginPress: (String, String)
 @Composable
 @Preview
 fun RegisterPreview(){
-    RegisterUI("", false, onLoginPress = { e, p ->
+    RegisterUI("", "", "",false, onLoginPress = { _, _ ->
 
     }){
 

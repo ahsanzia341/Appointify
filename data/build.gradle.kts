@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.firebase.storage)
     implementation(libs.gson)
     implementation(project(mapOf("path" to ":core")))
+    implementation(project(mapOf("path" to ":common:composable")))
     ksp(libs.room.compiler)
     implementation(libs.bundles.hilt)
     ksp(libs.hilt.compiler)

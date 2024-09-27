@@ -51,6 +51,6 @@ class ServiceViewModel @Inject constructor(
         if(!selectedServices.removeIf { service.service.id == it.service.id }){
             selectedServices.add(service)
         }
-        updateState(viewState.value?.copy(selectedServices = selectedServices)!!)
+        updateState(viewState.value?.copy(selectedServices = ArrayList(selectedServices))!!)
     }
 }

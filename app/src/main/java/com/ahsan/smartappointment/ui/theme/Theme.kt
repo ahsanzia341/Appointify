@@ -12,17 +12,17 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
+    primary = PrimaryColor,
     secondary = PurpleGrey80,
     tertiary = Pink80
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
+    primary = PrimaryColor,
     secondary = PurpleGrey40,
     tertiary = Pink40,
     background = Color.White,
-    onBackground = Color.White
+    onBackground = Color.Black,
 
     /* Other default colors to override
     background = Color(0xFFFFFBFE),
@@ -39,7 +39,7 @@ private val LightColorScheme = lightColorScheme(
 fun SmartAppointmentTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {

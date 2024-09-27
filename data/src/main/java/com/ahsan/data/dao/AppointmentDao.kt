@@ -12,7 +12,7 @@ import com.ahsan.data.models.AppointmentAndClient
 @Dao
 interface AppointmentDao {
     @Transaction
-    @Query("Select * from appointment where status == 1")
+    @Query("Select * from appointment where status == 'NOT_STARTED'")
     suspend fun getAll(): List<AppointmentAndClient>
 
     @Transaction
@@ -20,7 +20,7 @@ interface AppointmentDao {
     suspend fun findById(id: Int): AppointmentAndClient
 
     @Transaction
-    @Query("Select * from appointment where status == 2 or status == 3")
+    @Query("Select * from appointment where status == 'ENDED' or status == 'CANCELED'")
     suspend fun getAppointmentHistory(): List<AppointmentAndClient>
 
     @Insert

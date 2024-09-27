@@ -1,6 +1,6 @@
 package com.ahsan.setting
 
-data class ViewState(val setting: String, val isLoggedIn: Boolean = false)
+data class ViewState(val setting: String, val email: String? = null)
 
 sealed class SettingEvent{
     data object BackupData: SettingEvent()

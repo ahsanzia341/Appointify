@@ -8,7 +8,6 @@ object DestinationRoute {
     const val CLIENT_LIST_ROUTE = "client_list"
     const val CREATE_CLIENT_ROUTE = "create_client"
     const val SELECT_CLIENT_ROUTE = "select_client"
-    const val SELECT_SERVICES_ROUTE = "select_services"
     const val APPOINTMENT_HISTORY_ROUTE = "appointment_history_route"
     const val WELCOME_ROUTE = "welcome_route"
     const val LOGIN_ROUTE = "login_route"

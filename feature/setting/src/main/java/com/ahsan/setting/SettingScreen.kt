@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -32,7 +33,7 @@ fun SettingScreen(navController: NavController) {
     val viewModel = hiltViewModel<SettingViewModel>()
     val viewState by viewModel.viewState.collectAsState()
     viewModel.onTriggerEvent(SettingEvent.IsLoggedIn)
-    SettingUI(viewState?.isLoggedIn == true, onBackupPress = {
+    SettingUI(viewState?.email, onBackupPress = {
         viewModel.onTriggerEvent(SettingEvent.BackupData)
     }, onLogoutPress = {
         viewModel.onTriggerEvent(SettingEvent.Logout)
@@ -42,38 +43,40 @@ fun SettingScreen(navController: NavController) {
 }
 
 @Composable
-fun SettingUI(isLoggedIn: Boolean, onBackupPress:() -> Unit, onLogoutPress:() -> Unit, onLoginPress: () -> Unit) {
+fun SettingUI(email: String?, onBackupPress:() -> Unit, onLogoutPress:() -> Unit, onLoginPress: () -> Unit) {
     val context = LocalContext.current
+    val sharedPref = context.getSharedPreferences(Constant.SHARED_PREF_KEY, Context.MODE_PRIVATE)
     var showConfirmation by remember {
         mutableStateOf(false)
     }
     var backupState by remember {
-        mutableStateOf(false)
+        mutableStateOf(sharedPref.getBoolean(Constant.IS_AUTO_BACKUP, false))
     }
-    val sharedPref = context.getSharedPreferences(Constant.SHARED_PREF_KEY, Context.MODE_PRIVATE)
 
     Scaffold(topBar = {
         TopBar(title = stringResource(id = com.ahsan.composable.R.string.settings), navIcon = null)
     }, modifier = Modifier.padding(8.dp)) { padding ->
         Column(Modifier.padding(padding), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            if (!isLoggedIn) {
+            if (email == null) {
                 ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.login)) {
                     onLoginPress()
                 }
             } else {
-                ThemeText(text = "Last backup: ${sharedPref.getString("lastBackup", "")}")
+                ThemeText(text = email)
+                ThemeText(text = "Last backup: ")
                 ThemeButton(text = "Backup data") {
                     onBackupPress()
                 }
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    ThemeText(text = "Turn on automatic backup. Every night 11pm")
+                    Switch(checked = backupState, onCheckedChange = {
+                        backupState = it
+                        sharedPref.edit().putBoolean(Constant.IS_AUTO_BACKUP, it).apply()
+                    })
+                }
             }
 
-            ThemeText(text = "my.email@address.com")
-            Row {
-                ThemeText(text = "Backup state")
-                Switch(checked = backupState, onCheckedChange = {
-                    backupState = it
-                })
-            }
+
 
             ThemeButton(text = "Privacy policy") {
 
@@ -84,7 +87,7 @@ fun SettingUI(isLoggedIn: Boolean, onBackupPress:() -> Unit, onLogoutPress:() ->
             ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.feedback)) {
 
             }
-            if (isLoggedIn) {
+            if (email != null) {
                 ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.logout)) {
                     showConfirmation = true
                 }
@@ -109,7 +112,7 @@ fun SettingUI(isLoggedIn: Boolean, onBackupPress:() -> Unit, onLogoutPress:() ->
 @Composable
 @Preview
 fun SettingPreview(){
-    SettingUI(false, {}, {}){
+    SettingUI("null", {}, {}){
 
     }
 }
