@@ -9,6 +9,7 @@ import com.ahsan.data.AppDatabase
 import com.ahsan.data.models.Appointment
 import com.ahsan.data.models.AppointmentAndClient
 import dagger.hilt.android.qualifiers.ApplicationContext
+import java.util.Date
 import javax.inject.Inject
 
 class AppointmentRepository @Inject constructor(@ApplicationContext val context: Context, private val db: AppDatabase, private val alarmManager: AlarmManager) {
@@ -18,7 +19,7 @@ class AppointmentRepository @Inject constructor(@ApplicationContext val context:
         }.let { intent ->
             PendingIntent.getBroadcast(context, appointment.id, intent, PendingIntent.FLAG_IMMUTABLE)
         }
-        alarmManager.setExact(
+        alarmManager.set(
             AlarmManager.RTC_WAKEUP,
             appointment.startDate.time - 15 * 60 * 1000,
             alarmIntent
@@ -39,7 +40,7 @@ class AppointmentRepository @Inject constructor(@ApplicationContext val context:
     }
 
     suspend fun getAll(): List<AppointmentAndClient> {
-        return db.getAppointmentDao().getAll()
+        return db.getAppointmentDao().getAll(Date().time)
     }
 
     suspend fun update(appointment: Appointment) {
@@ -51,6 +52,6 @@ class AppointmentRepository @Inject constructor(@ApplicationContext val context:
     }
 
     suspend fun getAppointmentHistory(): List<AppointmentAndClient> {
-        return db.getAppointmentDao().getAppointmentHistory()
+        return db.getAppointmentDao().getAppointmentHistory(Date().time)
     }
 }

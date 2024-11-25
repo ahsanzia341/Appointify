@@ -7,6 +7,6 @@ import com.ahsan.core.DestinationRoute
 
 fun NavGraphBuilder.appointmentHistoryNavigation(navController: NavController) {
     composable(route = DestinationRoute.APPOINTMENT_HISTORY_ROUTE) {
-        AppointmentHistoryScreen()
+        AppointmentHistoryScreen(navController)
     }
 }

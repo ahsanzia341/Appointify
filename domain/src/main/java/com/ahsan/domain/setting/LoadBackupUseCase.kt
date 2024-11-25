@@ -6,7 +6,7 @@ import javax.inject.Inject
 class LoadBackupUseCase @Inject constructor(
     private val repository: SettingRepository,
 ) {
-    operator fun invoke(){
+    suspend operator fun invoke(){
         return repository.loadBackup()
     }
 }

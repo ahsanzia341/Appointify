@@ -8,6 +8,7 @@ import com.ahsan.data.AuthUiState
 import com.ahsan.domain.authentication.ForgotPasswordUseCase
 import com.ahsan.domain.authentication.LoginUseCase
 import com.ahsan.domain.authentication.RegisterUseCase
+import com.ahsan.domain.setting.LoadBackupUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,7 +17,8 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val registerUseCase: RegisterUseCase,
-    private val forgotPasswordUseCase: ForgotPasswordUseCase
+    private val forgotPasswordUseCase: ForgotPasswordUseCase,
+    private val loadBackupUseCase: LoadBackupUseCase
 ): BaseViewModel<ViewState, AuthEvent>() {
 
     override fun onTriggerEvent(event: AuthEvent) {
@@ -67,7 +69,10 @@ class AuthViewModel @Inject constructor(
                         )
                     )
 
-                    AuthUiState.Success -> updateState(ViewState(loginState = true, error = null))
+                    AuthUiState.Success -> {
+                        loadBackupUseCase()
+                        updateState(ViewState(loginState = true, error = null))
+                    }
                     null -> {}
                 }
             }

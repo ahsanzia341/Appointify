@@ -18,8 +18,11 @@ object DestinationRoute {
     const val SERVICE_CREATE_ROUTE = "service_create_route/{${PassedKey.ID}}"
     const val SERVICE_DETAIL_ROUTE = "service_detail_route/{${PassedKey.ID}}"
     const val SETTINGS_ROUTE = "settings_route"
+    const val WEB_VIEW_ROUTE = "web_view_route/{${PassedKey.URL}}"
+
     object PassedKey{
         const val ID = "id"
+        const val URL = "url"
         const val CLIENT_ID = "client_id"
         const val SERVICE_IDS = "service_ids"
     }

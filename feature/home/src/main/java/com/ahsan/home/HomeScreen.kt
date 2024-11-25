@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -23,6 +25,7 @@ import androidx.navigation.NavController
 import com.ahsan.composable.R
 import com.ahsan.composable.ThemeFloatingActionButton
 import com.ahsan.composable.ThemeText
+import com.ahsan.composable.TopBar
 import com.ahsan.core.DestinationRoute
 import com.ahsan.core.extension.toFormattedTime
 import com.ahsan.data.models.AppointmentAndClient
@@ -43,41 +46,53 @@ fun HomeScreen(navController: NavController) {
 
 @Composable
 fun HomeUI(list: List<AppointmentAndClient>, onAddClicked: () -> Unit, onItemClick: (Int) -> Unit) {
-    Box(modifier = Modifier.fillMaxSize().padding(8.dp)) {
-        if (list.isEmpty())
-            ThemeText(
-                text = stringResource(id = R.string.no_appointments),
-                modifier = Modifier.align(Alignment.Center)
-            )
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp)
-        ) {
-            items(list) {
-                AppointmentRow(it) {
-                    onItemClick(it.appointment.id)
+    Scaffold(topBar = {
+        TopBar(title = "Upcoming appointments", navIcon = null)
+    }, modifier = Modifier.padding(8.dp)) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .padding(it)) {
+            if (list.isEmpty())
+                ThemeText(
+                    text = stringResource(id = R.string.no_appointments),
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(8.dp)
+            ) {
+                items(list) { item ->
+                    AppointmentRow(item) {
+                        onItemClick(item.appointment.id)
+                    }
                 }
             }
-        }
-        ThemeFloatingActionButton(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-        ) {
-            onAddClicked()
+            ThemeFloatingActionButton(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
+            ) {
+                onAddClicked()
+            }
         }
     }
+
 }
 
 @Composable
 fun AppointmentRow(appointmentAndClient: AppointmentAndClient, onClick: () -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.clickable {
-        onClick()
-    }.fillMaxWidth()) {
-        ThemeText(text = appointmentAndClient.appointment.title)
-        ThemeText(text = appointmentAndClient.client.name)
-        ThemeText(text = appointmentAndClient.appointment.startDate.toFormattedTime())
+    Card(modifier = Modifier.padding(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier
+            .padding(8.dp)
+            .clickable {
+                onClick()
+            }
+            .fillMaxWidth()) {
+            ThemeText(text = appointmentAndClient.appointment.title)
+            ThemeText(text = appointmentAndClient.client.name)
+            ThemeText(text = appointmentAndClient.appointment.startDate.toFormattedTime())
+        }
     }
 }
 

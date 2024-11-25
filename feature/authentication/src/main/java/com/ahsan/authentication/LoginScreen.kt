@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,11 +34,11 @@ fun LoginScreen(navController: NavController) {
     val viewModel = hiltViewModel<AuthViewModel>()
     val viewState by viewModel.viewState.collectAsState()
     val context = LocalContext.current
-    if(viewState?.loginState == true){
-        navController.navigate(route = DestinationRoute.HOME_ROUTE, navOptions = NavOptions.Builder().setPopUpTo(DestinationRoute.HOME_ROUTE, false).build(),
-            navigatorExtras = null)
+    LaunchedEffect(key1 = viewState?.loginState) {
+        if(viewState?.loginState == true){
+            navController.navigate(route = DestinationRoute.HOME_ROUTE)
+        }
     }
-
     LoginUI(viewState?.error ?: "", viewState?.emailValidationError ?: "", viewState?.passwordValidationError ?: "",
         viewState?.isLoading == true,
         onRegisterClick = {

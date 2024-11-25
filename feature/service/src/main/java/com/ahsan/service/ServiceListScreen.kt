@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -72,13 +73,17 @@ fun ServiceListUI(list: List<ServiceAndCurrency>, onServiceClick: (ServiceAndCur
 
 @Composable
 fun ServiceItem(service: ServiceAndCurrency, onServiceClick: () -> Unit){
-    Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()
-        .clickable {
-            onServiceClick()
-        }) {
-        ThemeText(text = service.service.name)
-        ThemeText(text = "${service.currency.symbol}${service.service.price}")
+    Card(modifier = Modifier.padding(8.dp)) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onServiceClick()
+            }.padding(8.dp)) {
+            ThemeText(text = service.service.name)
+            ThemeText(text = "${service.currency.symbol}${service.service.price}")
+        }
     }
+
 }
 
 @Composable

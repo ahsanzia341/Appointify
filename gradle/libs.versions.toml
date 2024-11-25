@@ -19,7 +19,7 @@ googleFirebaseCrashlytics = "3.0.2"
 firebaseAuth = "23.0.0"
 firebaseStorage = "21.0.0"
 gson = "2.11.0"
-splashScreen = "1.2.0-alpha01"
+work = "2.10.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -49,7 +49,7 @@ firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashly
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson"}
-splash-screen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashScreen"}
+work-manager = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work"}
 
 [bundles]
 compose = [

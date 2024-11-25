@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,39 +28,68 @@ private fun ThemeDialog(title: String, text: String, okClick: () -> Unit) {
 
 @Composable
 fun InfoDialog(title: String, text: String, onDismiss: () -> Unit){
-    Dialog(onDismissRequest = { onDismiss() }) {
-        ThemeDialog(title = title, text = text) {
+    AlertDialog(
+        title = {
+            ThemeText(text = title)
+        },
+        text = {
+            ThemeText(text = text)
+        },
+        onDismissRequest = {
             onDismiss()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onDismiss()
+                }
+            ) {
+                ThemeText(text = "Confirm")
+            }
         }
-    }
+    )
 }
 
 @Composable
-fun ConfirmationDialog(title: String, text: String, positiveClick: () -> Unit, negativeClick: () -> Unit, onDismiss: () -> Unit){
-    Dialog(onDismissRequest = {
-        onDismiss()
-    }) {
-        Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier
-            .padding(8.dp)
-            .background(
-                Color.White
-            )) {
-            ThemeHeaderText(text = title)
+fun ConfirmationDialog(
+    title: String,
+    text: String,
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+) {
+    AlertDialog(
+        title = {
+            ThemeText(text = title)
+        },
+        text = {
             ThemeText(text = text)
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                ThemeButton(text = stringResource(id = R.string.yes)) {
-                    positiveClick()
+        },
+        onDismissRequest = {
+            onDismissRequest()
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    onConfirmation()
                 }
-                ThemeButton(text = stringResource(id = R.string.no)) {
-                    negativeClick()
+            ) {
+                ThemeText(text = "Confirm")
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    onDismissRequest()
                 }
+            ) {
+                ThemeText(text = "Dismiss")
             }
         }
-    }
+    )
 }
 
 @Composable
 @Preview
 fun DialogPreview(){
-    ConfirmationDialog(title = "", text = "", {}, {}){}
+    ConfirmationDialog(title = "", text = "", {}, {})
 }

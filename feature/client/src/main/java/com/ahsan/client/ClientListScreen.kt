@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -63,11 +64,14 @@ fun ClientListUI(list: List<Client>, onFilterTextChanged: (String) -> Unit, onIt
         }
 
     }, modifier = Modifier.padding(8.dp)) { padding ->
-        Box(modifier = Modifier.padding(padding).fillMaxSize()) {
+        Box(modifier = Modifier
+            .padding(padding)
+            .fillMaxSize()) {
             var query by remember {
                 mutableStateOf("")
             }
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp),
+                modifier = Modifier.fillMaxWidth()) {
                 ThemeTextField(label = stringResource(id = R.string.search)) {
                     query = it
                     onFilterTextChanged(query)
@@ -92,12 +96,15 @@ fun ClientListUI(list: List<Client>, onFilterTextChanged: (String) -> Unit, onIt
 
 @Composable
 fun ClientRow(client: Client, onItemClicked: () -> Unit){
-    Column(modifier = Modifier.clickable {
-        onItemClicked()
-    }) {
-        ThemeText(text = client.name)
-        ThemeText(text = client.phoneNumber)
+    Card(modifier = Modifier.padding(8.dp)) {
+        Column(modifier = Modifier.clickable {
+            onItemClicked()
+        }.padding(8.dp)) {
+            ThemeText(text = client.name)
+            ThemeText(text = client.phoneNumber)
+        }
     }
+
 }
 
 @Composable

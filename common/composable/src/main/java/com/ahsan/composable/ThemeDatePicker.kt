@@ -9,7 +9,7 @@ import com.ahsan.core.extension.toFormattedTime
 import java.util.Date
 
 @Composable
-fun ThemeDatePicker(label: String, onSelected: (Date) -> Unit) {
+fun ThemeDatePicker(label: String, errorMessage: String = "", onSelected: (Date) -> Unit) {
     var showDatePicker by remember { mutableStateOf(false) }
     var selectedDate by remember {
         mutableStateOf("")
@@ -18,6 +18,7 @@ fun ThemeDatePicker(label: String, onSelected: (Date) -> Unit) {
         label = label,
         value = selectedDate,
         isReadOnly = true,
+        errorMessage = errorMessage,
         onClick = {
             showDatePicker = true
         },

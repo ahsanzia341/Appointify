@@ -10,9 +10,9 @@ fun NavGraphBuilder.appointmentNavigation(navController: NavController) {
         CreateAppointmentScreen(navController)
     }
     composable(route = DestinationRoute.UPDATE_APPOINTMENT_ROUTE) {
-        UpdateAppointmentScreen(navController, it.arguments?.getInt("id") ?: 0)
+        UpdateAppointmentScreen(navController, it.arguments?.getString(DestinationRoute.PassedKey.ID)?.toInt() ?: 0)
     }
     composable(route = DestinationRoute.APPOINTMENT_DETAIL_ROUTE) {
-        AppointmentDetailScreen(navController, it.arguments?.getInt("id") ?: 0)
+        AppointmentDetailScreen(navController, it.arguments?.getString(DestinationRoute.PassedKey.ID)?.toInt() ?: 0)
     }
 }

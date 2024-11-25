@@ -42,6 +42,7 @@ dependencies {
     implementation(libs.firebase.auth)
     implementation(libs.firebase.storage)
     implementation(libs.gson)
+    implementation(libs.work.manager)
     implementation(project(mapOf("path" to ":core")))
     implementation(project(mapOf("path" to ":common:composable")))
     ksp(libs.room.compiler)

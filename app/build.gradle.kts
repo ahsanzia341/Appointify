@@ -10,13 +10,13 @@ plugins {
 
 android {
     namespace = "com.ahsan.smartappointment"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.ahsan.smartappointment"
         minSdk = 24
-        targetSdk = 34
-        versionCode = 1
+        targetSdk = 35
+        versionCode = 3
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -72,6 +72,7 @@ dependencies {
     implementation(project(mapOf("path" to ":feature:client")))
     implementation(project(mapOf("path" to ":feature:setting")))
     implementation(project(mapOf("path" to ":feature:service")))
+    implementation(project(mapOf("path" to ":feature:webview")))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

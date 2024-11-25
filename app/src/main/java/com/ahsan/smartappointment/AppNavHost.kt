@@ -13,6 +13,7 @@ import com.ahsan.core.DestinationRoute
 import com.ahsan.home.homeNavigation
 import com.ahsan.service.serviceNavigation
 import com.ahsan.setting.settingNavigation
+import com.ahsan.webview.webViewNavigation
 
 /**
  * Created by anwaralhasan  on 2/14/2024.
@@ -32,6 +33,7 @@ fun AppNavHost(
             authenticationNavigation(navController)
             settingNavigation(navController)
             serviceNavigation(navController)
+            webViewNavigation(navController)
         }
     }
     NavHost(navController, navGraph)

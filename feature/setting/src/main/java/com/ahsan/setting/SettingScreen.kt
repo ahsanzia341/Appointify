@@ -3,17 +3,17 @@ package com.ahsan.setting
 import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -27,26 +27,42 @@ import com.ahsan.composable.ThemeText
 import com.ahsan.composable.TopBar
 import com.ahsan.core.Constant
 import com.ahsan.core.DestinationRoute
+import com.ahsan.core.extension.toFormattedTime
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
+import java.util.Date
 
 @Composable
 fun SettingScreen(navController: NavController) {
     val viewModel = hiltViewModel<SettingViewModel>()
     val viewState by viewModel.viewState.collectAsState()
-    viewModel.onTriggerEvent(SettingEvent.IsLoggedIn)
-    SettingUI(viewState?.email, onBackupPress = {
+    LaunchedEffect(key1 = true) {
+        viewModel.onTriggerEvent(SettingEvent.IsLoggedIn)
+    }
+
+    SettingUI(viewState?.isLoading ?: true, viewState?.email, viewState?.lastBackupDate, onBackupPress = {
         viewModel.onTriggerEvent(SettingEvent.BackupData)
     }, onLogoutPress = {
         viewModel.onTriggerEvent(SettingEvent.Logout)
+    }, onPrivacyPolicyPressed = {
+        navController.navigate(DestinationRoute.WEB_VIEW_ROUTE.replace("{${DestinationRoute.PassedKey.URL}}", it))
+    }, onAutoBackupSwitched = {
+        if(it) viewModel.onTriggerEvent(SettingEvent.ScheduleBackup) else viewModel.onTriggerEvent(SettingEvent.CancelScheduleBackup)
     }){
         navController.navigate(DestinationRoute.LOGIN_ROUTE)
     }
 }
 
 @Composable
-fun SettingUI(email: String?, onBackupPress:() -> Unit, onLogoutPress:() -> Unit, onLoginPress: () -> Unit) {
+fun SettingUI(isLoading: Boolean, email: String?, lastBackup: Date?, onBackupPress:() -> Unit, onLogoutPress:() -> Unit,
+              onPrivacyPolicyPressed: (String) -> Unit, onAutoBackupSwitched: (Boolean) -> Unit, onLoginPress: () -> Unit) {
     val context = LocalContext.current
     val sharedPref = context.getSharedPreferences(Constant.SHARED_PREF_KEY, Context.MODE_PRIVATE)
     var showConfirmation by remember {
+        mutableStateOf(false)
+    }
+
+    var showDeleteAccountConfirmation by remember {
         mutableStateOf(false)
     }
     var backupState by remember {
@@ -57,52 +73,70 @@ fun SettingUI(email: String?, onBackupPress:() -> Unit, onLogoutPress:() -> Unit
         TopBar(title = stringResource(id = com.ahsan.composable.R.string.settings), navIcon = null)
     }, modifier = Modifier.padding(8.dp)) { padding ->
         Column(Modifier.padding(padding), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            if (email == null) {
-                ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.login)) {
-                    onLoginPress()
-                }
+            if (isLoading) {
+                CircularProgressIndicator()
             } else {
-                ThemeText(text = email)
-                ThemeText(text = "Last backup: ")
-                ThemeButton(text = "Backup data") {
-                    onBackupPress()
-                }
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    ThemeText(text = "Turn on automatic backup. Every night 11pm")
+                if (email == null) {
+                    ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.login)) {
+                        onLoginPress()
+                    }
+                } else {
+                    ThemeText(text = email)
+                    ThemeText(text = "Last backup: ${lastBackup?.toFormattedTime()}")
+                    ThemeButton(text = "Backup data") {
+                        onBackupPress()
+                    }
+                    ThemeText(text = "Turn on automatic daily backup.")
                     Switch(checked = backupState, onCheckedChange = {
                         backupState = it
                         sharedPref.edit().putBoolean(Constant.IS_AUTO_BACKUP, it).apply()
+                        onAutoBackupSwitched(backupState)
                     })
                 }
-            }
 
-
-
-            ThemeButton(text = "Privacy policy") {
-
-            }
-            ThemeButton(text = "Terms and conditions") {
-
-            }
-            ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.feedback)) {
-
-            }
-            if (email != null) {
-                ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.logout)) {
-                    showConfirmation = true
+                ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.privacy_policy)) {
+                    val encodedUrl = URLEncoder.encode(
+                        "https://www.termsfeed.com/live/2b1724ab-a3a7-4bfa-b4aa-0573ee4abcf3",
+                        StandardCharsets.UTF_8.toString()
+                    )
+                    onPrivacyPolicyPressed(encodedUrl)
                 }
-            }
-            if (showConfirmation) {
-                ConfirmationDialog(
-                    title = "Confirmation",
-                    text = "Your cloud backup will stop if you choose to logout. Would you like to continue?",
-                    {
-                        onLogoutPress()
-                        showConfirmation = false
-                    }, {
-                        showConfirmation = false
-                    }) {
-                    showConfirmation = false
+                ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.feedback)) {
+                    if (email == null) {
+                        onLoginPress()
+                    }
+                }
+
+                if (email != null) {
+                    ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.delete_account)) {
+                        showDeleteAccountConfirmation = true
+                    }
+                    ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.logout)) {
+                        showConfirmation = true
+                    }
+
+                }
+                if (showConfirmation) {
+                    ConfirmationDialog(
+                        title = "Confirmation",
+                        text = "Your cloud backup will stop if you choose to logout. Would you like to continue?",
+                        {
+                            onLogoutPress()
+                            showConfirmation = false
+                        }, {
+                            showConfirmation = false
+                        })
+                }
+                if(showDeleteAccountConfirmation){
+                    ConfirmationDialog(
+                        title = stringResource(id = com.ahsan.composable.R.string.delete_account),
+                        text = "All account data will be erased. Are you sure you would like to delete your account?",
+                        {
+                            onLogoutPress()
+                            showConfirmation = false
+                        }, {
+                            showConfirmation = false
+                        })
                 }
             }
         }
@@ -112,7 +146,7 @@ fun SettingUI(email: String?, onBackupPress:() -> Unit, onLogoutPress:() -> Unit
 @Composable
 @Preview
 fun SettingPreview(){
-    SettingUI("null", {}, {}){
+    SettingUI(false, "null", Date(), {}, {}, {}, {}){
 
     }
 }

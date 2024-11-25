@@ -12,16 +12,16 @@ import com.ahsan.data.models.AppointmentAndClient
 @Dao
 interface AppointmentDao {
     @Transaction
-    @Query("Select * from appointment where status == 'NOT_STARTED'")
-    suspend fun getAll(): List<AppointmentAndClient>
+    @Query("Select * from appointment where startDate > :currentTimeInMillis and status != 'CANCELED'")
+    suspend fun getAll(currentTimeInMillis: Long): List<AppointmentAndClient>
 
     @Transaction
     @Query("Select * from appointment where id == :id")
     suspend fun findById(id: Int): AppointmentAndClient
 
     @Transaction
-    @Query("Select * from appointment where status == 'ENDED' or status == 'CANCELED'")
-    suspend fun getAppointmentHistory(): List<AppointmentAndClient>
+    @Query("Select * from appointment where startDate < :currentTimeInMillis or status == 'CANCELED'")
+    suspend fun getAppointmentHistory(currentTimeInMillis: Long): List<AppointmentAndClient>
 
     @Insert
     suspend fun insert(appointment: Appointment)

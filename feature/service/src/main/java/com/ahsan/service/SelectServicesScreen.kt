@@ -27,6 +27,7 @@ import androidx.navigation.NavController
 import com.ahsan.composable.ThemeButton
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.TopBar
+import com.ahsan.core.DestinationRoute
 import com.ahsan.data.models.ServiceAndCurrency
 
 @Composable
@@ -40,6 +41,7 @@ fun SelectServicesScreen(navController: NavController) {
         onSelect = {
             viewModel.onTriggerEvent(ServiceEvent.SelectService(it))
         }) {
+        navController.previousBackStackEntry?.savedStateHandle?.set(DestinationRoute.PassedKey.SERVICE_IDS, viewState?.services?.map { it.service.id })
         navController.popBackStack()
     }
 }

@@ -11,22 +11,26 @@ import com.ahsan.composable.TopBar
 
 @Composable
 fun ServiceDetailScreen(navController: NavController) {
-    ServiceDetailUI()
+    ServiceDetailUI{
+        navController.popBackStack()
+    }
 }
 
 @Composable
-fun ServiceDetailUI(){
+fun ServiceDetailUI(onBackPress: () -> Unit){
     Scaffold(topBar = {
         TopBar(title = "Service Detail", onClickNavIcon = {
-
+            onBackPress()
         })
     }) { padding ->
-        Box(modifier = Modifier.padding(padding))
+        Box(modifier = Modifier.padding(padding)){
+
+        }
     }
 }
 
 @Composable
 @Preview
 fun ServiceDetailPreview(){
-    ServiceDetailUI()
+    ServiceDetailUI{}
 }
