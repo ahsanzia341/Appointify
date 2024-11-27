@@ -24,6 +24,7 @@ class ClientViewModel @Inject constructor(
             ClientEvent.GetClients -> getClients()
             is ClientEvent.FilterClients -> filterClients(event.name)
             is ClientEvent.DeleteClient -> delete(event.client)
+            is ClientEvent.Validate -> validate(event.client)
         }
     }
 
@@ -46,11 +47,29 @@ class ClientViewModel @Inject constructor(
     private fun delete(client: Client){
         viewModelScope.launch {
             deleteClientUseCase(client)
+            clients = clients.mapNotNull {
+                if(it.id == client.id){
+                    null
+                }
+                else{
+                    it.copy()
+                }
+            }
+            updateState(ViewState(clients = clients))
         }
     }
 
+    private fun validate(client: Client): Boolean{
+        if(client.name.isEmpty() || client.phoneNumber.isEmpty()){
+            updateState(ViewState(validate = false, clients = listOf()))
+            return false
+        }
+        updateState(ViewState(validate = true, clients = listOf()))
+        return true
+    }
+
     private fun postClient(client: Client) {
-        if (client.name.isNotEmpty()) {
+        if (validate(client)) {
             viewModelScope.launch {
                 postClientUseCase(client)
             }

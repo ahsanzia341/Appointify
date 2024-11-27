@@ -40,7 +40,7 @@ fun SelectServicesScreen(navController: NavController) {
         onSelect = {
             viewModel.onTriggerEvent(ServiceEvent.SelectService(it))
         }) {
-        navController.previousBackStackEntry?.savedStateHandle?.set(DestinationRoute.PassedKey.SERVICE_IDS, viewState?.services?.map { it.service.id })
+        navController.previousBackStackEntry?.savedStateHandle?.set(DestinationRoute.PassedKey.SERVICE_IDS, viewState?.services?.map { it.service.serviceId })
         navController.popBackStack()
     }
 }
@@ -57,7 +57,7 @@ fun SelectServicesUI(list: List<ServiceAndCurrency>, selectedList: List<ServiceA
             .fillMaxSize()){
             LazyColumn {
                 items(list){ service ->
-                    RowService(serviceAndCurrency = service, selectedList.find { it.service.id == service.service.id } != null){
+                    RowService(serviceAndCurrency = service, selectedList.find { it.service.serviceId == service.service.serviceId } != null){
                         onSelect(service)
                     }
                 }

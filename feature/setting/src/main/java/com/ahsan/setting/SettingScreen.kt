@@ -51,6 +51,8 @@ fun SettingScreen(navController: NavController) {
         viewModel.onTriggerEvent(SettingEvent.LoadBackup)
     }, onDeletePress = {
         viewModel.onTriggerEvent(SettingEvent.DeleteAccount)
+    }, onCurrencyPress = {
+        navController.navigate(DestinationRoute.CURRENCY_ROUTE)
     }){
         navController.navigate(DestinationRoute.LOGIN_ROUTE)
     }
@@ -59,7 +61,7 @@ fun SettingScreen(navController: NavController) {
 @Composable
 fun SettingUI(isLoading: Boolean, email: String?, lastBackup: Date?, onBackupPress:() -> Unit, onLogoutPress:() -> Unit,
               onDeletePress: () -> Unit, onPrivacyPolicyPressed: (String) -> Unit, onAutoBackupSwitched: (Boolean) -> Unit,
-              syncWithServer: () -> Unit, onLoginPress: () -> Unit) {
+              syncWithServer: () -> Unit, onCurrencyPress: () -> Unit, onLoginPress: () -> Unit) {
     val context = LocalContext.current
     val sharedPref = context.getSharedPreferences(Constant.SHARED_PREF_KEY, Context.MODE_PRIVATE)
     var showConfirmation by remember {
@@ -104,6 +106,9 @@ fun SettingUI(isLoading: Boolean, email: String?, lastBackup: Date?, onBackupPre
                     }
                 }
 
+                SettingRowUI(text = stringResource(id = com.ahsan.composable.R.string.currency), isNextPage = true){
+                    onCurrencyPress()
+                }
                 SettingRowUI(
                     text = stringResource(id = com.ahsan.composable.R.string.privacy_policy),
                     true
@@ -162,7 +167,7 @@ fun SettingUI(isLoading: Boolean, email: String?, lastBackup: Date?, onBackupPre
 @Composable
 @Preview
 fun SettingPreview(){
-    SettingUI(false, "null", Date(), {}, {}, {}, {}, {}, {}){
+    SettingUI(false, "null", Date(), {}, {}, {}, {}, {}, {}, {}){
 
     }
 }

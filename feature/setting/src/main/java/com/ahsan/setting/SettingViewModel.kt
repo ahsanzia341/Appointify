@@ -35,6 +35,7 @@ class SettingViewModel @Inject constructor(private val backupUseCase: PostBackup
 
     private fun backupData() {
         viewModelScope.launch {
+            updateState(ViewState(isLoading = true))
             backupUseCase()
             getLastBackupDate()
         }
@@ -53,7 +54,8 @@ class SettingViewModel @Inject constructor(private val backupUseCase: PostBackup
             updateState(
                 ViewState(
                     email = isLoggedInUseCase(),
-                    lastBackupDate = Date(lastBackupDateUseCase()!!)
+                    lastBackupDate = Date(lastBackupDateUseCase()!!),
+                    isLoading = false
                 )
             )
         }

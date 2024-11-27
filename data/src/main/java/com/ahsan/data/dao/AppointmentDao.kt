@@ -8,6 +8,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.ahsan.data.models.Appointment
 import com.ahsan.data.models.AppointmentAndClient
+import com.ahsan.data.models.AppointmentServiceCrossRef
 
 @Dao
 interface AppointmentDao {
@@ -16,7 +17,7 @@ interface AppointmentDao {
     suspend fun getAll(currentTimeInMillis: Long): List<AppointmentAndClient>
 
     @Transaction
-    @Query("Select * from appointment where id == :id")
+    @Query("Select * from appointment where appointmentId == :id")
     suspend fun findById(id: Int): AppointmentAndClient
 
     @Transaction
@@ -24,7 +25,10 @@ interface AppointmentDao {
     suspend fun getAppointmentHistory(currentTimeInMillis: Long): List<AppointmentAndClient>
 
     @Insert
-    suspend fun insert(appointment: Appointment)
+    suspend fun insertServices(services: List<AppointmentServiceCrossRef>)
+
+    @Insert
+    suspend fun insert(appointment: Appointment): Long
 
     @Update
     suspend fun update(appointment: Appointment)

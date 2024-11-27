@@ -9,6 +9,7 @@ import com.ahsan.appointment.appointmentNavigation
 import com.ahsan.appointmenthistory.appointmentHistoryNavigation
 import com.ahsan.authentication.authenticationNavigation
 import com.ahsan.client.clientNavigation
+import com.ahsan.currency.currencyNavigation
 import com.ahsan.home.homeNavigation
 import com.ahsan.service.serviceNavigation
 import com.ahsan.setting.settingNavigation
@@ -27,6 +28,7 @@ fun AppNavHost(
         navController.createGraph(startDestination = startDestination) {
             homeNavigation(navController)
             appointmentNavigation(navController)
+            currencyNavigation(navController)
             clientNavigation(navController)
             appointmentHistoryNavigation(navController)
             authenticationNavigation(navController)

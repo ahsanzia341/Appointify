@@ -6,6 +6,7 @@ object DestinationRoute {
     const val UPDATE_APPOINTMENT_ROUTE = "update_appointment/{${PassedKey.ID}}"
     const val APPOINTMENT_DETAIL_ROUTE = "appointment_detail/{${PassedKey.ID}}"
     const val CLIENT_LIST_ROUTE = "client_list"
+    const val CURRENCY_ROUTE = "currency_route"
     const val CREATE_CLIENT_ROUTE = "create_client/{${PassedKey.ID}}"
     const val SELECT_CLIENT_ROUTE = "select_client"
     const val APPOINTMENT_HISTORY_ROUTE = "appointment_history_route"

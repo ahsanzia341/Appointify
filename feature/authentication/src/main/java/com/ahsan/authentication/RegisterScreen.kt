@@ -70,7 +70,6 @@ fun RegisterUI(error: String, emailValidationError: String, passwordValidationEr
                 onLoginPress(email, password)
             }
             ErrorText(text = error)
-            ThemeText(text = "Already have an account? Sign In")
         }
     }
 }

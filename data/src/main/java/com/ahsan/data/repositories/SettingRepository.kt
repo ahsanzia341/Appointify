@@ -6,6 +6,7 @@ import androidx.work.CoroutineWorker
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.ahsan.core.Constant
 import com.ahsan.data.AppDatabase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
@@ -49,6 +50,16 @@ class SettingRepository @Inject constructor(@ApplicationContext private val cont
         } catch(e: Exception){
             null
         }
+    }
+
+    fun setDefaultCurrency(currencyId: Int){
+        val sharedPref = context.getSharedPreferences(Constant.SHARED_PREF_KEY, Context.MODE_PRIVATE)
+        sharedPref.edit().putInt(Constant.CURRENCY_ID, currencyId).apply()
+    }
+
+    fun getDefaultCurrency(): Int{
+        val sharedPref = context.getSharedPreferences(Constant.SHARED_PREF_KEY, Context.MODE_PRIVATE)
+        return sharedPref.getInt(Constant.CURRENCY_ID, 1)
     }
 
     fun hasBackup(): Flow<Boolean?> {

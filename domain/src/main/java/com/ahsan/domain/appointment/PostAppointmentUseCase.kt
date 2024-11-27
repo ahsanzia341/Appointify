@@ -7,7 +7,7 @@ import javax.inject.Inject
 class PostAppointmentUseCase @Inject constructor(
     private val repository: AppointmentRepository,
 ) {
-    suspend operator fun invoke(appointment: Appointment){
-        return repository.insert(appointment)
+    suspend operator fun invoke(appointment: Appointment, services: List<Int>){
+        return repository.insert(appointment, services)
     }
 }

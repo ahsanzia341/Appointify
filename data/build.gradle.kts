@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.ahsan.data"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
@@ -43,6 +43,7 @@ dependencies {
     implementation(libs.firebase.storage)
     implementation(libs.gson)
     implementation(libs.work.manager)
+    implementation(libs.google.play.services.auth)
     implementation(project(mapOf("path" to ":core")))
     implementation(project(mapOf("path" to ":common:composable")))
     ksp(libs.room.compiler)

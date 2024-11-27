@@ -6,7 +6,7 @@
     <string name="search">Search</string>
     <string name="ok">OK</string>
     <string name="forgot_password">Forgot Password</string>
-    <string name="no_appointments">No appointments found</string>
+    <string name="no_appointments">You have no upcoming appointments.</string>
     <string name="no_clients">No clients found</string>
     <string name="no_services">No services found</string>
     <string name="create_appointment">Create Appointment</string>
@@ -53,6 +53,7 @@
     <string name="logout">Logout</string>
     <string name="success">Success</string>
     <string name="failure">Failure</string>
+    <string name="field_required">%s field is required</string>
     <string name="required_fields_missing">Required fields are missing</string>
     <string name="password_error">Password must be at least of length 5</string>
 </resources>

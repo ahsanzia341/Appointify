@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.ahsan.webview"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 24
@@ -35,7 +35,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.androidx.core.ktx)
     implementation(project(mapOf("path" to ":common:composable")))
     implementation(project(mapOf("path" to ":core")))

@@ -24,7 +24,7 @@ class AppointmentViewModel @Inject constructor(
 
     override fun onTriggerEvent(event: AppointmentEvent) {
         when (event) {
-            is AppointmentEvent.PostAppointment -> postAppointment(event.appointment)
+            is AppointmentEvent.PostAppointment -> postAppointment(event.appointment, event.services)
             is AppointmentEvent.UpdateAppointment -> updateAppointment(event.appointment)
             is AppointmentEvent.FindById -> findById(event.id)
             is AppointmentEvent.FindClientById -> findClientById(event.id)
@@ -36,17 +36,17 @@ class AppointmentViewModel @Inject constructor(
     private var selectedClient: Client? = null
     private var selectedServices: List<ServiceAndCurrency>? = null
 
-    private fun postAppointment(appointment: Appointment) {
+    private fun postAppointment(appointment: Appointment, services: List<Int>) {
         viewModelScope.launch {
             if(validateForm(appointment))
-                postAppointmentUseCase(appointment)
+                postAppointmentUseCase(appointment, services)
         }
     }
 
     private fun validateForm(appointment: Appointment): Boolean {
         val isValidated = appointment.title.isNotEmpty() && (appointment.startDate?.time
-            ?: 0L) > 0 && appointment.clientId > 0 && appointment.services.isNotEmpty()
-        updateState(ViewState(isFormValidated = Pair(isValidated, !isValidated)))
+            ?: 0L) > 0 && selectedClient != null && selectedServices?.isNotEmpty() == true
+        updateState(ViewState(isFormValidated = Pair(isValidated, !isValidated), services = selectedServices, client = selectedClient))
         return isValidated
     }
 

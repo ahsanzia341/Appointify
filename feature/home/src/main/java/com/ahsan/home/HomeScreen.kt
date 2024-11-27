@@ -18,7 +18,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -48,7 +47,17 @@ fun HomeScreen(navController: NavController) {
 fun HomeUI(list: List<AppointmentAndClient>, onAddClicked: () -> Unit, onItemClick: (Int) -> Unit) {
     Scaffold(topBar = {
         TopBar(title = "Upcoming appointments", navIcon = null)
-    }, modifier = Modifier.padding(8.dp)) {
+    }, modifier = Modifier.padding(8.dp), bottomBar = {
+        Column(Modifier.fillMaxWidth()) {
+            ThemeFloatingActionButton(
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(8.dp)
+            ) {
+                onAddClicked()
+            }
+        }
+    }) {
         Box(modifier = Modifier
             .fillMaxSize()
             .padding(it)) {
@@ -64,20 +73,12 @@ fun HomeUI(list: List<AppointmentAndClient>, onAddClicked: () -> Unit, onItemCli
             ) {
                 items(list) { item ->
                     AppointmentRow(item) {
-                        onItemClick(item.appointment.id)
+                        onItemClick(item.appointment.appointmentId)
                     }
                 }
             }
-            ThemeFloatingActionButton(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp)
-            ) {
-                onAddClicked()
-            }
         }
     }
-
 }
 
 @Composable

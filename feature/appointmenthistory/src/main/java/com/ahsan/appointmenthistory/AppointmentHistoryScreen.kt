@@ -47,7 +47,7 @@ fun AppointmentHistoryUI(list: List<AppointmentAndClient>, onItemClick: (Int) ->
             LazyColumn(Modifier.fillMaxSize()) {
                 items(list){
                     AppointmentRow(appointmentAndClient = it) {
-                        onItemClick(it.appointment.id)
+                        onItemClick(it.appointment.appointmentId)
                     }
                 }
             }

@@ -51,10 +51,15 @@ fun DateTimePicker(onDismiss: (Long?) -> Unit) {
             Row {
                 TextButton(onClick = {
                     onDismiss(null)
-                    calendar.time = Date(selectedDateMillis ?: 0L)
-                    calendar.set(Calendar.HOUR_OF_DAY, timePickerState.hour)
-                    calendar.set(Calendar.MINUTE, timePickerState.minute)
-                    onDismiss(calendar.time.time)
+                    if(selectedDateMillis == null){
+                        onDismiss(null)
+                    }
+                    else{
+                        calendar.time = Date(selectedDateMillis)
+                        calendar.set(Calendar.HOUR_OF_DAY, timePickerState.hour)
+                        calendar.set(Calendar.MINUTE, timePickerState.minute)
+                        onDismiss(calendar.time.time)
+                    }
                 }) {
                     ThemeText(text = stringResource(id = R.string.confirm))
                 }
@@ -72,7 +77,6 @@ fun DateTimePicker(onDismiss: (Long?) -> Unit) {
             DatePicker(state = datePickerState)
         else
             TimePicker(state = timePickerState)
-
     }
 }
 enum class DateSelection{

@@ -33,10 +33,10 @@ fun AppointmentDetailScreen(navController: NavController, id: Int) {
     LaunchedEffect(key1 = true) {
         viewModel.onTriggerEvent(AppointmentEvent.FindById(id))
     }
-    AppointmentDetailUI(viewState?.appointment ?: AppointmentAndClient(Appointment(), Client(name = "", phoneNumber = "")), onCancelPress = {
+    AppointmentDetailUI(viewState?.appointment ?: AppointmentAndClient(Appointment(), Client(name = "", phoneNumber = ""), listOf()), onCancelPress = {
         viewModel.onTriggerEvent(AppointmentEvent.UpdateAppointment(it))
     }, onUpdatePress = {
-        navController.navigate(DestinationRoute.UPDATE_APPOINTMENT_ROUTE.replace("{${DestinationRoute.PassedKey.ID}}", it.id.toString()))
+        navController.navigate(DestinationRoute.UPDATE_APPOINTMENT_ROUTE.replace("{${DestinationRoute.PassedKey.ID}}", it.appointmentId.toString()))
     }){
         navController.popBackStack()
     }
@@ -81,7 +81,7 @@ fun RowField(label: String, value: String){
 @Composable
 @Preview
 fun AppointmentDetailPreview(){
-    AppointmentDetailUI(AppointmentAndClient(Appointment(0, "New Appointment"), Client(name = "Test", phoneNumber = "1234")), {}, {}){
+    AppointmentDetailUI(AppointmentAndClient(Appointment(0, "New Appointment"), Client(name = "Test", phoneNumber = "1234"), services = listOf()), {}, {}){
 
     }
 }

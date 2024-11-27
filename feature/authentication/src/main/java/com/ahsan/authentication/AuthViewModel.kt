@@ -18,7 +18,6 @@ class AuthViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val registerUseCase: RegisterUseCase,
     private val forgotPasswordUseCase: ForgotPasswordUseCase,
-    private val loadBackupUseCase: LoadBackupUseCase
 ): BaseViewModel<ViewState, AuthEvent>() {
 
     override fun onTriggerEvent(event: AuthEvent) {
@@ -70,7 +69,6 @@ class AuthViewModel @Inject constructor(
                     )
 
                     AuthUiState.Success -> {
-                        loadBackupUseCase()
                         updateState(ViewState(loginState = true, error = null))
                     }
                     null -> {}

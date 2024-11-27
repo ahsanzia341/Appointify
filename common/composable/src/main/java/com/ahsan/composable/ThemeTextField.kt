@@ -20,6 +20,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -29,7 +30,7 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ThemeTextField(modifier: Modifier = Modifier, label: String = "", value: String = "", isReadOnly: Boolean = false,
                    enabled: Boolean = true, errorMessage: String = "", keyboardType: KeyboardType = KeyboardType.Text,
-                   trailingIcon: Int = 0, onClick: () -> Unit = {}, onChanged: (text: String) -> Unit) {
+                   imeAction: ImeAction = ImeAction.Next, trailingIcon: Int = 0, onClick: () -> Unit = {}, onChanged: (text: String) -> Unit) {
     var text by remember {
         mutableStateOf(value)
     }
@@ -50,7 +51,7 @@ fun ThemeTextField(modifier: Modifier = Modifier, label: String = "", value: Str
                     }
                 },
             enabled = enabled,
-            keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
             visualTransformation = if(keyboardType == KeyboardType.Password) PasswordVisualTransformation() else VisualTransformation.None,
             readOnly = isReadOnly,
             trailingIcon = {

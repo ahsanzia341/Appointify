@@ -5,7 +5,7 @@ import com.ahsan.data.models.Service
 import com.ahsan.data.models.ServiceAndCurrency
 
 data class ViewState(val services: List<ServiceAndCurrency>? = null,
-                     val currencies: List<Currency>? = null, val selectedServices: List<ServiceAndCurrency>? = null)
+                     val currencies: List<Currency>? = null, val selectedServices: List<ServiceAndCurrency>? = null, val defaultCurrency: Int = 1)
 
 sealed class ServiceEvent {
     data class PostService(val service: Service) : ServiceEvent()

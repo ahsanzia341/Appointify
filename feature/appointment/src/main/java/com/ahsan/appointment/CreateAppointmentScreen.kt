@@ -19,6 +19,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,6 +33,7 @@ import com.ahsan.composable.TopBar
 import com.ahsan.core.DestinationRoute
 import com.ahsan.data.models.Appointment
 import com.ahsan.data.models.Client
+import com.ahsan.data.models.Service
 import com.ahsan.data.models.ServiceAndCurrency
 import java.util.Date
 
@@ -60,7 +62,6 @@ fun CreateAppointmentScreen(navController: NavController, id: Int = 0) {
         startDate = null,
         endDate = null,
         location = "",
-        services = viewState?.services?.map { it.service } ?: listOf()
     ), viewState?.client,
         isShowDialog = viewState?.isFormValidated ?: Pair(false, false),
         clientAddClick = {
@@ -68,7 +69,7 @@ fun CreateAppointmentScreen(navController: NavController, id: Int = 0) {
         }, servicesAddClick = {
             navController.navigate(DestinationRoute.SERVICE_SELECT_ROUTE)
         }, serviceAndCurrency = viewState?.services ?: listOf(), onCreate = {
-            viewModel.onTriggerEvent(AppointmentEvent.PostAppointment(it))
+            viewModel.onTriggerEvent(AppointmentEvent.PostAppointment(it, serviceIds))
         }, onFail = {
             viewModel.onTriggerEvent(AppointmentEvent.OnFail)
         }) {
@@ -103,7 +104,7 @@ fun CreateAppointmentUI(appointment: Appointment, client: Client?, serviceAndCur
             mutableStateOf(appointment.endDate)
         }
         val clientId = appointment.clientId
-        val services = appointment.services
+        val services = listOf<Service>()
         var showServicesBottomSheet by remember {
             mutableStateOf(false)
         }
@@ -119,7 +120,7 @@ fun CreateAppointmentUI(appointment: Appointment, client: Client?, serviceAndCur
             ) {
                 ThemeTextField(
                     errorMessage = if(title.isEmpty()) "Title field is required" else "",
-                    label = stringResource(id = com.ahsan.composable.R.string.title),
+                    label = stringResource(id = com.ahsan.composable.R.string.title)
                 ) {
                     title = it
                 }
@@ -140,7 +141,7 @@ fun CreateAppointmentUI(appointment: Appointment, client: Client?, serviceAndCur
                 ThemeTextField(label = stringResource(id = com.ahsan.composable.R.string.location)) {
                     location = it
                 }
-                ThemeTextField(label = stringResource(id = com.ahsan.composable.R.string.notes)) {
+                ThemeTextField(label = stringResource(id = com.ahsan.composable.R.string.notes), imeAction = ImeAction.Done) {
                     location = it
                 }
                 ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.create), modifier = Modifier.fillMaxWidth()) {
@@ -151,7 +152,6 @@ fun CreateAppointmentUI(appointment: Appointment, client: Client?, serviceAndCur
                             endDate = endDate,
                             location = location,
                             clientId = clientId,
-                            services = services
                         )
                     )
                 }
@@ -184,5 +184,5 @@ fun CreateAppointmentUI(appointment: Appointment, client: Client?, serviceAndCur
 @Composable
 @Preview
 fun CreatePreview(){
-    CreateAppointmentUI(Appointment(clientId = 1, title = "", startDate = null, endDate = Date(), location = "", services = listOf()), Client(1, "Test Client", "12345"), isShowDialog = Pair(false, false), clientAddClick = {}, servicesAddClick = {}, serviceAndCurrency = listOf(), onCreate = {}, onFail = {}){}
+    CreateAppointmentUI(Appointment(clientId = 1, title = "", startDate = null, endDate = Date(), location = ""), Client(1, "Test Client", "12345"), isShowDialog = Pair(false, false), clientAddClick = {}, servicesAddClick = {}, serviceAndCurrency = listOf(), onCreate = {}, onFail = {}){}
 }
