@@ -4,7 +4,11 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-fun Date.toFormattedTime(): String{
-    val simpleDateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
-    return simpleDateFormat.format(this)
+fun formatter(date: Date, format: String): String {
+    val simpleDateFormat = SimpleDateFormat(format, Locale.getDefault())
+    return simpleDateFormat.format(date)
+}
+
+fun Date.toEasyFormat(): String {
+    return formatter(this, "EEE, MMM dd hh:mm a")
 }

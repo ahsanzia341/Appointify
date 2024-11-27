@@ -6,7 +6,7 @@ import javax.inject.Inject
 class ScheduleBackupUseCase @Inject constructor(
     private val repository: SettingRepository,
 ) {
-    suspend operator fun invoke(){
+    operator fun invoke(){
         return repository.scheduleBackup()
     }
 }

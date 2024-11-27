@@ -2,6 +2,7 @@ package com.ahsan.data.repositories
 
 import com.ahsan.data.AuthUiState
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
@@ -55,6 +56,8 @@ class AuthRepository @Inject constructor() {
     }
 
     fun delete(){
+        val storageReference = FirebaseStorage.getInstance().reference
+        storageReference.child("DbBackups/${auth.currentUser?.email}/user_db.db").delete()
         auth.currentUser?.delete()
     }
 }

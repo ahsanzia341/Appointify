@@ -52,8 +52,8 @@ fun AppointmentDetailUI(appointmentAndClient: AppointmentAndClient, onUpdatePres
         })
     }, modifier = Modifier.padding(8.dp)) {
         Column(Modifier.padding(it), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            RowField("Start Date:", appointment.startDate.toFormattedTime())
-            RowField("End Date:", appointment.endDate.toFormattedTime())
+            RowField("Start Date:", appointment.startDate?.o() ?: "")
+            RowField("End Date:", appointment.endDate?.toFormattedTime() ?: "")
             RowField("Client name:", client.name)
             RowField("Client phone:", client.phoneNumber)
             ThemeText(text = appointment.notes)
@@ -61,6 +61,7 @@ fun AppointmentDetailUI(appointmentAndClient: AppointmentAndClient, onUpdatePres
             ThemeButton(text = "Cancel Appointment") {
                 appointment.status = AppointmentStatus.CANCELED
                 onCancelPress(appointment)
+                onBackPressed()
             }
             ThemeButton(text = "Update Appointment") {
                 onUpdatePress(appointment)

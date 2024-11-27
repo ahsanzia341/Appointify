@@ -21,7 +21,7 @@ class AppointmentRepository @Inject constructor(@ApplicationContext val context:
         }
         alarmManager.set(
             AlarmManager.RTC_WAKEUP,
-            appointment.startDate.time - 15 * 60 * 1000,
+            appointment.startDate?.time!! - 15 * 60 * 1000,
             alarmIntent
         )
         db.getAppointmentDao().insert(appointment)

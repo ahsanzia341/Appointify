@@ -15,7 +15,4 @@ fun NavGraphBuilder.serviceNavigation(navController: NavController) {
     composable(DestinationRoute.SERVICE_SELECT_ROUTE) {
         SelectServicesScreen(navController)
     }
-    composable(DestinationRoute.SERVICE_DETAIL_ROUTE){
-        ServiceDetailScreen(navController = navController)
-    }
 }

@@ -72,6 +72,7 @@ class SettingRepository @Inject constructor(@ApplicationContext private val cont
     fun cancelBackupSchedule(){
         WorkManager.getInstance(context).cancelAllWorkByTag("backup")
     }
+
 }
 
 class ExpeditedWorker @Inject constructor(appContext: Context, workerParams: WorkerParameters, private val appDatabase: AppDatabase):

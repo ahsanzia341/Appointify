@@ -23,10 +23,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.ahsan.composable.DisabledTextField
 import com.ahsan.composable.InfoDialog
 import com.ahsan.composable.ThemeButton
 import com.ahsan.composable.ThemeDatePicker
-import com.ahsan.composable.ThemeText
 import com.ahsan.composable.ThemeTextField
 import com.ahsan.composable.TopBar
 import com.ahsan.core.DestinationRoute
@@ -36,32 +36,41 @@ import com.ahsan.data.models.ServiceAndCurrency
 import java.util.Date
 
 @Composable
-fun CreateAppointmentScreen(navController: NavController) {
+fun CreateAppointmentScreen(navController: NavController, id: Int = 0) {
     val viewModel = hiltViewModel<AppointmentViewModel>()
     val viewState by viewModel.viewState.collectAsState()
     val clientId = navController.currentBackStackEntry?.savedStateHandle?.get<Int>(DestinationRoute.PassedKey.CLIENT_ID) ?: 0
     val serviceIds = navController.currentBackStackEntry?.savedStateHandle?.get<List<Int>>(DestinationRoute.PassedKey.SERVICE_IDS)
         ?: listOf()
+    LaunchedEffect(key1 = true) {
+        if(id != 0){
+            viewModel.onTriggerEvent(AppointmentEvent.FindById(id))
+        }
+    }
     LaunchedEffect(clientId) {
         viewModel.onTriggerEvent(AppointmentEvent.FindClientById(clientId))
     }
     LaunchedEffect(key1 = serviceIds) {
         viewModel.onTriggerEvent(AppointmentEvent.FindServicesById(serviceIds))
     }
+
     CreateAppointmentUI(Appointment(
         clientId = clientId,
         title = "",
-        startDate = Date(),
-        endDate = Date(),
+        startDate = null,
+        endDate = null,
         location = "",
         services = viewState?.services?.map { it.service } ?: listOf()
     ), viewState?.client,
+        isShowDialog = viewState?.isFormValidated ?: Pair(false, false),
         clientAddClick = {
             navController.navigate(DestinationRoute.SELECT_CLIENT_ROUTE)
         }, servicesAddClick = {
             navController.navigate(DestinationRoute.SERVICE_SELECT_ROUTE)
         }, serviceAndCurrency = viewState?.services ?: listOf(), onCreate = {
             viewModel.onTriggerEvent(AppointmentEvent.PostAppointment(it))
+        }, onFail = {
+            viewModel.onTriggerEvent(AppointmentEvent.OnFail)
         }) {
         navController.popBackStack()
     }
@@ -69,7 +78,9 @@ fun CreateAppointmentScreen(navController: NavController) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateAppointmentUI(appointment: Appointment, client: Client?, serviceAndCurrency: List<ServiceAndCurrency>, servicesAddClick: () -> Unit, clientAddClick: () -> Unit, onCreate: (Appointment) -> Unit, onBackPressed: () -> Unit) {
+fun CreateAppointmentUI(appointment: Appointment, client: Client?, serviceAndCurrency: List<ServiceAndCurrency>, isShowDialog: Pair<Boolean, Boolean>,
+                        servicesAddClick: () -> Unit, clientAddClick: () -> Unit, onCreate: (Appointment) -> Unit, onFail: () -> Unit,
+                        onBackPressed: () -> Unit) {
     Scaffold(modifier = Modifier.padding(8.dp),
         topBar = {
             TopBar(
@@ -93,10 +104,6 @@ fun CreateAppointmentUI(appointment: Appointment, client: Client?, serviceAndCur
         }
         val clientId = appointment.clientId
         val services = appointment.services
-
-        var showSuccessDialog by remember {
-            mutableStateOf(false)
-        }
         var showServicesBottomSheet by remember {
             mutableStateOf(false)
         }
@@ -110,37 +117,25 @@ fun CreateAppointmentUI(appointment: Appointment, client: Client?, serviceAndCur
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
-
-                if(client != null) {
-                    ThemeText(text = "Client:")
-                    ThemeText(text = client.name)
-                    ThemeText(text = client.phoneNumber)
-                }
-                else{
-                    ThemeButton(text = "Add a client (Required)") {
-                        clientAddClick()
-                    }
-                }
-
-                ThemeButton(text = "Add services (Required)") {
-                    servicesAddClick()
-                }
-                if(services.isNotEmpty()){
-                    ThemeButton(text = "${services.size} service(s) selected") {
-                        showServicesBottomSheet = true
-                    }
-                }
                 ThemeTextField(
                     errorMessage = if(title.isEmpty()) "Title field is required" else "",
                     label = stringResource(id = com.ahsan.composable.R.string.title),
                 ) {
                     title = it
                 }
-                ThemeDatePicker(label = stringResource(id = com.ahsan.composable.R.string.start_date), errorMessage = if(startDate.time == 0L) "Start date field is required" else "") {
+                ThemeDatePicker(label = stringResource(id = com.ahsan.composable.R.string.start_date), errorMessage = if(startDate == null) "Start date field is required" else "") {
                     startDate = it
                 }
                 ThemeDatePicker(label = stringResource(id = com.ahsan.composable.R.string.end_date)) {
                     endDate = it
+                }
+                DisabledTextField(stringResource(id = com.ahsan.composable.R.string.client), if(client == null) "Client field is required" else "", client?.name ?: "") {
+                    clientAddClick()
+                }
+                DisabledTextField(stringResource(id = com.ahsan.composable.R.string.services), if(services.isEmpty()) "At least one service is required" else "",
+                    "${services.size} services added"
+                ) {
+                    servicesAddClick()
                 }
                 ThemeTextField(label = stringResource(id = com.ahsan.composable.R.string.location)) {
                     location = it
@@ -148,7 +143,7 @@ fun CreateAppointmentUI(appointment: Appointment, client: Client?, serviceAndCur
                 ThemeTextField(label = stringResource(id = com.ahsan.composable.R.string.notes)) {
                     location = it
                 }
-                ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.create)) {
+                ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.create), modifier = Modifier.fillMaxWidth()) {
                     onCreate(
                         Appointment(
                             title = title,
@@ -159,14 +154,21 @@ fun CreateAppointmentUI(appointment: Appointment, client: Client?, serviceAndCur
                             services = services
                         )
                     )
-                    showSuccessDialog = true
                 }
-                if (showSuccessDialog) {
+                if (isShowDialog.first) {
                     InfoDialog(
                         title = stringResource(id = com.ahsan.composable.R.string.success),
                         text = stringResource(id = com.ahsan.composable.R.string.appointment_created)
                     ) {
                         onBackPressed()
+                    }
+                }
+                else if(isShowDialog.second){
+                    InfoDialog(
+                        title = stringResource(id = com.ahsan.composable.R.string.failure),
+                        text = stringResource(id = com.ahsan.composable.R.string.required_fields_missing)
+                    ) {
+                        onFail()
                     }
                 }
             }
@@ -182,5 +184,5 @@ fun CreateAppointmentUI(appointment: Appointment, client: Client?, serviceAndCur
 @Composable
 @Preview
 fun CreatePreview(){
-    CreateAppointmentUI(Appointment(clientId = 0, title = "", startDate = Date(), endDate = Date(), location = "", services = listOf()), null, clientAddClick = {}, servicesAddClick = {}, serviceAndCurrency = listOf(),  onCreate = {}){}
+    CreateAppointmentUI(Appointment(clientId = 1, title = "", startDate = null, endDate = Date(), location = "", services = listOf()), Client(1, "Test Client", "12345"), isShowDialog = Pair(false, false), clientAddClick = {}, servicesAddClick = {}, serviceAndCurrency = listOf(), onCreate = {}, onFail = {}){}
 }

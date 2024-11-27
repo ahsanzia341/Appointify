@@ -23,8 +23,9 @@ import androidx.navigation.NavController
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.TopBar
 import com.ahsan.core.DestinationRoute
-import com.ahsan.core.extension.toFormattedTime
+import com.ahsan.core.extension.toEasyFormat
 import com.ahsan.data.models.AppointmentAndClient
+import com.ahsan.data.models.AppointmentStatus
 
 @Composable
 fun AppointmentHistoryScreen(navController: NavController) {
@@ -39,10 +40,10 @@ fun AppointmentHistoryScreen(navController: NavController) {
 fun AppointmentHistoryUI(list: List<AppointmentAndClient>, onItemClick: (Int) -> Unit){
     Scaffold(topBar = {
         TopBar(title = stringResource(id = com.ahsan.composable.R.string.appointment_history), navIcon = null)
-    }, modifier = Modifier.padding(8.dp)) {
+    }, modifier = Modifier.padding(8.dp)) { padding ->
         Box(modifier = Modifier
             .fillMaxSize()
-            .padding(it)){
+            .padding(padding)){
             LazyColumn(Modifier.fillMaxSize()) {
                 items(list){
                     AppointmentRow(appointmentAndClient = it) {
@@ -57,6 +58,8 @@ fun AppointmentHistoryUI(list: List<AppointmentAndClient>, onItemClick: (Int) ->
 
 @Composable
 fun AppointmentRow(appointmentAndClient: AppointmentAndClient, onClick: () -> Unit) {
+    val appointment = appointmentAndClient.appointment
+    val status = if(appointment.status == AppointmentStatus.NOT_STARTED) AppointmentStatus.ENDED.name else appointment.status.name
     Card(modifier = Modifier.padding(8.dp)) {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier
             .padding(8.dp)
@@ -66,7 +69,8 @@ fun AppointmentRow(appointmentAndClient: AppointmentAndClient, onClick: () -> Un
             .fillMaxWidth()) {
             ThemeText(text = appointmentAndClient.appointment.title)
             ThemeText(text = appointmentAndClient.client.name)
-            ThemeText(text = appointmentAndClient.appointment.startDate.toFormattedTime())
+            ThemeText(text = appointmentAndClient.appointment.startDate?.toEasyFormat() ?: "")
+            ThemeText(text = status)
         }
     }
 

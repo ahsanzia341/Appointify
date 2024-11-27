@@ -9,7 +9,6 @@ import com.ahsan.appointment.appointmentNavigation
 import com.ahsan.appointmenthistory.appointmentHistoryNavigation
 import com.ahsan.authentication.authenticationNavigation
 import com.ahsan.client.clientNavigation
-import com.ahsan.core.DestinationRoute
 import com.ahsan.home.homeNavigation
 import com.ahsan.service.serviceNavigation
 import com.ahsan.setting.settingNavigation

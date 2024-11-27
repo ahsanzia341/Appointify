@@ -28,7 +28,8 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ThemeTextField(modifier: Modifier = Modifier, label: String = "", value: String = "", isReadOnly: Boolean = false,
-                   enabled: Boolean = true, errorMessage: String = "", keyboardType: KeyboardType = KeyboardType.Text, trailingIcon: Int = 0, onClick: () -> Unit = {}, onChanged: (text: String) -> Unit) {
+                   enabled: Boolean = true, errorMessage: String = "", keyboardType: KeyboardType = KeyboardType.Text,
+                   trailingIcon: Int = 0, onClick: () -> Unit = {}, onChanged: (text: String) -> Unit) {
     var text by remember {
         mutableStateOf(value)
     }
@@ -82,6 +83,13 @@ fun PasswordTextField(errorMessage: String = "", onChanged: (text: String) -> Un
 fun EmailTextField(errorMessage: String = "", onChanged: (text: String) -> Unit){
     ThemeTextField(label = stringResource(id = R.string.email), keyboardType = KeyboardType.Email, errorMessage = errorMessage) {
         onChanged(it)
+    }
+}
+
+@Composable
+fun DisabledTextField(label: String,  errorMessage: String = "", value: String, onClick: () -> Unit){
+    ThemeTextField(label = label, errorMessage = errorMessage, isReadOnly = true, value = value, onClick = onClick) {
+
     }
 }
 

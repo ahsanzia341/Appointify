@@ -27,7 +27,7 @@ import com.ahsan.composable.ThemeFloatingActionButton
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.TopBar
 import com.ahsan.core.DestinationRoute
-import com.ahsan.core.extension.toFormattedTime
+import com.ahsan.core.extension.toEasyFormat
 import com.ahsan.data.models.AppointmentAndClient
 
 @Composable
@@ -91,14 +91,7 @@ fun AppointmentRow(appointmentAndClient: AppointmentAndClient, onClick: () -> Un
             .fillMaxWidth()) {
             ThemeText(text = appointmentAndClient.appointment.title)
             ThemeText(text = appointmentAndClient.client.name)
-            ThemeText(text = appointmentAndClient.appointment.startDate.toFormattedTime())
+            ThemeText(text = appointmentAndClient.appointment.startDate?.toEasyFormat() ?: "")
         }
     }
-}
-
-@Composable
-@Preview
-fun Preview(){
-    //val data = AppointmentAndClient(Client(0, "test", ""), Appointment(0, "test", 0, 0, Date(), Date(), ""))
-    //HomeUI(listOf(data), onAddClicked = {}){}
 }

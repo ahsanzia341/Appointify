@@ -3,6 +3,7 @@ package com.ahsan.client
 import androidx.lifecycle.viewModelScope
 import com.ahsan.core.BaseViewModel
 import com.ahsan.data.models.Client
+import com.ahsan.domain.client.DeleteClientUseCase
 import com.ahsan.domain.client.GetClientsUseCase
 import com.ahsan.domain.client.PostClientUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,7 +13,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ClientViewModel @Inject constructor(
     private val postClientUseCase: PostClientUseCase,
-    private val getClientsUseCase: GetClientsUseCase): BaseViewModel<ViewState, ClientEvent>() {
+    private val getClientsUseCase: GetClientsUseCase,
+    private val deleteClientUseCase: DeleteClientUseCase): BaseViewModel<ViewState, ClientEvent>() {
 
     private var clients: List<Client> = listOf()
 
@@ -21,6 +23,7 @@ class ClientViewModel @Inject constructor(
             is ClientEvent.PostClient -> postClient(event.client)
             ClientEvent.GetClients -> getClients()
             is ClientEvent.FilterClients -> filterClients(event.name)
+            is ClientEvent.DeleteClient -> delete(event.client)
         }
     }
 
@@ -37,6 +40,12 @@ class ClientViewModel @Inject constructor(
         }
         else{
             updateState(ViewState(clients = clients.filter { it.name.lowercase().contains(name.lowercase()) }))
+        }
+    }
+
+    private fun delete(client: Client){
+        viewModelScope.launch {
+            deleteClientUseCase(client)
         }
     }
 

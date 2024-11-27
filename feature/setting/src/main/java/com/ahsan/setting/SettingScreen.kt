@@ -22,12 +22,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ahsan.composable.ConfirmationDialog
-import com.ahsan.composable.ThemeButton
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.TopBar
 import com.ahsan.core.Constant
 import com.ahsan.core.DestinationRoute
-import com.ahsan.core.extension.toFormattedTime
+import com.ahsan.core.extension.toEasyFormat
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.util.Date
@@ -48,6 +47,10 @@ fun SettingScreen(navController: NavController) {
         navController.navigate(DestinationRoute.WEB_VIEW_ROUTE.replace("{${DestinationRoute.PassedKey.URL}}", it))
     }, onAutoBackupSwitched = {
         if(it) viewModel.onTriggerEvent(SettingEvent.ScheduleBackup) else viewModel.onTriggerEvent(SettingEvent.CancelScheduleBackup)
+    }, syncWithServer = {
+        viewModel.onTriggerEvent(SettingEvent.LoadBackup)
+    }, onDeletePress = {
+        viewModel.onTriggerEvent(SettingEvent.DeleteAccount)
     }){
         navController.navigate(DestinationRoute.LOGIN_ROUTE)
     }
@@ -55,7 +58,8 @@ fun SettingScreen(navController: NavController) {
 
 @Composable
 fun SettingUI(isLoading: Boolean, email: String?, lastBackup: Date?, onBackupPress:() -> Unit, onLogoutPress:() -> Unit,
-              onPrivacyPolicyPressed: (String) -> Unit, onAutoBackupSwitched: (Boolean) -> Unit, onLoginPress: () -> Unit) {
+              onDeletePress: () -> Unit, onPrivacyPolicyPressed: (String) -> Unit, onAutoBackupSwitched: (Boolean) -> Unit,
+              syncWithServer: () -> Unit, onLoginPress: () -> Unit) {
     val context = LocalContext.current
     val sharedPref = context.getSharedPreferences(Constant.SHARED_PREF_KEY, Context.MODE_PRIVATE)
     var showConfirmation by remember {
@@ -77,65 +81,77 @@ fun SettingUI(isLoading: Boolean, email: String?, lastBackup: Date?, onBackupPre
                 CircularProgressIndicator()
             } else {
                 if (email == null) {
-                    ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.login)) {
+                    SettingRowUI(
+                        text = stringResource(id = com.ahsan.composable.R.string.login),
+                        true
+                    ) {
                         onLoginPress()
                     }
                 } else {
                     ThemeText(text = email)
-                    ThemeText(text = "Last backup: ${lastBackup?.toFormattedTime()}")
-                    ThemeButton(text = "Backup data") {
+                    ThemeText(text = "Last backup: ${lastBackup?.toEasyFormat()}")
+                    SettingRowUI(text = "Backup data") {
                         onBackupPress()
                     }
-                    ThemeText(text = "Turn on automatic daily backup.")
+                    ThemeText(text = "Automatic daily backup.")
                     Switch(checked = backupState, onCheckedChange = {
                         backupState = it
                         sharedPref.edit().putBoolean(Constant.IS_AUTO_BACKUP, it).apply()
                         onAutoBackupSwitched(backupState)
                     })
+                    SettingRowUI(text = "Synchronize with server") {
+                        syncWithServer()
+                    }
                 }
 
-                ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.privacy_policy)) {
+                SettingRowUI(
+                    text = stringResource(id = com.ahsan.composable.R.string.privacy_policy),
+                    true
+                ) {
                     val encodedUrl = URLEncoder.encode(
                         "https://www.termsfeed.com/live/2b1724ab-a3a7-4bfa-b4aa-0573ee4abcf3",
                         StandardCharsets.UTF_8.toString()
                     )
                     onPrivacyPolicyPressed(encodedUrl)
                 }
-                ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.feedback)) {
+                SettingRowUI(
+                    text = stringResource(id = com.ahsan.composable.R.string.feedback),
+                    true
+                ) {
                     if (email == null) {
                         onLoginPress()
                     }
                 }
 
                 if (email != null) {
-                    ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.delete_account)) {
+                    SettingRowUI(text = stringResource(id = com.ahsan.composable.R.string.delete_account)) {
                         showDeleteAccountConfirmation = true
                     }
-                    ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.logout)) {
+                    SettingRowUI(text = stringResource(id = com.ahsan.composable.R.string.logout)) {
                         showConfirmation = true
                     }
 
                 }
                 if (showConfirmation) {
                     ConfirmationDialog(
-                        title = "Confirmation",
-                        text = "Your cloud backup will stop if you choose to logout. Would you like to continue?",
+                        title = stringResource(id = com.ahsan.composable.R.string.confirmation),
+                        text = "Your cloud backup will stop if you choose to logout but your data will persist.",
                         {
-                            onLogoutPress()
                             showConfirmation = false
                         }, {
+                            onLogoutPress()
                             showConfirmation = false
                         })
                 }
-                if(showDeleteAccountConfirmation){
+                if (showDeleteAccountConfirmation) {
                     ConfirmationDialog(
                         title = stringResource(id = com.ahsan.composable.R.string.delete_account),
-                        text = "All account data will be erased. Are you sure you would like to delete your account?",
+                        text = "Deleting account will erase all your account data from the server but it will still persist on your local storage. Are you sure you would like to delete your account?",
                         {
-                            onLogoutPress()
-                            showConfirmation = false
+                            showDeleteAccountConfirmation = false
                         }, {
-                            showConfirmation = false
+                            onDeletePress()
+                            showDeleteAccountConfirmation = false
                         })
                 }
             }
@@ -146,7 +162,7 @@ fun SettingUI(isLoading: Boolean, email: String?, lastBackup: Date?, onBackupPre
 @Composable
 @Preview
 fun SettingPreview(){
-    SettingUI(false, "null", Date(), {}, {}, {}, {}){
+    SettingUI(false, "null", Date(), {}, {}, {}, {}, {}, {}){
 
     }
 }

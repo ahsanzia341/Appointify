@@ -9,6 +9,14 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        create("release") {
+            storeFile = file("/Users/ahsanzia/Documents/appointify/store_keystore")
+            storePassword = "TestPassword1@"
+            keyAlias = "ahsan"
+            keyPassword = "TestPassword1@"
+        }
+    }
     namespace = "com.ahsan.smartappointment"
     compileSdk = 35
 
@@ -16,7 +24,7 @@ android {
         applicationId = "com.ahsan.smartappointment"
         minSdk = 24
         targetSdk = 35
-        versionCode = 3
+        versionCode = 6
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -32,6 +40,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = getByName("release").signingConfig
         }
     }
     compileOptions {

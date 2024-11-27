@@ -30,6 +30,7 @@ class AppointmentViewModel @Inject constructor(
             is AppointmentEvent.FindClientById -> findClientById(event.id)
             is AppointmentEvent.FindServicesById -> findServicesById(event.list)
             is AppointmentEvent.ValidateForm -> validateForm(event.appointment)
+            AppointmentEvent.OnFail -> updateState(ViewState(services = selectedServices, client = selectedClient))
         }
     }
     private var selectedClient: Client? = null
@@ -43,11 +44,14 @@ class AppointmentViewModel @Inject constructor(
     }
 
     private fun validateForm(appointment: Appointment): Boolean {
-        return appointment.title.isNotEmpty() && appointment.startDate.time > 0 && appointment.clientId > 0 && appointment.services.isNotEmpty()
+        val isValidated = appointment.title.isNotEmpty() && (appointment.startDate?.time
+            ?: 0L) > 0 && appointment.clientId > 0 && appointment.services.isNotEmpty()
+        updateState(ViewState(isFormValidated = Pair(isValidated, !isValidated)))
+        return isValidated
     }
 
     private fun updateAppointment(appointment: Appointment){
-        if(appointment.title.isNotEmpty() && appointment.startDate.time > 0 && appointment.clientId > 0){
+        if(validateForm(appointment)){
             viewModelScope.launch {
                 updateAppointmentUseCase(appointment)
             }
