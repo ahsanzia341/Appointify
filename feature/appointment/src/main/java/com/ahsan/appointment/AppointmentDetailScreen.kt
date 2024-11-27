@@ -20,7 +20,7 @@ import com.ahsan.composable.ThemeHeaderText
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.TopBar
 import com.ahsan.core.DestinationRoute
-import com.ahsan.core.extension.toFormattedTime
+import com.ahsan.core.extension.toEasyFormat
 import com.ahsan.data.models.Appointment
 import com.ahsan.data.models.AppointmentAndClient
 import com.ahsan.data.models.AppointmentStatus
@@ -52,8 +52,8 @@ fun AppointmentDetailUI(appointmentAndClient: AppointmentAndClient, onUpdatePres
         })
     }, modifier = Modifier.padding(8.dp)) {
         Column(Modifier.padding(it), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            RowField("Start Date:", appointment.startDate?.o() ?: "")
-            RowField("End Date:", appointment.endDate?.toFormattedTime() ?: "")
+            RowField("Start Date:", appointment.startDate?.toEasyFormat() ?: "")
+            RowField("End Date:", appointment.endDate?.toEasyFormat() ?: "")
             RowField("Client name:", client.name)
             RowField("Client phone:", client.phoneNumber)
             ThemeText(text = appointment.notes)
