@@ -34,7 +34,7 @@ fun AppointmentDetailScreen(navController: NavController, id: Int) {
         viewModel.onTriggerEvent(AppointmentEvent.FindById(id))
     }
     AppointmentDetailUI(viewState?.appointment ?: AppointmentAndClient(Appointment(), Client(name = "", phoneNumber = ""), listOf()), onCancelPress = {
-        viewModel.onTriggerEvent(AppointmentEvent.UpdateAppointment(it))
+        viewModel.onTriggerEvent(AppointmentEvent.UpdateAppointment(it, listOf()))
     }, onUpdatePress = {
         navController.navigate(DestinationRoute.UPDATE_APPOINTMENT_ROUTE.replace("{${DestinationRoute.PassedKey.ID}}", it.appointmentId.toString()))
     }){

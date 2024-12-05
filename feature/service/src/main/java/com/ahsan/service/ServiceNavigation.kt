@@ -10,9 +10,6 @@ fun NavGraphBuilder.serviceNavigation(navController: NavController) {
         ServiceListScreen(navController)
     }
     composable(DestinationRoute.SERVICE_CREATE_ROUTE) {
-        ServiceCreateScreen(navController)
-    }
-    composable(DestinationRoute.SERVICE_SELECT_ROUTE) {
-        SelectServicesScreen(navController)
+        ServiceCreateScreen(navController, it.arguments?.getString(DestinationRoute.PassedKey.ID)?.toIntOrNull() ?: 0)
     }
 }

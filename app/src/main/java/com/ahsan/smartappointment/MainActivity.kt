@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.ahsan.core.BillingObject
 import com.ahsan.core.Constant
 import com.ahsan.core.DestinationRoute
 import com.ahsan.smartappointment.ui.theme.SmartAppointmentTheme
@@ -27,6 +28,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            BillingObject.setupBilling(this)
             val navController = rememberNavController()
             val currentBackStackEntryAsState by navController.currentBackStackEntryAsState()
             val currentDestination = currentBackStackEntryAsState?.destination

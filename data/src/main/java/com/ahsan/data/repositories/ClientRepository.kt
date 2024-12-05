@@ -6,7 +6,16 @@ import javax.inject.Inject
 
 class ClientRepository @Inject constructor(private val db: AppDatabase) {
     suspend fun insert(client: Client) {
-        db.getClientDao().insert(client)
+        if(client.id != 0){
+            db.getClientDao().update(client)
+        }
+        else{
+            db.getClientDao().insert(client)
+        }
+    }
+
+    suspend fun getClientCount(): Int{
+        return db.getClientDao().getClientCount()
     }
 
     suspend fun getAll(): List<Client> {

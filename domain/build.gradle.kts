@@ -36,6 +36,7 @@ android {
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.bundles.hilt)
+    implementation(libs.billing)
     implementation(project(mapOf("path" to ":data")))
     kapt(libs.hilt.compiler)
     testImplementation(libs.junit)

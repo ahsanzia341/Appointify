@@ -5,9 +5,12 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.createGraph
+import com.ahsan.accountsettings.accountSettingsNavigation
 import com.ahsan.appointment.appointmentNavigation
 import com.ahsan.appointmenthistory.appointmentHistoryNavigation
 import com.ahsan.authentication.authenticationNavigation
+import com.ahsan.business.createBusinessNavigation
+import com.ahsan.changepassword.changePasswordNavigation
 import com.ahsan.client.clientNavigation
 import com.ahsan.currency.currencyNavigation
 import com.ahsan.home.homeNavigation
@@ -26,12 +29,15 @@ fun AppNavHost(
 ) {
     val navGraph = remember(navController){
         navController.createGraph(startDestination = startDestination) {
-            homeNavigation(navController)
+            accountSettingsNavigation(navController)
+            authenticationNavigation(navController)
             appointmentNavigation(navController)
+            appointmentHistoryNavigation(navController)
+            createBusinessNavigation(navController)
+            changePasswordNavigation(navController)
+            homeNavigation(navController)
             currencyNavigation(navController)
             clientNavigation(navController)
-            appointmentHistoryNavigation(navController)
-            authenticationNavigation(navController)
             settingNavigation(navController)
             serviceNavigation(navController)
             webViewNavigation(navController)

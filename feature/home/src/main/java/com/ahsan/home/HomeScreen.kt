@@ -15,12 +15,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.ahsan.composable.ConfirmationDialog
 import com.ahsan.composable.R
 import com.ahsan.composable.ThemeFloatingActionButton
 import com.ahsan.composable.ThemeText
@@ -34,19 +38,54 @@ fun HomeScreen(navController: NavController) {
     val viewModel: HomeViewModel = hiltViewModel()
     val viewState by viewModel.viewState.collectAsState()
     LaunchedEffect(key1 = true) {
-        viewModel.onTriggerEvent(HomeEvent.GetAppointments)
+        viewModel.onTriggerEvent(HomeEvent.GetUpcomingAppointments)
+    }
+    var showServiceDialog by remember {
+        mutableStateOf(false)
+    }
+    var showClientDialog by remember {
+        mutableStateOf(false)
     }
     HomeUI(viewState?.appointments ?: listOf(), onAddClicked = {
-        navController.navigate(DestinationRoute.CREATE_APPOINTMENT_ROUTE)
-    }){
-        navController.navigate(DestinationRoute.APPOINTMENT_DETAIL_ROUTE.replace("{${DestinationRoute.PassedKey.ID}}", it.toString()))
+        if (viewState?.clientCount == 0) {
+            showClientDialog = true
+        } else if (viewState?.serviceCount == 0) {
+            showServiceDialog = true
+        } else {
+            navController.navigate(DestinationRoute.CREATE_APPOINTMENT_ROUTE)
+        }
+    }) {
+        navController.navigate(
+            DestinationRoute.APPOINTMENT_DETAIL_ROUTE.replace(
+                "{${DestinationRoute.PassedKey.ID}}",
+                it.toString()
+            )
+        )
+    }
+    if(showClientDialog){
+        ConfirmationDialog(
+            title = "No clients exist",
+            text = "Please add at least one client to schedule an appointment",
+            onDismissRequest = { showClientDialog = false }) {
+            navController.navigate(DestinationRoute.CREATE_CLIENT_ROUTE)
+            showClientDialog = false
+        }
+    }
+    if(showServiceDialog){
+        ConfirmationDialog(
+            title = "No services exist",
+            text = "Please add at least one service to schedule an appointment",
+            onDismissRequest = { showServiceDialog = false }) {
+            navController.navigate(DestinationRoute.SERVICE_CREATE_ROUTE)
+            showServiceDialog = false
+        }
     }
 }
 
 @Composable
 fun HomeUI(list: List<AppointmentAndClient>, onAddClicked: () -> Unit, onItemClick: (Int) -> Unit) {
     Scaffold(topBar = {
-        TopBar(title = "Upcoming appointments", navIcon = null)
+        TopBar(title = stringResource(id = R.string.upcoming_appointments), navIcon = null)
     }, modifier = Modifier.padding(8.dp), bottomBar = {
         Column(Modifier.fillMaxWidth()) {
             ThemeFloatingActionButton(

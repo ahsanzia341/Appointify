@@ -10,9 +10,6 @@ fun NavGraphBuilder.clientNavigation(navController: NavController) {
         ClientListScreen(navController)
     }
     composable(route = DestinationRoute.CREATE_CLIENT_ROUTE) {
-        CreateClientScreen(navController)
-    }
-    composable(route = DestinationRoute.SELECT_CLIENT_ROUTE) {
-        ClientSelectScreen(navController)
+        CreateClientScreen(navController, it.arguments?.getString(DestinationRoute.PassedKey.ID)?.toIntOrNull() ?: 0)
     }
 }

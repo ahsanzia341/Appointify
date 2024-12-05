@@ -42,7 +42,7 @@ class AppointmentRepository @Inject constructor(@ApplicationContext val context:
     }
 
     suspend fun getAll(): List<AppointmentAndClient> {
-        return db.getAppointmentDao().getAll(Date().time)
+        return db.getAppointmentDao().getAllUpcoming(Date().time)
     }
 
     suspend fun update(appointment: Appointment) {

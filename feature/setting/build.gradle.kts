@@ -39,6 +39,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.core.ktx)
+    implementation(libs.billing)
     implementation(project(mapOf("path" to ":common:composable")))
     implementation(project(mapOf("path" to ":data")))
     implementation(project(mapOf("path" to ":domain")))

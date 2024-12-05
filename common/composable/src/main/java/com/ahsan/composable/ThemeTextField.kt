@@ -74,8 +74,8 @@ fun ThemeTextField(modifier: Modifier = Modifier, label: String = "", value: Str
 }
 
 @Composable
-fun PasswordTextField(errorMessage: String = "", onChanged: (text: String) -> Unit){
-    ThemeTextField(label = stringResource(id = R.string.password), keyboardType = KeyboardType.Password, errorMessage = errorMessage) {
+fun PasswordTextField(errorMessage: String = "", label: String = "", onChanged: (text: String) -> Unit){
+    ThemeTextField(label = if(label.isEmpty()) stringResource(id = R.string.password) else label, keyboardType = KeyboardType.Password, errorMessage = errorMessage) {
         onChanged(it)
     }
 }
@@ -89,7 +89,7 @@ fun EmailTextField(errorMessage: String = "", onChanged: (text: String) -> Unit)
 
 @Composable
 fun DisabledTextField(label: String,  errorMessage: String = "", value: String, onClick: () -> Unit){
-    ThemeTextField(label = label, errorMessage = errorMessage, isReadOnly = true, value = value, onClick = onClick) {
+    ThemeTextField(label = label, errorMessage = errorMessage, isReadOnly = true, value = value, trailingIcon = R.drawable.chevron_down, onClick = onClick) {
 
     }
 }
@@ -97,7 +97,7 @@ fun DisabledTextField(label: String,  errorMessage: String = "", value: String, 
 @Preview
 @Composable
 fun TextFieldPreview(){
-    ThemeTextField {
+    DisabledTextField("", value = "") {
 
     }
 }

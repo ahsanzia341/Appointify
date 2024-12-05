@@ -1,15 +1,19 @@
 package com.ahsan.setting
 
+import android.app.Activity
 import androidx.lifecycle.viewModelScope
 import com.ahsan.core.BaseViewModel
 import com.ahsan.domain.authentication.DeleteUseCase
 import com.ahsan.domain.authentication.LoggedInUseCase
 import com.ahsan.domain.authentication.LogoutUseCase
+import com.ahsan.domain.billing.LaunchBillingUseCase
+import com.ahsan.domain.billing.QueryBillingProductsUseCase
 import com.ahsan.domain.setting.CancelScheduleBackupUseCase
 import com.ahsan.domain.setting.LastBackupDateUseCase
 import com.ahsan.domain.setting.LoadBackupUseCase
 import com.ahsan.domain.setting.PostBackupUseCase
 import com.ahsan.domain.setting.ScheduleBackupUseCase
+import com.android.billingclient.api.ProductDetails
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.util.Date
@@ -20,7 +24,8 @@ class SettingViewModel @Inject constructor(private val backupUseCase: PostBackup
     private val logoutUseCase: LogoutUseCase, private val lastBackupDateUseCase: LastBackupDateUseCase,
     private val isLoggedInUseCase: LoggedInUseCase, private val scheduleBackupUseCase: ScheduleBackupUseCase,
     private val cancelScheduleBackupUseCase: CancelScheduleBackupUseCase, private val loadBackupUseCase: LoadBackupUseCase,
-    private val deleteUseCase: DeleteUseCase): BaseViewModel<ViewState, SettingEvent>() {
+    private val deleteUseCase: DeleteUseCase, private val billingUseCase: QueryBillingProductsUseCase,
+    private val launchBillingUseCase: LaunchBillingUseCase): BaseViewModel<ViewState, SettingEvent>() {
     override fun onTriggerEvent(event: SettingEvent) {
         when (event) {
             SettingEvent.BackupData -> backupData()
@@ -30,22 +35,29 @@ class SettingViewModel @Inject constructor(private val backupUseCase: PostBackup
             SettingEvent.ScheduleBackup -> scheduleBackup()
             SettingEvent.LoadBackup -> loadBackup()
             SettingEvent.DeleteAccount -> deleteAccount()
+            is SettingEvent.LaunchBillingFlow -> launchBilling(event.activity, event.productDetails)
         }
     }
 
     private fun backupData() {
         viewModelScope.launch {
-            updateState(ViewState(isLoading = true))
+            updateState(ViewState(settings = settings, isLoading = true))
             backupUseCase()
             getLastBackupDate()
         }
     }
 
+    private fun launchBilling(activity: Activity, productDetails: ProductDetails){
+        viewModelScope.launch {
+            launchBillingUseCase(activity, productDetails)
+        }
+    }
+
     private fun loadBackup(){
         viewModelScope.launch {
-            updateState(ViewState(isLoading = true))
+            updateState(ViewState(settings = settings, isLoading = true))
             loadBackupUseCase()
-            updateState(ViewState(isLoading = true, lastBackupDate = Date(lastBackupDateUseCase()!!)))
+            updateState(ViewState(settings = settings, isLoading = true, lastBackupDate = Date(lastBackupDateUseCase()!!)))
         }
     }
 
@@ -53,6 +65,7 @@ class SettingViewModel @Inject constructor(private val backupUseCase: PostBackup
         viewModelScope.launch {
             updateState(
                 ViewState(
+                    settings,
                     email = isLoggedInUseCase(),
                     lastBackupDate = Date(lastBackupDateUseCase()!!),
                     isLoading = false
@@ -63,7 +76,7 @@ class SettingViewModel @Inject constructor(private val backupUseCase: PostBackup
 
     private fun logout() {
         logoutUseCase()
-        updateState(ViewState(email = null, lastBackupDate = null, isLoading = false))
+        updateState(ViewState(settings, email = null, lastBackupDate = null, isLoading = false))
     }
 
     private fun scheduleBackup(){
@@ -80,7 +93,7 @@ class SettingViewModel @Inject constructor(private val backupUseCase: PostBackup
 
     private fun deleteAccount(){
         deleteUseCase()
-        updateState(ViewState(email = null, lastBackupDate = null, isLoading = false))
+        updateState(ViewState(settings, email = null, lastBackupDate = null, isLoading = false))
     }
 
     private fun isLoggedIn() {
@@ -89,9 +102,11 @@ class SettingViewModel @Inject constructor(private val backupUseCase: PostBackup
                 if (lastBackupDateUseCase() == null) null else Date(lastBackupDateUseCase()!!)
             updateState(
                 ViewState(
+                    settings,
                     email = isLoggedInUseCase(),
                     lastBackupDate = lastBackupDate,
-                    isLoading = false
+                    isLoading = false,
+                    billingProducts = billingUseCase()
                 )
             )
         }

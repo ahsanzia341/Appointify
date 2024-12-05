@@ -24,8 +24,8 @@ android {
         applicationId = "com.ahsan.smartappointment"
         minSdk = 24
         targetSdk = 35
-        versionCode = 8
-        versionName = "1.0"
+        versionCode = 10
+        versionName = "0.10"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -40,7 +40,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            signingConfig = getByName("release").signingConfig
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -70,11 +70,14 @@ dependencies {
     implementation(libs.bundles.compose)
     implementation(libs.bundles.hilt)
     implementation(libs.firebase.crashlytics)
-    //implementation(libs.splash.screen)
     kapt(libs.hilt.compiler)
     implementation(project(mapOf("path" to ":core")))
     implementation(project(mapOf("path" to ":common:composable")))
+    implementation(project(mapOf("path" to ":common:theme")))
+    implementation(project(mapOf("path" to ":feature:accountsettings")))
     implementation(project(mapOf("path" to ":feature:authentication")))
+    implementation(project(mapOf("path" to ":feature:business")))
+    implementation(project(mapOf("path" to ":feature:changepassword")))
     implementation(project(mapOf("path" to ":feature:home")))
     implementation(project(mapOf("path" to ":feature:appointment")))
     implementation(project(mapOf("path" to ":feature:appointmenthistory")))

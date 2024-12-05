@@ -2,9 +2,12 @@ package com.ahsan.authentication
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -81,20 +84,29 @@ fun LoginUI(error: String, emailValidationError: String, passwordValidationError
             PasswordTextField(passwordValidationError) {
                 password = it
             }
-            ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.forgot_password)){
-                onForgotPasswordClick()
+            TextButton(
+                onClick = { onForgotPasswordClick() },
+                modifier = Modifier.align(Alignment.Start)
+            ) {
+                Text(text = stringResource(id = com.ahsan.composable.R.string.forgot_password))
             }
-            ThemeButton(enabled = !isLoading, text = stringResource(id = com.ahsan.composable.R.string.login)) {
+            ThemeButton(
+                enabled = !isLoading,
+                text = stringResource(id = com.ahsan.composable.R.string.login)
+            ) {
                 onLoginPress(email, password)
             }
 
-            if(error.isNotEmpty())
+            if (error.isNotEmpty())
                 ThemeText(text = error, color = Color.Red)
 
-            ThemeText(text = "Don't have an account?")
-            ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.register)) {
-                onRegisterClick()
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                ThemeText(text = "Don't have an account?")
+                TextButton(onClick = { onRegisterClick() }) {
+                    Text(text = stringResource(id = com.ahsan.composable.R.string.register))
+                }
             }
+
         }
     }
 }

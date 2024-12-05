@@ -6,12 +6,15 @@
     <string name="search">Search</string>
     <string name="ok">OK</string>
     <string name="forgot_password">Forgot Password</string>
+    <string name="upcoming_appointments">Upcoming Appointments</string>
     <string name="no_appointments">You have no upcoming appointments.</string>
+    <string name="no_history_appointments">You have no history appointments.</string>
     <string name="no_clients">No clients found</string>
     <string name="no_services">No services found</string>
     <string name="create_appointment">Create Appointment</string>
     <string name="create_client">Create Client</string>
     <string name="create_service">Create Service</string>
+    <string name="account_settings">Account settings</string>
     <string name="currency">Currency</string>
     <string name="register">Register</string>
     <string name="login">Login</string>
@@ -50,10 +53,16 @@
     <string name="feedback">Feedback</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="delete_account">Delete Account</string>
+    <string name="subscription">Subscription</string>
     <string name="logout">Logout</string>
     <string name="success">Success</string>
     <string name="failure">Failure</string>
     <string name="field_required">%s field is required</string>
     <string name="required_fields_missing">Required fields are missing</string>
     <string name="password_error">Password must be at least of length 5</string>
+    <string name="edit_account_details">Edit account details</string>
+    <string name="change_password">Change password</string>
+    <string name="backup_data">"Backup data"</string>
+    <string name="automatic_daily_backup">Automatic daily backup</string>
+    <string name="synchronize_server">Synchronize with server</string>
 </resources>

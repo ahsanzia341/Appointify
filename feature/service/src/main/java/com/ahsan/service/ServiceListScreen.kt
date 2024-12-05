@@ -9,10 +9,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -35,6 +38,7 @@ import com.ahsan.composable.ThemeText
 import com.ahsan.composable.ThemeTextField
 import com.ahsan.composable.TopBar
 import com.ahsan.core.DestinationRoute
+import com.ahsan.core.DestinationRoute.PassedKey
 import com.ahsan.data.models.Currency
 import com.ahsan.data.models.Service
 import com.ahsan.data.models.ServiceAndCurrency
@@ -47,18 +51,18 @@ fun ServiceListScreen(navController: NavController) {
         viewModel.onTriggerEvent(ServiceEvent.GetServices)
     }
     ServiceListUI(viewState?.services ?: listOf(), onServiceClick = {
-        navController.navigate(DestinationRoute.SERVICE_CREATE_ROUTE)
+        navController.navigate(DestinationRoute.SERVICE_CREATE_ROUTE.replace("{${PassedKey.ID}}", it))
     }, onAddClick = {
         navController.navigate(DestinationRoute.SERVICE_CREATE_ROUTE)
     }, onDeleteClicked = {
-
+        viewModel.onTriggerEvent(ServiceEvent.Delete(it.service))
     }, onFilterTextChanged = {
 
     })
 }
 
 @Composable
-fun ServiceListUI(list: List<ServiceAndCurrency>, onDeleteClicked: (ServiceAndCurrency) -> Unit, onFilterTextChanged: (String) -> Unit, onServiceClick: (ServiceAndCurrency) -> Unit, onAddClick: () -> Unit) {
+fun ServiceListUI(list: List<ServiceAndCurrency>, onDeleteClicked: (ServiceAndCurrency) -> Unit, onFilterTextChanged: (String) -> Unit, onServiceClick: (String) -> Unit, onAddClick: () -> Unit) {
     Scaffold(topBar = {
         TopBar(title = stringResource(id = R.string.services), navIcon = null)
     }, bottomBar = {
@@ -93,7 +97,7 @@ fun ServiceListUI(list: List<ServiceAndCurrency>, onDeleteClicked: (ServiceAndCu
                         ServiceItem(service = it, onDeleteClicked = {
                             isShowDeleteDialog = Pair(true, it)
                         }) {
-                            onServiceClick(it)
+                            onServiceClick(it.service.serviceId.toString())
                         }
                     }
                 }
@@ -110,6 +114,8 @@ fun ServiceListUI(list: List<ServiceAndCurrency>, onDeleteClicked: (ServiceAndCu
                     onDismissRequest = { isShowDeleteDialog = Pair(true, null) }) {
                     if(isShowDeleteDialog.second != null)
                         onDeleteClicked(isShowDeleteDialog.second!!)
+
+                    isShowDeleteDialog = Pair(false, null)
                 }
             }
         }
@@ -119,7 +125,9 @@ fun ServiceListUI(list: List<ServiceAndCurrency>, onDeleteClicked: (ServiceAndCu
 
 @Composable
 fun ServiceItem(service: ServiceAndCurrency, onDeleteClicked: () -> Unit, onServiceClick: () -> Unit){
-    Card(modifier = Modifier.padding(8.dp)) {
+    Card(modifier = Modifier.padding(8.dp),
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
+    ) {
         Box(
             Modifier
                 .fillMaxWidth()

@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor() {
@@ -41,6 +42,10 @@ class AuthRepository @Inject constructor() {
                 uiState.value = AuthUiState.Failure(it.message.toString())
             }
         return uiState
+    }
+
+    suspend fun changePassword(newPassword: String){
+        auth.currentUser?.updatePassword(newPassword)?.await()
     }
 
     fun isLoggedIn(): String? {

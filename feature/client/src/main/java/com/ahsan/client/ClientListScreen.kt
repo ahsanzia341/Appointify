@@ -35,6 +35,7 @@ import com.ahsan.composable.ThemeText
 import com.ahsan.composable.ThemeTextField
 import com.ahsan.composable.TopBar
 import com.ahsan.core.DestinationRoute
+import com.ahsan.core.DestinationRoute.PassedKey
 import com.ahsan.data.models.Client
 
 @Composable
@@ -47,7 +48,7 @@ fun ClientListScreen(navController: NavController) {
     ClientListUI(viewState?.clients ?: listOf(), onFilterTextChanged = {
         viewModel.onTriggerEvent(ClientEvent.FilterClients(it))
     }, onItemClicked = {
-        navController.navigate(DestinationRoute.CREATE_CLIENT_ROUTE)
+        navController.navigate(DestinationRoute.CREATE_CLIENT_ROUTE.replace("{${PassedKey.ID}}", it.id.toString()))
     }, onDeleteClicked = {
         viewModel.onTriggerEvent(ClientEvent.DeleteClient(it))
     }){
@@ -65,7 +66,7 @@ fun ClientListUI(list: List<Client>, onFilterTextChanged: (String) -> Unit, onIt
             ThemeFloatingActionButton(
                 modifier = Modifier
                     .align(Alignment.End)
-                    .padding(16.dp)
+                    .padding(8.dp)
             ) {
                 onAddClicked()
             }
@@ -122,15 +123,14 @@ fun ClientListUI(list: List<Client>, onFilterTextChanged: (String) -> Unit, onIt
 fun ClientRow(client: Client, onDeleteClicked: () -> Unit, onItemClicked: () -> Unit){
     Card(modifier = Modifier
         .padding(8.dp)
-        .fillMaxWidth()) {
+        .fillMaxWidth().clickable {
+            onItemClicked()
+        }) {
         Box(
             Modifier
                 .fillMaxWidth()
                 .padding(8.dp)){
             Column(modifier = Modifier
-                .clickable {
-                    onItemClicked()
-                }
                 .padding(8.dp)) {
                 ThemeText(text = client.name)
                 ThemeText(text = client.phoneNumber)

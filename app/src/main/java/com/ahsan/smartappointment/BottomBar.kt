@@ -10,16 +10,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ahsan.composable.ThemeText
 import com.ahsan.core.DestinationRoute
+import com.ahsan.theme.PrimaryColor
 
 @Composable
 fun BottomBar(navController: NavController, currentDestination: String) {
-    BottomAppBar({
+    BottomAppBar(containerColor = PrimaryColor, contentColor = Color.White){
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly
@@ -33,7 +35,7 @@ fun BottomBar(navController: NavController, currentDestination: String) {
                 }
             }
         }
-    })
+    }
 }
 
 @Preview

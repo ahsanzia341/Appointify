@@ -17,7 +17,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ThemeButton(modifier: Modifier = Modifier, text: String, enabled: Boolean = true, onClick: () -> Unit) {
     Button(modifier = modifier
-        .padding(start = 16.dp, end = 16.dp),
+        .padding(start = 16.dp, end = 16.dp)
+        .fillMaxWidth(),
         shape = RoundedCornerShape(6.dp), onClick = {
         onClick()
     }, enabled = enabled){

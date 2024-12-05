@@ -12,13 +12,17 @@
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/common" />
             <option value="$PROJECT_DIR$/common/composable" />
+            <option value="$PROJECT_DIR$/common/theme" />
             <option value="$PROJECT_DIR$/core" />
             <option value="$PROJECT_DIR$/data" />
             <option value="$PROJECT_DIR$/domain" />
             <option value="$PROJECT_DIR$/feature" />
+            <option value="$PROJECT_DIR$/feature/accountsettings" />
             <option value="$PROJECT_DIR$/feature/appointment" />
             <option value="$PROJECT_DIR$/feature/appointmenthistory" />
             <option value="$PROJECT_DIR$/feature/authentication" />
+            <option value="$PROJECT_DIR$/feature/business" />
+            <option value="$PROJECT_DIR$/feature/changepassword" />
             <option value="$PROJECT_DIR$/feature/client" />
             <option value="$PROJECT_DIR$/feature/currency" />
             <option value="$PROJECT_DIR$/feature/home" />

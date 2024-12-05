@@ -4,6 +4,7 @@ import androidx.lifecycle.viewModelScope
 import com.ahsan.core.BaseViewModel
 import com.ahsan.data.models.Client
 import com.ahsan.domain.client.DeleteClientUseCase
+import com.ahsan.domain.client.FindClientByIdUseCase
 import com.ahsan.domain.client.GetClientsUseCase
 import com.ahsan.domain.client.PostClientUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +15,8 @@ import javax.inject.Inject
 class ClientViewModel @Inject constructor(
     private val postClientUseCase: PostClientUseCase,
     private val getClientsUseCase: GetClientsUseCase,
-    private val deleteClientUseCase: DeleteClientUseCase): BaseViewModel<ViewState, ClientEvent>() {
+    private val deleteClientUseCase: DeleteClientUseCase,
+    private val findClientByIdUseCase: FindClientByIdUseCase): BaseViewModel<ViewState, ClientEvent>() {
 
     private var clients: List<Client> = listOf()
 
@@ -25,6 +27,7 @@ class ClientViewModel @Inject constructor(
             is ClientEvent.FilterClients -> filterClients(event.name)
             is ClientEvent.DeleteClient -> delete(event.client)
             is ClientEvent.Validate -> validate(event.client)
+            is ClientEvent.FindClientById -> findById(event.id)
         }
     }
 
@@ -32,6 +35,12 @@ class ClientViewModel @Inject constructor(
         viewModelScope.launch {
             clients = getClientsUseCase()
             updateState(ViewState(clients = clients))
+        }
+    }
+
+    private fun findById(id: Int){
+        viewModelScope.launch {
+            updateState(ViewState(client = findClientByIdUseCase(id)))
         }
     }
 

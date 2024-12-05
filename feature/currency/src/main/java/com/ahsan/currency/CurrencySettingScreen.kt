@@ -36,17 +36,21 @@ import com.ahsan.data.models.Currency
 fun CurrencySettingScreen(navController: NavController) {
     val viewModel = hiltViewModel<CurrencySettingViewModel>()
     val viewState by viewModel.viewState.collectAsState()
-    CurrencySettingUI(viewState?.currencies ?: listOf(), onSelect = {
-        viewModel.onTriggerEvent(CurrencySettingEvent.SelectCurrency(it))
-    }) {
-        navController.popBackStack()
+    if(viewState?.defaultCurrency != null){
+        CurrencySettingUI(viewState?.currencies ?: listOf(), viewState?.defaultCurrency ?: 1, onSelect = {
+            viewModel.onTriggerEvent(CurrencySettingEvent.SelectCurrency(it))
+            navController.popBackStack()
+        }) {
+            navController.popBackStack()
+        }
     }
+
 }
 
 @Composable
-fun CurrencySettingUI(currencies: List<Currency>, onSelect: (Int) -> Unit, onBackPress: () -> Unit){
+fun CurrencySettingUI(currencies: List<Currency>, defaultCurrencyId: Int, onSelect: (Int) -> Unit, onBackPress: () -> Unit){
     var selectedCurrencyId by remember {
-        mutableIntStateOf(0)
+        mutableIntStateOf(defaultCurrencyId)
     }
     Scaffold(topBar = {
         TopBar(title = stringResource(id = com.ahsan.composable.R.string.currency), actions = {

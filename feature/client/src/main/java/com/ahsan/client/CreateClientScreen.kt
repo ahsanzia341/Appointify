@@ -26,28 +26,42 @@ import com.ahsan.composable.TopBar
 import com.ahsan.data.models.Client
 
 @Composable
-fun CreateClientScreen(navController: NavController) {
+fun CreateClientScreen(navController: NavController, id: Int = 0) {
     val viewModel = hiltViewModel<ClientViewModel>()
     val viewState by viewModel.viewState.collectAsState()
+    LaunchedEffect(key1 = true) {
+        if (id > 0)
+            viewModel.onTriggerEvent(ClientEvent.FindClientById(id))
+    }
     LaunchedEffect(key1 = viewState?.validate) {
-        if(viewState?.validate != null && viewState?.validate == true){
+        if (viewState?.validate != null && viewState?.validate == true) {
             navController.popBackStack()
         }
     }
-    CreateClientUI(onSubmit = {
-        viewModel.onTriggerEvent(ClientEvent.PostClient(it))
-    }){
-        navController.popBackStack()
+    if (id != 0) {
+        if (viewState?.client != null) {
+            CreateClientUI(viewState?.client, onSubmit = {
+                viewModel.onTriggerEvent(ClientEvent.PostClient(it))
+            }) {
+                navController.popBackStack()
+            }
+        }
+    } else {
+        CreateClientUI(viewState?.client, onSubmit = {
+            viewModel.onTriggerEvent(ClientEvent.PostClient(it))
+        }) {
+            navController.popBackStack()
+        }
     }
 }
 
 @Composable
-fun CreateClientUI(onSubmit: (Client) -> Unit, onBackPress: () -> Unit){
+fun CreateClientUI(client: Client?, onSubmit: (Client) -> Unit, onBackPress: () -> Unit){
     var name by remember {
-        mutableStateOf("")
+        mutableStateOf(client?.name ?: "")
     }
     var phoneNumber by remember {
-        mutableStateOf("")
+        mutableStateOf(client?.phoneNumber ?: "")
     }
     Scaffold(topBar = {
         TopBar(title = stringResource(id = com.ahsan.composable.R.string.create_client), onClickNavIcon = {
@@ -55,16 +69,16 @@ fun CreateClientUI(onSubmit: (Client) -> Unit, onBackPress: () -> Unit){
         })
     }, modifier = Modifier.padding(8.dp)) { padding ->
         Column(Modifier.padding(padding), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            ThemeTextField(label = stringResource(id = com.ahsan.composable.R.string.name), errorMessage = if(name.isEmpty()) stringResource(
+            ThemeTextField(label = stringResource(id = com.ahsan.composable.R.string.name), value = name, errorMessage = if(name.isEmpty()) stringResource(
                 id = com.ahsan.composable.R.string.field_required, "Name") else "") {
                 name = it
             }
-            ThemeTextField(label = stringResource(id = com.ahsan.composable.R.string.phone_number), keyboardType = KeyboardType.Phone, errorMessage = if(phoneNumber.isEmpty()) stringResource(
+            ThemeTextField(label = stringResource(id = com.ahsan.composable.R.string.phone_number), value = phoneNumber, keyboardType = KeyboardType.Phone, errorMessage = if(phoneNumber.isEmpty()) stringResource(
                 id = com.ahsan.composable.R.string.field_required, "Phone number") else "", imeAction = ImeAction.Done) {
                 phoneNumber = it
             }
             ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.submit)) {
-                onSubmit(Client(name = name, phoneNumber = phoneNumber))
+                onSubmit(Client(id = client?.id ?: 0, name = name, phoneNumber = phoneNumber))
             }
         }
     }
@@ -73,7 +87,7 @@ fun CreateClientUI(onSubmit: (Client) -> Unit, onBackPress: () -> Unit){
 @Composable
 @Preview
 fun CreateClientPreview(){
-    CreateClientUI(onSubmit = {
+    CreateClientUI(null, onSubmit = {
 
     }){}
 }

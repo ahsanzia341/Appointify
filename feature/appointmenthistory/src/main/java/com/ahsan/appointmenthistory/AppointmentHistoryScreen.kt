@@ -14,12 +14,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.ahsan.composable.R
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.TopBar
 import com.ahsan.core.DestinationRoute
@@ -39,7 +41,7 @@ fun AppointmentHistoryScreen(navController: NavController) {
 @Composable
 fun AppointmentHistoryUI(list: List<AppointmentAndClient>, onItemClick: (Int) -> Unit){
     Scaffold(topBar = {
-        TopBar(title = stringResource(id = com.ahsan.composable.R.string.appointment_history), navIcon = null)
+        TopBar(title = stringResource(id = R.string.appointment_history), navIcon = null)
     }, modifier = Modifier.padding(8.dp)) { padding ->
         Box(modifier = Modifier
             .fillMaxSize()
@@ -51,6 +53,11 @@ fun AppointmentHistoryUI(list: List<AppointmentAndClient>, onItemClick: (Int) ->
                     }
                 }
             }
+            if (list.isEmpty())
+                ThemeText(
+                    text = stringResource(id = R.string.no_history_appointments),
+                    modifier = Modifier.align(Alignment.Center)
+                )
         }
     }
 

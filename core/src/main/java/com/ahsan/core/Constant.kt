@@ -5,3 +5,9 @@ object Constant {
     const val IS_AUTO_BACKUP = "is_auto_backup"
     const val CURRENCY_ID = "currency_id"
 }
+
+object FirestoreConstant{
+    const val APPOINTMENT_COLLECTION = "appointments"
+    const val CLIENT_COLLECTION = "clients"
+    const val SERVICE_COLLECTION = "services"
+}

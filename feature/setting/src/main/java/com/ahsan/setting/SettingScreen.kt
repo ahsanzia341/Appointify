@@ -1,12 +1,13 @@
 package com.ahsan.setting
 
+import android.app.Activity
 import android.content.Context
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -22,11 +23,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ahsan.composable.ConfirmationDialog
-import com.ahsan.composable.ThemeText
+import com.ahsan.composable.R
+import com.ahsan.composable.SettingRowUI
+import com.ahsan.composable.SettingSwitchRowUI
 import com.ahsan.composable.TopBar
 import com.ahsan.core.Constant
 import com.ahsan.core.DestinationRoute
-import com.ahsan.core.extension.toEasyFormat
+import com.android.billingclient.api.ProductDetails
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 import java.util.Date
@@ -35,11 +38,13 @@ import java.util.Date
 fun SettingScreen(navController: NavController) {
     val viewModel = hiltViewModel<SettingViewModel>()
     val viewState by viewModel.viewState.collectAsState()
+    val activity = LocalContext.current as Activity
     LaunchedEffect(key1 = true) {
         viewModel.onTriggerEvent(SettingEvent.IsLoggedIn)
     }
 
-    SettingUI(viewState?.isLoading ?: true, viewState?.email, viewState?.lastBackupDate, onBackupPress = {
+    SettingUI(viewState?.settings ?: listOf(), viewState?.isLoading ?: true, viewState?.email, viewState?.lastBackupDate, viewState?.billingProducts ?: listOf(),
+        onBackupPress = {
         viewModel.onTriggerEvent(SettingEvent.BackupData)
     }, onLogoutPress = {
         viewModel.onTriggerEvent(SettingEvent.Logout)
@@ -47,99 +52,71 @@ fun SettingScreen(navController: NavController) {
         navController.navigate(DestinationRoute.WEB_VIEW_ROUTE.replace("{${DestinationRoute.PassedKey.URL}}", it))
     }, onAutoBackupSwitched = {
         if(it) viewModel.onTriggerEvent(SettingEvent.ScheduleBackup) else viewModel.onTriggerEvent(SettingEvent.CancelScheduleBackup)
-    }, syncWithServer = {
-        viewModel.onTriggerEvent(SettingEvent.LoadBackup)
-    }, onDeletePress = {
-        viewModel.onTriggerEvent(SettingEvent.DeleteAccount)
+    }, onAccountDetailsPress = {
+        navController.navigate(DestinationRoute.ACCOUNT_SETTING_ROUTE)
     }, onCurrencyPress = {
         navController.navigate(DestinationRoute.CURRENCY_ROUTE)
+    }, onSubscribePress = {
+        viewModel.onTriggerEvent(SettingEvent.LaunchBillingFlow(activity, it))
     }){
         navController.navigate(DestinationRoute.LOGIN_ROUTE)
     }
 }
 
 @Composable
-fun SettingUI(isLoading: Boolean, email: String?, lastBackup: Date?, onBackupPress:() -> Unit, onLogoutPress:() -> Unit,
-              onDeletePress: () -> Unit, onPrivacyPolicyPressed: (String) -> Unit, onAutoBackupSwitched: (Boolean) -> Unit,
-              syncWithServer: () -> Unit, onCurrencyPress: () -> Unit, onLoginPress: () -> Unit) {
+fun SettingUI(settings: List<SettingRow>, isLoading: Boolean, email: String?, lastBackup: Date?, products: List<ProductDetails>, onBackupPress:() -> Unit, onLogoutPress:() -> Unit,
+              onAccountDetailsPress: () -> Unit, onPrivacyPolicyPressed: (String) -> Unit, onAutoBackupSwitched: (Boolean) -> Unit,
+              onCurrencyPress: () -> Unit, onSubscribePress: (ProductDetails) -> Unit, onLoginPress: () -> Unit) {
     val context = LocalContext.current
     val sharedPref = context.getSharedPreferences(Constant.SHARED_PREF_KEY, Context.MODE_PRIVATE)
     var showConfirmation by remember {
         mutableStateOf(false)
     }
-
-    var showDeleteAccountConfirmation by remember {
-        mutableStateOf(false)
-    }
-    var backupState by remember {
+    val backupState by remember {
         mutableStateOf(sharedPref.getBoolean(Constant.IS_AUTO_BACKUP, false))
     }
 
     Scaffold(topBar = {
-        TopBar(title = stringResource(id = com.ahsan.composable.R.string.settings), navIcon = null)
+        TopBar(title = stringResource(id = R.string.settings), navIcon = null)
     }, modifier = Modifier.padding(8.dp)) { padding ->
-        Column(Modifier.padding(padding), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(
+            Modifier
+                .padding(padding), verticalArrangement = Arrangement.spacedBy(8.dp)) {
             if (isLoading) {
                 CircularProgressIndicator()
             } else {
-                if (email == null) {
-                    SettingRowUI(
-                        text = stringResource(id = com.ahsan.composable.R.string.login),
-                        true
-                    ) {
-                        onLoginPress()
-                    }
-                } else {
-                    ThemeText(text = email)
-                    ThemeText(text = "Last backup: ${lastBackup?.toEasyFormat()}")
-                    SettingRowUI(text = "Backup data") {
-                        onBackupPress()
-                    }
-                    ThemeText(text = "Automatic daily backup.")
-                    Switch(checked = backupState, onCheckedChange = {
-                        backupState = it
-                        sharedPref.edit().putBoolean(Constant.IS_AUTO_BACKUP, it).apply()
-                        onAutoBackupSwitched(backupState)
-                    })
-                    SettingRowUI(text = "Synchronize with server") {
-                        syncWithServer()
-                    }
-                }
-
-                SettingRowUI(text = stringResource(id = com.ahsan.composable.R.string.currency), isNextPage = true){
-                    onCurrencyPress()
-                }
-                SettingRowUI(
-                    text = stringResource(id = com.ahsan.composable.R.string.privacy_policy),
-                    true
-                ) {
-                    val encodedUrl = URLEncoder.encode(
-                        "https://www.termsfeed.com/live/2b1724ab-a3a7-4bfa-b4aa-0573ee4abcf3",
-                        StandardCharsets.UTF_8.toString()
-                    )
-                    onPrivacyPolicyPressed(encodedUrl)
-                }
-                SettingRowUI(
-                    text = stringResource(id = com.ahsan.composable.R.string.feedback),
-                    true
-                ) {
-                    if (email == null) {
-                        onLoginPress()
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    settings.forEach {
+                        if (it.loginRequired && email == null) {
+                            return@forEach
+                        }
+                        else if(it.anonymousRow && email != null){
+                            return@forEach
+                        }
+                        else if(!it.isSwitch){
+                            SettingRowUI(text = stringResource(id = it.title), it.isNextPage) {
+                                when (it.title) {
+                                    R.string.login -> onLoginPress()
+                                    R.string.account_settings -> onAccountDetailsPress()
+                                    R.string.currency -> onCurrencyPress()
+                                    R.string.privacy_policy -> onPrivacyPolicyPressed(URLEncoder.encode("https://www.termsfeed.com/live/2b1724ab-a3a7-4bfa-b4aa-0573ee4abcf3", StandardCharsets.UTF_8.toString()))
+                                    R.string.feedback -> onLoginPress()
+                                    R.string.logout -> onLogoutPress()
+                                }
+                            }
+                        }
+                        else{
+                            SettingSwitchRowUI(text = stringResource(id = it.title), backupState) { checked ->
+                                onAutoBackupSwitched(checked)
+                                sharedPref.edit().putBoolean(Constant.IS_AUTO_BACKUP, checked).apply()
+                            }
+                        }
                     }
                 }
 
-                if (email != null) {
-                    SettingRowUI(text = stringResource(id = com.ahsan.composable.R.string.delete_account)) {
-                        showDeleteAccountConfirmation = true
-                    }
-                    SettingRowUI(text = stringResource(id = com.ahsan.composable.R.string.logout)) {
-                        showConfirmation = true
-                    }
-
-                }
                 if (showConfirmation) {
                     ConfirmationDialog(
-                        title = stringResource(id = com.ahsan.composable.R.string.confirmation),
+                        title = stringResource(id = R.string.confirmation),
                         text = "Your cloud backup will stop if you choose to logout but your data will persist.",
                         {
                             showConfirmation = false
@@ -148,26 +125,19 @@ fun SettingUI(isLoading: Boolean, email: String?, lastBackup: Date?, onBackupPre
                             showConfirmation = false
                         })
                 }
-                if (showDeleteAccountConfirmation) {
-                    ConfirmationDialog(
-                        title = stringResource(id = com.ahsan.composable.R.string.delete_account),
-                        text = "Deleting account will erase all your account data from the server but it will still persist on your local storage. Are you sure you would like to delete your account?",
-                        {
-                            showDeleteAccountConfirmation = false
-                        }, {
-                            onDeletePress()
-                            showDeleteAccountConfirmation = false
-                        })
-                }
             }
         }
     }
 }
 
+
 @Composable
 @Preview
 fun SettingPreview(){
-    SettingUI(false, "null", Date(), {}, {}, {}, {}, {}, {}, {}){
+    MaterialTheme {
+        SettingUI(settings,false, null, Date(), listOf(), {}, {}, {}, {}, {}, {}, {}){
 
+        }
     }
+
 }
