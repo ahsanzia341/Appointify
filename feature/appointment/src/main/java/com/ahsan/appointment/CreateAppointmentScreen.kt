@@ -66,8 +66,9 @@ fun CreateAppointmentScreen(navController: NavController, id: Int = 0) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateAppointmentUI(appointment: Appointment, clients: List<Client>, serviceAndCurrency: List<ServiceAndCurrency>, isShowDialog: Pair<Boolean, Boolean>,
-                         onCreate: (Appointment, List<Service>) -> Unit, onFail: () -> Unit, onBackPressed: () -> Unit) {
+fun CreateAppointmentUI(appointmentObject: Appointment, clients: List<Client>, serviceAndCurrency: List<ServiceAndCurrency>,
+                        isShowDialog: Pair<Boolean, Boolean>, onCreate: (Appointment, List<Service>) -> Unit, onFail: () -> Unit,
+                        onBackPressed: () -> Unit) {
     Scaffold(modifier = Modifier.padding(8.dp),
         topBar = {
             TopBar(
@@ -77,17 +78,8 @@ fun CreateAppointmentUI(appointment: Appointment, clients: List<Client>, service
                 })
         }
     ) { padding ->
-        var title by remember {
-            mutableStateOf(appointment.title)
-        }
-        var location by remember {
-            mutableStateOf(appointment.location)
-        }
-        var startDate by remember {
-            mutableStateOf(appointment.startDate)
-        }
-        var endDate by remember {
-            mutableStateOf(appointment.endDate)
+        var appointment by remember {
+            mutableStateOf(appointmentObject)
         }
         var showClientSelectBottomSheet by remember {
             mutableStateOf(false)
@@ -114,31 +106,31 @@ fun CreateAppointmentUI(appointment: Appointment, clients: List<Client>, service
                 modifier = Modifier.fillMaxWidth()
             ) {
                 ThemeTextField(
-                    errorMessage = if (title.isEmpty()) stringResource(
+                    errorMessage = if (appointment.title.isEmpty()) stringResource(
                         id = com.ahsan.composable.R.string.field_required,
-                        "Title"
+                        stringResource(id = com.ahsan.composable.R.string.title)
                     ) else "",
                     label = stringResource(id = com.ahsan.composable.R.string.title)
                 ) {
-                    title = it
+                    appointment = appointment.copy(title = it)
                 }
                 ThemeDatePicker(
                     label = stringResource(id = com.ahsan.composable.R.string.start_date),
-                    errorMessage = if (startDate == null) stringResource(
+                    errorMessage = if (appointment.startDate == null) stringResource(
                         id = com.ahsan.composable.R.string.field_required,
-                        "Start date"
+                        stringResource(id = com.ahsan.composable.R.string.start_date)
                     ) else ""
                 ) {
-                    startDate = it
+                    appointment = appointment.copy(startDate = it)
                 }
                 ThemeDatePicker(label = stringResource(id = com.ahsan.composable.R.string.end_date)) {
-                    endDate = it
+                    appointment = appointment.copy(endDate = it)
                 }
                 DisabledTextField(
                     stringResource(id = com.ahsan.composable.R.string.client),
                     if (client == null) stringResource(
                         id = com.ahsan.composable.R.string.field_required,
-                        "Client"
+                        stringResource(id = com.ahsan.composable.R.string.client)
                     ) else "",
                     client?.name ?: ""
                 ) {
@@ -152,26 +144,20 @@ fun CreateAppointmentUI(appointment: Appointment, clients: List<Client>, service
                     showServicesBottomSheet = true
                 }
                 ThemeTextField(label = stringResource(id = com.ahsan.composable.R.string.location)) {
-                    location = it
+                    appointment = appointment.copy(location = it)
                 }
                 ThemeTextField(
                     label = stringResource(id = com.ahsan.composable.R.string.notes),
                     imeAction = ImeAction.Done
                 ) {
-                    location = it
+                    appointment = appointment.copy(notes = it)
                 }
                 ThemeButton(
                     text = stringResource(id = com.ahsan.composable.R.string.create),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     onCreate(
-                        Appointment(
-                            title = title,
-                            startDate = startDate,
-                            endDate = endDate ?: startDate,
-                            location = location,
-                            clientId = client?.id ?: 0,
-                        ),
+                        appointment,
                         services
                     )
                 }
@@ -206,6 +192,7 @@ fun CreateAppointmentUI(appointment: Appointment, clients: List<Client>, service
                 sheetState = clientSelectBottomSheetState
             ) {
                 ClientSelectScreen(clients) {
+                    appointment = appointment.copy(clientId = it.id)
                     client = it
                     showClientSelectBottomSheet = false
                 }
@@ -218,6 +205,6 @@ fun CreateAppointmentUI(appointment: Appointment, clients: List<Client>, service
 @Preview
 fun CreatePreview(){
     CreateAppointmentUI(Appointment(clientId = 1, title = "", startDate = null, endDate = Date(), location = ""),
-        listOf( Client(1, "Test Client", "12345")), isShowDialog = Pair(false, false),
+        listOf(Client(1, "Test Client", "12345")), isShowDialog = Pair(false, false),
         serviceAndCurrency = listOf(), onCreate = {_, _ -> }, onFail = {}){}
 }

@@ -75,7 +75,7 @@ fun ThemeTextField(modifier: Modifier = Modifier, label: String = "", value: Str
 
 @Composable
 fun PasswordTextField(errorMessage: String = "", label: String = "", onChanged: (text: String) -> Unit){
-    ThemeTextField(label = if(label.isEmpty()) stringResource(id = R.string.password) else label, keyboardType = KeyboardType.Password, errorMessage = errorMessage) {
+    ThemeTextField(label = label.ifEmpty { stringResource(id = R.string.password) }, keyboardType = KeyboardType.Password, errorMessage = errorMessage) {
         onChanged(it)
     }
 }

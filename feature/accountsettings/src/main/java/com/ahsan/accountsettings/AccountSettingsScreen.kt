@@ -21,7 +21,8 @@ import com.ahsan.composable.ConfirmationDialog
 import com.ahsan.composable.R
 import com.ahsan.composable.SettingRowUI
 import com.ahsan.composable.TopBar
-import com.ahsan.core.DestinationRoute
+import com.ahsan.core.AppRoute.ChangePasswordRoute
+import com.ahsan.core.AppRoute.EditAccountRoute
 
 @Composable
 fun AccountSettingsScreen(navController: NavController) {
@@ -47,10 +48,10 @@ fun AccountSettingUI(navController: NavController, settings: List<SettingRow>, o
                 SettingRowUI(text = stringResource(id = it.title), it.isNextPage){
                     when (it.title) {
                         R.string.edit_account_details -> {
-                            navController.navigate(DestinationRoute.EDIT_ACCOUNT_ROUTE)
+                            navController.navigate(EditAccountRoute)
                         }
                         R.string.change_password -> {
-                            navController.navigate(DestinationRoute.CHANGE_PASSWORD_ROUTE)
+                            navController.navigate(ChangePasswordRoute)
                         }
                         else -> {
                             showDeleteAccountConfirmation = true

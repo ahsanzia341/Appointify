@@ -3,13 +3,16 @@ package com.ahsan.client
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.ahsan.core.DestinationRoute
+import androidx.navigation.toRoute
+import com.ahsan.core.AppRoute.ClientListRoute
+import com.ahsan.core.AppRoute.CreateClientRoute
 
 fun NavGraphBuilder.clientNavigation(navController: NavController) {
-    composable(route = DestinationRoute.CLIENT_LIST_ROUTE) {
+    composable<ClientListRoute> {
         ClientListScreen(navController)
     }
-    composable(route = DestinationRoute.CREATE_CLIENT_ROUTE) {
-        CreateClientScreen(navController, it.arguments?.getString(DestinationRoute.PassedKey.ID)?.toIntOrNull() ?: 0)
+    composable<CreateClientRoute> {
+        val route = it.toRoute<CreateClientRoute>()
+        CreateClientScreen(navController)
     }
 }

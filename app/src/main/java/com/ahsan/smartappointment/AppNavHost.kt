@@ -25,7 +25,7 @@ import com.ahsan.webview.webViewNavigation
 @Composable
 fun AppNavHost(
     navController: NavHostController,
-    startDestination: String
+    startDestination: Any
 ) {
     val navGraph = remember(navController){
         navController.createGraph(startDestination = startDestination) {

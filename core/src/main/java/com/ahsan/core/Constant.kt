@@ -10,4 +10,5 @@ object FirestoreConstant{
     const val APPOINTMENT_COLLECTION = "appointments"
     const val CLIENT_COLLECTION = "clients"
     const val SERVICE_COLLECTION = "services"
+    const val BUSINESS_COLLECTION = "businesses"
 }

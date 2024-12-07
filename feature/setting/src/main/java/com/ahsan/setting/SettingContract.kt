@@ -21,6 +21,7 @@ sealed class SettingEvent{
 
 val settings = listOf(
     SettingRow(R.string.login, isNextPage = true, anonymousRow = true),
+    SettingRow(R.string.business, isNextPage = true, loginRequired = true),
     SettingRow(R.string.account_settings, isNextPage = true, loginRequired = true),
     SettingRow(R.string.backup_data, loginRequired = true),
     SettingRow(R.string.automatic_daily_backup, isSwitch = true, loginRequired = true),

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.serialization)
     id("kotlin-kapt")
 }
 
@@ -40,6 +41,7 @@ dependencies {
     implementation(project(mapOf("path" to ":core")))
     implementation(libs.bundles.compose)
     implementation(libs.bundles.hilt)
+    implementation(libs.kotlin.serialization)
     kapt(libs.hilt.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

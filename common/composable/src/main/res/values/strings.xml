@@ -12,6 +12,7 @@
     <string name="no_clients">No clients found</string>
     <string name="no_services">No services found</string>
     <string name="create_appointment">Create Appointment</string>
+    <string name="create_business">Create business</string>
     <string name="create_client">Create Client</string>
     <string name="create_service">Create Service</string>
     <string name="account_settings">Account settings</string>
@@ -19,6 +20,7 @@
     <string name="register">Register</string>
     <string name="login">Login</string>
     <string name="create_account">Create Account</string>
+    <string name="business">Business</string>
     <string name="submit">Submit</string>
     <string name="email">Email</string>
     <string name="email_error">Invalid email</string>
@@ -26,6 +28,8 @@
     <string name="password">Password</string>
     <string name="password_required">Password field is required</string>
     <string name="name">Name</string>
+    <string name="address">Address</string>
+    <string name="description">Description</string>
     <string name="phone_number">Phone Number</string>
     <string name="price">Price</string>
     <string name="title">Title</string>

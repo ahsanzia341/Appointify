@@ -38,30 +38,21 @@ fun CreateClientScreen(navController: NavController, id: Int = 0) {
             navController.popBackStack()
         }
     }
-    if (id != 0) {
-        if (viewState?.client != null) {
-            CreateClientUI(viewState?.client, onSubmit = {
-                viewModel.onTriggerEvent(ClientEvent.PostClient(it))
-            }) {
-                navController.popBackStack()
-            }
-        }
-    } else {
-        CreateClientUI(viewState?.client, onSubmit = {
-            viewModel.onTriggerEvent(ClientEvent.PostClient(it))
-        }) {
-            navController.popBackStack()
-        }
+    CreateClientUI(viewState?.client, onSubmit = {
+        viewModel.onTriggerEvent(ClientEvent.PostClient(it))
+    }) {
+        navController.popBackStack()
     }
 }
 
 @Composable
-fun CreateClientUI(client: Client?, onSubmit: (Client) -> Unit, onBackPress: () -> Unit){
-    var name by remember {
-        mutableStateOf(client?.name ?: "")
+fun CreateClientUI(clientObject: Client?, onSubmit: (Client) -> Unit, onBackPress: () -> Unit){
+    var client by remember {
+        mutableStateOf(clientObject ?: Client())
     }
-    var phoneNumber by remember {
-        mutableStateOf(client?.phoneNumber ?: "")
+    LaunchedEffect(key1 = clientObject) {
+        if(clientObject != null)
+            client = clientObject
     }
     Scaffold(topBar = {
         TopBar(title = stringResource(id = com.ahsan.composable.R.string.create_client), onClickNavIcon = {
@@ -69,16 +60,16 @@ fun CreateClientUI(client: Client?, onSubmit: (Client) -> Unit, onBackPress: () 
         })
     }, modifier = Modifier.padding(8.dp)) { padding ->
         Column(Modifier.padding(padding), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            ThemeTextField(label = stringResource(id = com.ahsan.composable.R.string.name), value = name, errorMessage = if(name.isEmpty()) stringResource(
-                id = com.ahsan.composable.R.string.field_required, "Name") else "") {
-                name = it
+            ThemeTextField(label = stringResource(id = com.ahsan.composable.R.string.name), value = client.name, errorMessage = if(client.name.isEmpty()) stringResource(
+                id = com.ahsan.composable.R.string.field_required, stringResource(id = com.ahsan.composable.R.string.name)) else "") {
+                client = client.copy(name = it)
             }
-            ThemeTextField(label = stringResource(id = com.ahsan.composable.R.string.phone_number), value = phoneNumber, keyboardType = KeyboardType.Phone, errorMessage = if(phoneNumber.isEmpty()) stringResource(
-                id = com.ahsan.composable.R.string.field_required, "Phone number") else "", imeAction = ImeAction.Done) {
-                phoneNumber = it
+            ThemeTextField(label = stringResource(id = com.ahsan.composable.R.string.phone_number), value = client.phoneNumber, keyboardType = KeyboardType.Phone, errorMessage = if(client.phoneNumber.isEmpty()) stringResource(
+                id = com.ahsan.composable.R.string.field_required, stringResource(id = com.ahsan.composable.R.string.phone_number)) else "", imeAction = ImeAction.Done) {
+                client = client.copy(phoneNumber = it)
             }
             ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.submit)) {
-                onSubmit(Client(id = client?.id ?: 0, name = name, phoneNumber = phoneNumber))
+                onSubmit(client)
             }
         }
     }

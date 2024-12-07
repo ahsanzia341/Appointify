@@ -3,13 +3,14 @@ package com.ahsan.service
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.ahsan.core.DestinationRoute
+import com.ahsan.core.AppRoute.ServiceCreateRoute
+import com.ahsan.core.AppRoute.ServiceListRoute
 
 fun NavGraphBuilder.serviceNavigation(navController: NavController) {
-    composable(DestinationRoute.SERVICE_LIST_ROUTE) {
+    composable<ServiceListRoute> {
         ServiceListScreen(navController)
     }
-    composable(DestinationRoute.SERVICE_CREATE_ROUTE) {
-        ServiceCreateScreen(navController, it.arguments?.getString(DestinationRoute.PassedKey.ID)?.toIntOrNull() ?: 0)
+    composable<ServiceCreateRoute> {
+        ServiceCreateScreen(navController, 0)
     }
 }

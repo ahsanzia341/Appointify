@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ahsan.composable.ThemeText
-import com.ahsan.core.DestinationRoute
+import com.ahsan.core.AppRoute.SettingsRoute
 import com.ahsan.theme.PrimaryColor
 
 @Composable
@@ -41,5 +41,5 @@ fun BottomBar(navController: NavController, currentDestination: String) {
 @Preview
 @Composable
 fun BottomBarPreview(){
-    BottomBar(navController = rememberNavController(), DestinationRoute.SETTINGS_ROUTE)
+    BottomBar(navController = rememberNavController(), SettingsRoute.toString())
 }

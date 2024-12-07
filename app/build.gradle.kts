@@ -6,6 +6,7 @@ plugins {
     id("kotlin-kapt")
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.google.firebase.crashlytics)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {

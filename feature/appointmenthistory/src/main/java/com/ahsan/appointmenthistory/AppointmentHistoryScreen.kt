@@ -24,7 +24,7 @@ import androidx.navigation.NavController
 import com.ahsan.composable.R
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.TopBar
-import com.ahsan.core.DestinationRoute
+import com.ahsan.core.AppRoute.AppointmentDetailRoute
 import com.ahsan.core.extension.toEasyFormat
 import com.ahsan.data.models.AppointmentAndClient
 import com.ahsan.data.models.AppointmentStatus
@@ -34,7 +34,7 @@ fun AppointmentHistoryScreen(navController: NavController) {
     val viewModel = hiltViewModel<AppointmentHistoryViewModel>()
     val viewState by viewModel.viewState.collectAsState()
     AppointmentHistoryUI(list = viewState?.appointments ?: listOf()){
-        navController.navigate(DestinationRoute.APPOINTMENT_DETAIL_ROUTE.replace("{${DestinationRoute.PassedKey.ID}}", it.toString()))
+        navController.navigate(AppointmentDetailRoute(it))
     }
 }
 

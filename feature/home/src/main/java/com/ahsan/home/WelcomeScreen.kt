@@ -17,14 +17,15 @@ import androidx.navigation.NavController
 import com.ahsan.composable.ThemeButton
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.TopBar
-import com.ahsan.core.DestinationRoute
+import com.ahsan.core.AppRoute.HomeRoute
+import com.ahsan.core.AppRoute.LoginRoute
 
 @Composable
 fun WelcomeScreen(navController: NavController) {
     WelcomeUI(onSignInPress = {
-        navController.navigate(DestinationRoute.LOGIN_ROUTE)
+        navController.navigate(LoginRoute)
     }){
-        navController.navigate(DestinationRoute.HOME_ROUTE)
+        navController.navigate(HomeRoute)
     }
 }
 

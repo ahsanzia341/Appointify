@@ -9,13 +9,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,8 +34,7 @@ import com.ahsan.composable.ThemeFloatingActionButton
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.ThemeTextField
 import com.ahsan.composable.TopBar
-import com.ahsan.core.DestinationRoute
-import com.ahsan.core.DestinationRoute.PassedKey
+import com.ahsan.core.AppRoute.ServiceCreateRoute
 import com.ahsan.data.models.Currency
 import com.ahsan.data.models.Service
 import com.ahsan.data.models.ServiceAndCurrency
@@ -51,9 +47,9 @@ fun ServiceListScreen(navController: NavController) {
         viewModel.onTriggerEvent(ServiceEvent.GetServices)
     }
     ServiceListUI(viewState?.services ?: listOf(), onServiceClick = {
-        navController.navigate(DestinationRoute.SERVICE_CREATE_ROUTE.replace("{${PassedKey.ID}}", it))
+        navController.navigate(ServiceCreateRoute)
     }, onAddClick = {
-        navController.navigate(DestinationRoute.SERVICE_CREATE_ROUTE)
+        navController.navigate(ServiceCreateRoute)
     }, onDeleteClicked = {
         viewModel.onTriggerEvent(ServiceEvent.Delete(it.service))
     }, onFilterTextChanged = {
@@ -125,9 +121,7 @@ fun ServiceListUI(list: List<ServiceAndCurrency>, onDeleteClicked: (ServiceAndCu
 
 @Composable
 fun ServiceItem(service: ServiceAndCurrency, onDeleteClicked: () -> Unit, onServiceClick: () -> Unit){
-    Card(modifier = Modifier.padding(8.dp),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)
-    ) {
+    Card(modifier = Modifier.padding(8.dp)) {
         Box(
             Modifier
                 .fillMaxWidth()

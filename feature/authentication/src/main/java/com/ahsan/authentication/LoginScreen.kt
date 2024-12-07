@@ -30,7 +30,9 @@ import com.ahsan.composable.PasswordTextField
 import com.ahsan.composable.ThemeButton
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.TopBar
-import com.ahsan.core.DestinationRoute
+import com.ahsan.core.AppRoute.ForgotPasswordRoute
+import com.ahsan.core.AppRoute.HomeRoute
+import com.ahsan.core.AppRoute.RegisterRoute
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -39,15 +41,15 @@ fun LoginScreen(navController: NavController) {
     val context = LocalContext.current
     LaunchedEffect(key1 = viewState?.loginState) {
         if(viewState?.loginState == true){
-            navController.navigate(route = DestinationRoute.HOME_ROUTE)
+            navController.navigate(route = HomeRoute)
         }
     }
     LoginUI(viewState?.error ?: "", viewState?.emailValidationError ?: "", viewState?.passwordValidationError ?: "",
         viewState?.isLoading == true,
         onRegisterClick = {
-            navController.navigate(DestinationRoute.REGISTER_ROUTE, NavOptions.Builder().setPopUpTo(DestinationRoute.REGISTER_ROUTE, true).build())
+            navController.navigate(RegisterRoute, NavOptions.Builder().setPopUpTo(RegisterRoute, true).build())
         }, onForgotPasswordClick = {
-            navController.navigate(DestinationRoute.FORGOT_PASSWORD_ROUTE)
+            navController.navigate(ForgotPasswordRoute)
         },
         onLoginPress = { email, password ->
         viewModel.onTriggerEvent(AuthEvent.ValidateForLogin(context, email, password))

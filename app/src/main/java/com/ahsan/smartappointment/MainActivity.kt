@@ -14,11 +14,17 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.ahsan.core.AppRoute.AppointmentHistoryRoute
 import com.ahsan.core.BillingObject
+import com.ahsan.core.AppRoute.ClientListRoute
 import com.ahsan.core.Constant
-import com.ahsan.core.DestinationRoute
+import com.ahsan.core.AppRoute.HomeRoute
+import com.ahsan.core.AppRoute.ServiceListRoute
+import com.ahsan.core.AppRoute.SettingsRoute
+import com.ahsan.core.AppRoute.WelcomeRoute
 import com.ahsan.smartappointment.ui.theme.SmartAppointmentTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -33,9 +39,9 @@ class MainActivity : ComponentActivity() {
             val currentBackStackEntryAsState by navController.currentBackStackEntryAsState()
             val currentDestination = currentBackStackEntryAsState?.destination
             val sharedPref = getSharedPreferences(Constant.SHARED_PREF_KEY, Context.MODE_PRIVATE)
-            var startDestination = DestinationRoute.HOME_ROUTE
+            var startDestination: Any = HomeRoute
             if (sharedPref.getString("isFirstTime", "true") == "true") {
-                startDestination = DestinationRoute.WELCOME_ROUTE
+                startDestination = WelcomeRoute
                 sharedPref.edit().putString("isFirstTime", "false").apply()
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -43,12 +49,12 @@ class MainActivity : ComponentActivity() {
             }
             SmartAppointmentTheme {
                 Scaffold(bottomBar = {
-                    if (currentDestination?.route.let {
-                            it == DestinationRoute.HOME_ROUTE || it == DestinationRoute.CLIENT_LIST_ROUTE
-                                    || it == DestinationRoute.SETTINGS_ROUTE || it == DestinationRoute.APPOINTMENT_HISTORY_ROUTE
-                                    || it == DestinationRoute.SERVICE_LIST_ROUTE
-                        }) {
-                        BottomBar(navController = navController, currentDestination?.route ?: "")
+                    if (currentDestination?.let {
+                            it.hasRoute(HomeRoute::class) || it.hasRoute(ClientListRoute::class)
+                                    || it.hasRoute(SettingsRoute::class) || it.hasRoute(AppointmentHistoryRoute::class)
+                                    || it.hasRoute(ServiceListRoute::class)
+                        } == true) {
+                        BottomBar(navController = navController, currentDestination.route ?: "")
                     }
                 }) {
                     Box(

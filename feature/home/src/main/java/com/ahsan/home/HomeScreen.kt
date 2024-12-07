@@ -29,7 +29,10 @@ import com.ahsan.composable.R
 import com.ahsan.composable.ThemeFloatingActionButton
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.TopBar
-import com.ahsan.core.DestinationRoute
+import com.ahsan.core.AppRoute.AppointmentDetailRoute
+import com.ahsan.core.AppRoute.CreateAppointmentRoute
+import com.ahsan.core.AppRoute.CreateClientRoute
+import com.ahsan.core.AppRoute.ServiceCreateRoute
 import com.ahsan.core.extension.toEasyFormat
 import com.ahsan.data.models.AppointmentAndClient
 
@@ -52,14 +55,11 @@ fun HomeScreen(navController: NavController) {
         } else if (viewState?.serviceCount == 0) {
             showServiceDialog = true
         } else {
-            navController.navigate(DestinationRoute.CREATE_APPOINTMENT_ROUTE)
+            navController.navigate(CreateAppointmentRoute)
         }
     }) {
         navController.navigate(
-            DestinationRoute.APPOINTMENT_DETAIL_ROUTE.replace(
-                "{${DestinationRoute.PassedKey.ID}}",
-                it.toString()
-            )
+            AppointmentDetailRoute(it)
         )
     }
     if(showClientDialog){
@@ -67,7 +67,7 @@ fun HomeScreen(navController: NavController) {
             title = "No clients exist",
             text = "Please add at least one client to schedule an appointment",
             onDismissRequest = { showClientDialog = false }) {
-            navController.navigate(DestinationRoute.CREATE_CLIENT_ROUTE)
+            navController.navigate(CreateClientRoute)
             showClientDialog = false
         }
     }
@@ -76,7 +76,7 @@ fun HomeScreen(navController: NavController) {
             title = "No services exist",
             text = "Please add at least one service to schedule an appointment",
             onDismissRequest = { showServiceDialog = false }) {
-            navController.navigate(DestinationRoute.SERVICE_CREATE_ROUTE)
+            navController.navigate(ServiceCreateRoute)
             showServiceDialog = false
         }
     }

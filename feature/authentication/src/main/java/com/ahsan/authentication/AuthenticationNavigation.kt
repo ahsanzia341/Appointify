@@ -3,16 +3,18 @@ package com.ahsan.authentication
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.ahsan.core.DestinationRoute
+import com.ahsan.core.AppRoute.ForgotPasswordRoute
+import com.ahsan.core.AppRoute.LoginRoute
+import com.ahsan.core.AppRoute.RegisterRoute
 
 fun NavGraphBuilder.authenticationNavigation(navController: NavController) {
-    composable(route = DestinationRoute.LOGIN_ROUTE) {
+    composable<LoginRoute> {
         LoginScreen(navController)
     }
-    composable(route = DestinationRoute.REGISTER_ROUTE) {
+    composable<RegisterRoute> {
         RegisterScreen(navController)
     }
-    composable(route = DestinationRoute.FORGOT_PASSWORD_ROUTE) {
+    composable<ForgotPasswordRoute> {
         ForgotPasswordScreen(navController)
     }
 }

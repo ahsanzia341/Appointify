@@ -6,9 +6,10 @@ import com.ahsan.data.models.Business
 import com.ahsan.domain.business.PostBusinessUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @HiltViewModel
-class CreateBusinessViewModel(
+class CreateBusinessViewModel @Inject constructor(
     private val postBusinessUseCase: PostBusinessUseCase
 ): BaseViewModel<ViewState, CreateBusinessEvent>() {
     override fun onTriggerEvent(event: CreateBusinessEvent) {

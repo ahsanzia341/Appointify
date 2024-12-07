@@ -34,8 +34,7 @@ import com.ahsan.composable.ThemeFloatingActionButton
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.ThemeTextField
 import com.ahsan.composable.TopBar
-import com.ahsan.core.DestinationRoute
-import com.ahsan.core.DestinationRoute.PassedKey
+import com.ahsan.core.AppRoute.CreateClientRoute
 import com.ahsan.data.models.Client
 
 @Composable
@@ -48,11 +47,11 @@ fun ClientListScreen(navController: NavController) {
     ClientListUI(viewState?.clients ?: listOf(), onFilterTextChanged = {
         viewModel.onTriggerEvent(ClientEvent.FilterClients(it))
     }, onItemClicked = {
-        navController.navigate(DestinationRoute.CREATE_CLIENT_ROUTE.replace("{${PassedKey.ID}}", it.id.toString()))
+        navController.navigate(CreateClientRoute)
     }, onDeleteClicked = {
         viewModel.onTriggerEvent(ClientEvent.DeleteClient(it))
     }){
-        navController.navigate(DestinationRoute.CREATE_CLIENT_ROUTE)
+        navController.navigate(CreateClientRoute)
     }
 }
 
