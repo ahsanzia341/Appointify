@@ -9,3 +9,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: fastlane deployToAlpha
+        env:
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
