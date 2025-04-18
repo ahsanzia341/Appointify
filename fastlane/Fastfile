@@ -1,0 +1,26 @@
+# Uncomment the line if you want fastlane to automatically update itself
+update_fastlane
+
+default_platform(:android)
+
+platform :android do
+  
+  desc "Deploy a new version to closed testing"
+  lane :deployToAlpha do
+    setup_ci
+    increment_version_code(gradle_file_path: "/Users/ahsanzia/AndroidStudioProjects/SmartAppointment/app/build.gradle.kts")
+    store_password = "TestPassword1@"
+    key_password = "TestPassword1@"
+    releaseFilePath = "/Users/ahsanzia/Documents/appointify/store_keystore"
+    gradle(task: "bundleRelease",
+    properties: {
+        "android.injected.signing.store.file" => releaseFilePath,
+        "android.injected.signing.store.password" => store_password,
+        "android.injected.signing.key.alias" => "ahsan",
+        "android.injected.signing.key.password" => key_password,
+      }
+      )
+    upload_to_play_store(track: "First Test", rollout: "1", skip_upload_apk: "true",
+    skip_upload_screenshots: "true", skip_upload_images: "true")
+  end
+end
