@@ -1,2 +1,2 @@
-json_key_file("/Users/runner/work/Appointify/Appointify/app/myproject-39533-e215b5e27e39.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
+json_key_file(ENV["SERVICEACCOUNTSECRET"]) # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
 package_name("com.ahsan.smartappointment") # e.g. com.krausefx.app
