@@ -8,10 +8,10 @@ platform :android do
   desc "Deploy a new version to closed testing"
   lane :deployToAlpha do
     setup_ci
-    increment_version_code(gradle_file_path: "/Users/ahsanzia/AndroidStudioProjects/SmartAppointment/app/build.gradle.kts")
+    increment_version_code(gradle_file_path: "../app/build.gradle.kts")
     store_password = "TestPassword1@"
     key_password = "TestPassword1@"
-    releaseFilePath = "/Users/ahsanzia/Documents/appointify/store_keystore"
+    releaseFilePath = "../store_keystore"
     gradle(task: "bundleRelease",
     properties: {
         "android.injected.signing.store.file" => releaseFilePath,
