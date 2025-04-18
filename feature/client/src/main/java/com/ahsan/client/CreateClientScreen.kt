@@ -20,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.ahsan.composable.RequiredTextField
 import com.ahsan.composable.ThemeButton
 import com.ahsan.composable.ThemeTextField
 import com.ahsan.composable.TopBar
@@ -60,8 +61,7 @@ fun CreateClientUI(clientObject: Client?, onSubmit: (Client) -> Unit, onBackPres
         })
     }, modifier = Modifier.padding(8.dp)) { padding ->
         Column(Modifier.padding(padding), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            ThemeTextField(label = stringResource(id = com.ahsan.composable.R.string.name), value = client.name, errorMessage = if(client.name.isEmpty()) stringResource(
-                id = com.ahsan.composable.R.string.field_required, stringResource(id = com.ahsan.composable.R.string.name)) else "") {
+            RequiredTextField(label = stringResource(id = com.ahsan.composable.R.string.name), value = client.name) {
                 client = client.copy(name = it)
             }
             ThemeTextField(label = stringResource(id = com.ahsan.composable.R.string.phone_number), value = client.phoneNumber, keyboardType = KeyboardType.Phone, errorMessage = if(client.phoneNumber.isEmpty()) stringResource(

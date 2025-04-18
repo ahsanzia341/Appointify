@@ -9,22 +9,24 @@ import javax.inject.Inject
 
 class BusinessRepository @Inject constructor() {
     private val currentUser = FirebaseAuth.getInstance().currentUser
-    fun create(business: Business) {
+    suspend fun create(business: Business) {
         if(currentUser == null)
             return
 
-        FirebaseFirestore.getInstance().collection(FirestoreConstant.BUSINESS_COLLECTION).document(currentUser.uid).set(business)
+        FirebaseFirestore.getInstance().collection(FirestoreConstant.BUSINESS_COLLECTION).document(currentUser.uid).set(business).await()
     }
 
-    fun update(business: Business) {
+    suspend fun update(business: Business) {
         if(currentUser == null)
             return
-        FirebaseFirestore.getInstance().collection(FirestoreConstant.BUSINESS_COLLECTION).document(currentUser.uid).set(business)
+
+        FirebaseFirestore.getInstance().collection(FirestoreConstant.BUSINESS_COLLECTION).document(currentUser.uid).set(business).await()
     }
 
     suspend fun get(): Business {
         if(currentUser == null)
             return Business()
+
         return FirebaseFirestore.getInstance().collection(FirestoreConstant.BUSINESS_COLLECTION)
             .document(currentUser.uid).get().await().toObject(Business::class.java) ?: Business()
     }

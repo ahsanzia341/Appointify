@@ -51,6 +51,7 @@
     <string name="appointment_created">Appointment created</string>
     <string name="delete_confirmation">Delete confirmation</string>
     <string name="confirmation">Confirmation</string>
+    <string name="your_cloud_backup_will_stop_if_you_choose_to_logout_but_your_data_will_persist">Your cloud backup will stop if you choose to logout but your data will persist.</string>
     <string name="delete_confirmation_client_text">Are you sure you want to delete this client? All the associated scheduled appointments and history appointments to this client will also be removed.</string>
     <string name="delete_confirmation_service_text">Are you sure you want to delete this service? All the associated scheduled appointments and history appointments to this client will also be removed.</string>
     <string name="history">History</string>

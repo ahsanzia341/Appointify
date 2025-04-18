@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ahsan.composable.R
+import com.ahsan.composable.RequiredTextField
 import com.ahsan.composable.ThemeButton
 import com.ahsan.composable.ThemeTextField
 import com.ahsan.composable.TopBar
@@ -55,15 +56,12 @@ fun ServiceCreateUI(serviceAndCurrency: ServiceAndCurrency?, onSubmit: (Service)
             var service by remember {
                 mutableStateOf(serviceObject ?: Service())
             }
-            ThemeTextField(label = stringResource(id = R.string.name)) {
+            RequiredTextField(label = stringResource(id = R.string.name), value = service.name) {
                 service = service.copy(name = it)
             }
             ThemeTextField(label = stringResource(id = R.string.price), keyboardType = KeyboardType.Number, imeAction = ImeAction.Done) {
                 service = service.copy(price = it.toDouble())
             }
-            /*ThemeDropDown(label = stringResource(id = com.ahsan.composable.R.string.currency), currencies.map { "${it.symbol} ${it.name}" }) {
-                currency = currencies[0].id
-            }*/
             ThemeButton(text = stringResource(id = R.string.submit)) {
                 onSubmit(service)
             }

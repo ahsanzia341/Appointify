@@ -9,7 +9,7 @@ platform :android do
     increment_version_code(gradle_file_path: "app/build.gradle.kts")
     store_password = "TestPassword1@"
     key_password = "TestPassword1@"
-    releaseFilePath = "../app/store_keystore"
+    releaseFilePath = "/Users/runner/work/Appointify/Appointify/app/store_keystore"
     gradle(task: "bundleRelease",
     properties: {
         "android.injected.signing.store.file" => releaseFilePath,

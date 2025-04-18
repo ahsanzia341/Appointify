@@ -1,7 +1,7 @@
 package com.ahsan.setting
 
-import android.app.Activity
 import android.content.Context
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -44,7 +44,7 @@ import androidx.core.content.edit
 fun SettingScreen(navController: NavController) {
     val viewModel = hiltViewModel<SettingViewModel>()
     val viewState by viewModel.viewState.collectAsState()
-    val activity = LocalContext.current as Activity
+    val activity = LocalActivity.current
     LaunchedEffect(key1 = true) {
         viewModel.onTriggerEvent(SettingEvent.IsLoggedIn)
     }
@@ -63,6 +63,7 @@ fun SettingScreen(navController: NavController) {
     }, onCurrencyPress = {
         navController.navigate(CurrencyRoute)
     }, onSubscribePress = {
+        if(activity != null)
         viewModel.onTriggerEvent(SettingEvent.LaunchBillingFlow(activity, it))
     }, onBusinessPress = {
         navController.navigate(CreateBusinessRoute)
@@ -70,6 +71,9 @@ fun SettingScreen(navController: NavController) {
         navController.navigate(LoginRoute)
     }
 }
+
+private const val s =
+    "Your cloud backup will stop if you choose to logout but your data will persist."
 
 @Composable
 fun SettingUI(settings: List<SettingRow>, isLoading: Boolean, email: String?, lastBackup: Date?, products: List<ProductDetails>, onBackupPress: () -> Unit, onLogoutPress:() -> Unit,
@@ -133,7 +137,7 @@ fun SettingUI(settings: List<SettingRow>, isLoading: Boolean, email: String?, la
             if (showConfirmation) {
                 ConfirmationDialog(
                     title = stringResource(id = R.string.confirmation),
-                    text = "Your cloud backup will stop if you choose to logout but your data will persist.",
+                    text = stringResource(id = R.string.your_cloud_backup_will_stop_if_you_choose_to_logout_but_your_data_will_persist),
                     {
                         showConfirmation = false
                     }, {

@@ -17,7 +17,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ahsan.composable.EmailTextField
+import com.ahsan.composable.InfoDialog
 import com.ahsan.composable.R
+import com.ahsan.composable.RequiredTextField
 import com.ahsan.composable.ThemeButton
 import com.ahsan.composable.ThemeTextField
 import com.ahsan.composable.TopBar
@@ -44,8 +46,10 @@ fun CreateBusinessUI(onSubmit: (Business) -> Unit, onBackPress: () -> Unit){
         var business by remember {
             mutableStateOf(Business())
         }
+
+        var showInfo by remember { mutableStateOf(false) }
         Column(modifier = Modifier.padding(padding), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            ThemeTextField(label = stringResource(id = R.string.name)) {
+            RequiredTextField(label = stringResource(id = R.string.name), value = business.name) {
                 business = business.copy(name = it)
             }
             ThemeTextField(label = stringResource(id = R.string.phone_number), keyboardType = KeyboardType.Phone) {
@@ -54,14 +58,23 @@ fun CreateBusinessUI(onSubmit: (Business) -> Unit, onBackPress: () -> Unit){
             EmailTextField {
                 business = business.copy(email = it)
             }
-            ThemeTextField(label = stringResource(id = R.string.address)) {
+            RequiredTextField(label = stringResource(id = R.string.address), value = business.address) {
                 business = business.copy(address = it)
             }
-            ThemeTextField(label = stringResource(id = R.string.description)) {
+            RequiredTextField(label = stringResource(id = R.string.description), value = business.description) {
                 business = business.copy(description = it)
             }
             ThemeButton(text = stringResource(id = R.string.submit)) {
                 onSubmit(business)
+                showInfo = true
+            }
+        }
+        if(showInfo){
+            InfoDialog(
+                "Info",
+                text = "Business created successfully"
+            ) {
+                showInfo = false
             }
         }
     }
