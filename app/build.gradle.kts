@@ -77,6 +77,7 @@ dependencies {
     implementation(project(mapOf("path" to ":common:theme")))
     implementation(project(mapOf("path" to ":feature:accountsettings")))
     implementation(project(mapOf("path" to ":feature:authentication")))
+    implementation(project(mapOf("path" to ":feature:backup")))
     implementation(project(mapOf("path" to ":feature:business")))
     implementation(project(mapOf("path" to ":feature:changepassword")))
     implementation(project(mapOf("path" to ":feature:home")))

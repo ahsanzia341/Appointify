@@ -19,6 +19,7 @@
     <string name="currency">Currency</string>
     <string name="register">Register</string>
     <string name="login">Login</string>
+    <string name="go_pro">Go Pro</string>
     <string name="create_account">Create Account</string>
     <string name="business">Business</string>
     <string name="submit">Submit</string>

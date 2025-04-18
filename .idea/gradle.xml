@@ -22,6 +22,7 @@
             <option value="$PROJECT_DIR$/feature/appointment" />
             <option value="$PROJECT_DIR$/feature/appointmenthistory" />
             <option value="$PROJECT_DIR$/feature/authentication" />
+            <option value="$PROJECT_DIR$/feature/backup" />
             <option value="$PROJECT_DIR$/feature/business" />
             <option value="$PROJECT_DIR$/feature/changepassword" />
             <option value="$PROJECT_DIR$/feature/client" />
@@ -32,7 +33,6 @@
             <option value="$PROJECT_DIR$/feature/webview" />
           </set>
         </option>
-        <option name="resolveExternalAnnotations" value="false" />
       </GradleProjectSettings>
     </option>
   </component>

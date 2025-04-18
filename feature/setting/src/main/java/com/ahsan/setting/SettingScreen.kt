@@ -72,9 +72,6 @@ fun SettingScreen(navController: NavController) {
     }
 }
 
-private const val s =
-    "Your cloud backup will stop if you choose to logout but your data will persist."
-
 @Composable
 fun SettingUI(settings: List<SettingRow>, isLoading: Boolean, email: String?, lastBackup: Date?, products: List<ProductDetails>, onBackupPress: () -> Unit, onLogoutPress:() -> Unit,
               onAccountDetailsPress: () -> Unit, onPrivacyPolicyPressed: (String) -> Unit, onAutoBackupSwitched: (Boolean) -> Unit,
@@ -113,6 +110,7 @@ fun SettingUI(settings: List<SettingRow>, isLoading: Boolean, email: String?, la
                                 R.string.login -> onLoginPress()
                                 R.string.business -> onBusinessPress()
                                 R.string.account_settings -> onAccountDetailsPress()
+                                R.string.go_pro -> onSubscribePress(products[0])
                                 R.string.backup_data -> onBackupPress()
                                 R.string.currency -> onCurrencyPress()
                                 R.string.privacy_policy -> onPrivacyPolicyPressed(

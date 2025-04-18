@@ -9,6 +9,7 @@ import com.ahsan.accountsettings.accountSettingsNavigation
 import com.ahsan.appointment.appointmentNavigation
 import com.ahsan.appointmenthistory.appointmentHistoryNavigation
 import com.ahsan.authentication.authenticationNavigation
+import com.ahsan.backup.backupNavigation
 import com.ahsan.business.createBusinessNavigation
 import com.ahsan.changepassword.changePasswordNavigation
 import com.ahsan.client.clientNavigation
@@ -33,6 +34,7 @@ fun AppNavHost(
             authenticationNavigation(navController)
             appointmentNavigation(navController)
             appointmentHistoryNavigation(navController)
+            backupNavigation(navController)
             createBusinessNavigation(navController)
             changePasswordNavigation(navController)
             homeNavigation(navController)

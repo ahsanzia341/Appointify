@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.ahsan.changepassword"
+    namespace = "com.ahsan.backup"
     compileSdk = 35
 
     defaultConfig {

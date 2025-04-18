@@ -7,7 +7,15 @@ jobs:
     name: Push to test
     runs-on: macos-latest
     steps:
+      - name: Decode Service Account Key JSON File
+        uses: timheuer/base64-to-file@v1
+        id: service_account_json_file
+        with:
+          fileName: "serviceAccount.json"
+          encodedString: ${{ secrets.SERVICEACCOUNTSECRET }}
+
       - uses: actions/checkout@v4
       - run: fastlane deployToAlpha
         env:
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          ANDROID_JSON_KEY_FILE: ${{ steps.service_account_json_file.outputs.filePath }}

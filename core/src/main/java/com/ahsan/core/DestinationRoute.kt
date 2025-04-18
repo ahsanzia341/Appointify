@@ -10,6 +10,9 @@ sealed class AppRoute {
     data object WelcomeRoute : AppRoute()
 
     @Serializable
+    data object BackupRoute : AppRoute()
+
+    @Serializable
     data object HomeRoute : AppRoute()
 
     @Serializable
