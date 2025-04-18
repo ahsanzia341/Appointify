@@ -1,4 +1,4 @@
-package com.ahsan.theme
+package com.ahsan.composable
 
 import androidx.compose.ui.graphics.Color
 

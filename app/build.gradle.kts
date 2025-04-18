@@ -74,7 +74,6 @@ dependencies {
     ksp(libs.hilt.compiler)
     implementation(project(mapOf("path" to ":core")))
     implementation(project(mapOf("path" to ":common:composable")))
-    implementation(project(mapOf("path" to ":common:theme")))
     implementation(project(mapOf("path" to ":feature:accountsettings")))
     implementation(project(mapOf("path" to ":feature:authentication")))
     implementation(project(mapOf("path" to ":feature:backup")))

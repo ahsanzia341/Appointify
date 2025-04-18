@@ -1,4 +1,4 @@
-package com.ahsan.smartappointment.ui.theme
+package com.ahsan.composable.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

@@ -25,8 +25,9 @@ import com.ahsan.core.AppRoute.HomeRoute
 import com.ahsan.core.AppRoute.ServiceListRoute
 import com.ahsan.core.AppRoute.SettingsRoute
 import com.ahsan.core.AppRoute.WelcomeRoute
-import com.ahsan.smartappointment.ui.theme.SmartAppointmentTheme
 import dagger.hilt.android.AndroidEntryPoint
+import androidx.core.content.edit
+import com.ahsan.composable.theme.SmartAppointmentTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -42,7 +43,7 @@ class MainActivity : ComponentActivity() {
             var startDestination: Any = HomeRoute
             if (sharedPref.getString("isFirstTime", "true") == "true") {
                 startDestination = WelcomeRoute
-                sharedPref.edit().putString("isFirstTime", "false").apply()
+                sharedPref.edit { putString("isFirstTime", "false") }
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0)

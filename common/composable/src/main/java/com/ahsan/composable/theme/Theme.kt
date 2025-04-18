@@ -1,4 +1,4 @@
-package com.ahsan.smartappointment.ui.theme
+package com.ahsan.composable.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -10,17 +10,18 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import com.ahsan.composable.PrimaryColor
 
 private val DarkColorScheme = darkColorScheme(
-    primary = com.ahsan.theme.PrimaryColor,
-    secondary = com.ahsan.theme.PrimaryColor,
-    tertiary = com.ahsan.theme.PrimaryColor
+    primary = PrimaryColor,
+    secondary = PrimaryColor,
+    tertiary = PrimaryColor
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = com.ahsan.theme.PrimaryColor,
-    secondary = com.ahsan.theme.PrimaryColor,
-    tertiary = com.ahsan.theme.PrimaryColor,
+    primary = PrimaryColor,
+    secondary = PrimaryColor,
+    tertiary = PrimaryColor,
     background = Color.White,
     onBackground = Color.Black,
 
@@ -38,7 +39,6 @@ private val LightColorScheme = lightColorScheme(
 @Composable
 fun SmartAppointmentTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {

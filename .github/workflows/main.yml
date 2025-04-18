@@ -17,5 +17,4 @@ jobs:
       - uses: actions/checkout@v4
       - run: fastlane deployToAlpha
         env:
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
           ANDROID_JSON_KEY_FILE: ${{ steps.service_account_json_file.outputs.filePath }}
