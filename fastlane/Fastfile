@@ -1,14 +1,13 @@
 # Uncomment the line if you want fastlane to automatically update itself
-update_fastlane
+#update_fastlane
 
 default_platform(:android)
 
 platform :android do
-  
   desc "Deploy a new version to closed testing"
   lane :deployToAlpha do
     setup_ci
-    increment_version_code(gradle_file_path: "../app/build.gradle.kts")
+    increment_version_code()
     store_password = "TestPassword1@"
     key_password = "TestPassword1@"
     releaseFilePath = "../store_keystore"
