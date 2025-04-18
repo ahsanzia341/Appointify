@@ -1,7 +1,14 @@
 package com.ahsan.data.repositories
 
+import android.Manifest
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
-import androidx.core.net.toUri
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.core.app.ActivityCompat
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.work.CoroutineWorker
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
@@ -23,6 +30,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.tasks.await
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import androidx.core.content.edit
+import androidx.room.Room
 
 class SettingRepository @Inject constructor(@ApplicationContext private val context: Context,
     private val appDatabase: AppDatabase) {
@@ -40,24 +49,41 @@ class SettingRepository @Inject constructor(@ApplicationContext private val cont
         val appointmentsRef = firestore.collection(APPOINTMENT_COLLECTION)
         val servicesRef = firestore.collection(SERVICE_COLLECTION)
         val clientsRef = firestore.collection(CLIENT_COLLECTION)
-        appointmentsRef.get().await().documents.forEach {
+        appointmentsRef.whereEqualTo("userId", currentUser?.uid).get().await().documents.forEach {
             batch.delete(it.reference)
         }
-        servicesRef.get().await().documents.forEach {
+        servicesRef.whereEqualTo("userId", currentUser?.uid).get().await().documents.forEach {
             batch.delete(it.reference)
         }
-        clientsRef.get().await().documents.forEach {
+        clientsRef.whereEqualTo("userId", currentUser?.uid).get().await().documents.forEach {
             batch.delete(it.reference)
         }
-        appointmentsRef.add(appointments.map { it.userId = currentUser?.uid })
-        servicesRef.add(services.map { it.userId = currentUser?.uid })
-        clientsRef.add(clients.map { it.userId = currentUser?.uid })
+        if(appointments.isNotEmpty())
+            appointments.forEach {
+                if(it.userId == null){
+                    it.userId = currentUser?.uid
+                }
+                appointmentsRef.add(it)
+            }
+        if(services.isNotEmpty())
+            services.forEach{
+                if(it.userId == null){
+                    it.userId = currentUser?.uid
+                }
+                servicesRef.add(it)
+            }
+        if(clients.isNotEmpty())
+            clients.forEach {
+                if(it.userId == null){
+                    it.userId = currentUser?.uid
+                }
+                clientsRef.add(it)
+            }
+
         batch.commit()
         /*appDatabase.close()
         storageReference.child("DbBackups/${currentUser?.email}/user_db.db")
             .putFile(dbPath.toUri()).await()*/
-
-
     }
 
     suspend fun loadBackup() {
@@ -91,11 +117,9 @@ class SettingRepository @Inject constructor(@ApplicationContext private val cont
         }
     }
 
-
-
     fun setDefaultCurrency(currencyId: Int){
         val sharedPref = context.getSharedPreferences(Constant.SHARED_PREF_KEY, Context.MODE_PRIVATE)
-        sharedPref.edit().putInt(Constant.CURRENCY_ID, currencyId).apply()
+        sharedPref.edit { putInt(Constant.CURRENCY_ID, currencyId) }
     }
 
     fun getDefaultCurrency(): Int{
@@ -116,7 +140,7 @@ class SettingRepository @Inject constructor(@ApplicationContext private val cont
     }
 
     fun scheduleBackup() {
-        val request = PeriodicWorkRequestBuilder<ExpeditedWorker>(24, TimeUnit.MINUTES)
+        val request = PeriodicWorkRequestBuilder<ExpeditedWorker>(1, TimeUnit.DAYS)
             .addTag("backup")
             .build()
         WorkManager.getInstance(context).enqueue(request)
@@ -125,21 +149,53 @@ class SettingRepository @Inject constructor(@ApplicationContext private val cont
     fun cancelBackupSchedule(){
         WorkManager.getInstance(context).cancelAllWorkByTag("backup")
     }
-
 }
 
-class ExpeditedWorker @Inject constructor(appContext: Context, workerParams: WorkerParameters, private val appDatabase: AppDatabase):
+class ExpeditedWorker(appContext: Context, workerParams: WorkerParameters):
     CoroutineWorker(appContext, workerParams) {
 
-    private val storageReference = FirebaseStorage.getInstance().reference
-    private val currentUser = FirebaseAuth.getInstance().currentUser
-    private val dbPath = appContext.getDatabasePath("my_db")
-
-
     override suspend fun doWork(): Result {
-        appDatabase.close()
-        storageReference.child("DbBackups/${currentUser?.email}/user_db.db")
-            .putFile(dbPath.toUri()).await()
+        createNotificationChannel()
+        createNotification()
+        val appDatabase = Room.databaseBuilder(
+            context = applicationContext,
+            AppDatabase::class.java,
+            "my_db"
+        ).createFromAsset("my_db.db").build()
+
+        SettingRepository(context = applicationContext, appDatabase).backupData()
         return Result.success()
+    }
+
+    private fun createNotification() {
+        val builder = NotificationCompat.Builder(applicationContext, "0")
+            .setSmallIcon(com.ahsan.composable.R.mipmap.ic_launcher)
+            .setContentTitle("Backup")
+            .setContentText("Daily backup has been started")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+        with(NotificationManagerCompat.from(applicationContext)) {
+            if (ActivityCompat.checkSelfPermission(
+                    applicationContext,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                return
+            }
+            notify(0, builder.build())
+        }
+    }
+
+    private fun createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "New Channel"
+            val descriptionText = "New Channel"
+            val importance = NotificationManager.IMPORTANCE_DEFAULT
+            val channel = NotificationChannel("0", name, importance).apply {
+                description = descriptionText
+            }
+            val notificationManager: NotificationManager =
+                applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 }

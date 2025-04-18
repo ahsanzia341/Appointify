@@ -38,6 +38,7 @@ import com.ahsan.core.AppRoute.LoginRoute
 import com.ahsan.core.AppRoute.WebViewRoute
 import com.android.billingclient.api.ProductDetails
 import java.util.Date
+import androidx.core.content.edit
 
 @Composable
 fun SettingScreen(navController: NavController) {
@@ -108,6 +109,7 @@ fun SettingUI(settings: List<SettingRow>, isLoading: Boolean, email: String?, la
                                 R.string.login -> onLoginPress()
                                 R.string.business -> onBusinessPress()
                                 R.string.account_settings -> onAccountDetailsPress()
+                                R.string.backup_data -> onBackupPress()
                                 R.string.currency -> onCurrencyPress()
                                 R.string.privacy_policy -> onPrivacyPolicyPressed(
                                     "https://www.termsfeed.com/live/2b1724ab-a3a7-4bfa-b4aa-0573ee4abcf3"
@@ -122,7 +124,7 @@ fun SettingUI(settings: List<SettingRow>, isLoading: Boolean, email: String?, la
                             backupState
                         ) { checked ->
                             onAutoBackupSwitched(checked)
-                            sharedPref.edit().putBoolean(Constant.IS_AUTO_BACKUP, checked).apply()
+                            sharedPref.edit { putBoolean(Constant.IS_AUTO_BACKUP, checked) }
                         }
                     }
                 }
