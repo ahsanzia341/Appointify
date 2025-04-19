@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -26,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ahsan.composable.ConfirmationDialog
 import com.ahsan.composable.R
+import com.ahsan.composable.ThemeCard
 import com.ahsan.composable.ThemeFloatingActionButton
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.TopBar
@@ -122,7 +122,7 @@ fun HomeUI(list: List<AppointmentAndClient>, onAddClicked: () -> Unit, onItemCli
 
 @Composable
 fun AppointmentRow(appointmentAndClient: AppointmentAndClient, onClick: () -> Unit) {
-    Card(modifier = Modifier.padding(8.dp)) {
+    ThemeCard {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier
             .padding(8.dp)
             .clickable {

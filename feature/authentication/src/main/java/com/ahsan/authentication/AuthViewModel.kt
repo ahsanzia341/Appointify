@@ -83,7 +83,7 @@ class AuthViewModel @Inject constructor(
             emailValidationError = context.getString(com.ahsan.composable.R.string.email_error)
         }
         if(Validator.isPasswordEmpty(password)){
-            passwordValidationError = context.getString(com.ahsan.composable.R.string.password_required)
+            passwordValidationError = context.getString(com.ahsan.composable.R.string.password_error)
         }
         if(passwordValidationError.isEmpty() && emailValidationError.isEmpty()){
             login(email, password)

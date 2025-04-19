@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.ahsan.business"
+    namespace = "com.ahsan.businessdetail"
     compileSdk = 35
 
     defaultConfig {

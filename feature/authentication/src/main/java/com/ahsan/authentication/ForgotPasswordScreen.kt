@@ -25,7 +25,7 @@ import com.ahsan.composable.TopBar
 fun ForgotPasswordScreen(navController: NavController) {
     val viewModel = hiltViewModel<AuthViewModel>()
     val viewState by viewModel.viewState.collectAsState()
-    ForgotPasswordUI(viewState?.error ?: "", viewState?.emailValidationError ?: "", viewState?.isLoading == true, onSubmit = {
+    ForgotPasswordUI(viewState?.error ?: "", viewState?.isLoading == true, onSubmit = {
         viewModel.onTriggerEvent(AuthEvent.ForgotPassword(it))
     }){
         navController.popBackStack()
@@ -33,7 +33,7 @@ fun ForgotPasswordScreen(navController: NavController) {
 }
 
 @Composable
-fun ForgotPasswordUI(error: String, emailValidationError: String, isLoading: Boolean, onSubmit: (String) -> Unit, onBackPress: () -> Unit){
+fun ForgotPasswordUI(error: String, isLoading: Boolean, onSubmit: (String) -> Unit, onBackPress: () -> Unit){
     Scaffold(topBar = {
         TopBar(title = stringResource(id = com.ahsan.composable.R.string.forgot_password), onClickNavIcon = {
             onBackPress()
@@ -43,7 +43,7 @@ fun ForgotPasswordUI(error: String, emailValidationError: String, isLoading: Boo
             mutableStateOf("")
         }
         Column(Modifier.padding(padding), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            EmailTextField(emailValidationError) {
+            EmailTextField {
                 email = it
             }
             ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.submit), enabled = !isLoading) {
@@ -57,5 +57,5 @@ fun ForgotPasswordUI(error: String, emailValidationError: String, isLoading: Boo
 @Composable
 @Preview
 fun ForgotPasswordPreview(){
-    ForgotPasswordUI("Error", "", false, onSubmit = {}){}
+    ForgotPasswordUI("Error", false, onSubmit = {}){}
 }

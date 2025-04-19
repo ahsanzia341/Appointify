@@ -1,5 +1,6 @@
 package com.ahsan.client
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,6 +13,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -29,11 +32,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ahsan.composable.ConfirmationDialog
+import com.ahsan.composable.PrimaryColor
 import com.ahsan.composable.R
+import com.ahsan.composable.ThemeCard
 import com.ahsan.composable.ThemeFloatingActionButton
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.ThemeTextField
 import com.ahsan.composable.TopBar
+import com.ahsan.composable.theme.SmartAppointmentTheme
 import com.ahsan.core.AppRoute.CreateClientRoute
 import com.ahsan.data.models.Client
 
@@ -120,17 +126,17 @@ fun ClientListUI(list: List<Client>, onFilterTextChanged: (String) -> Unit, onIt
 
 @Composable
 fun ClientRow(client: Client, onDeleteClicked: () -> Unit, onItemClicked: () -> Unit){
-    Card(modifier = Modifier
-        .padding(8.dp)
-        .fillMaxWidth().clickable {
+    ThemeCard (
+        modifier = Modifier.fillMaxWidth().clickable {
             onItemClicked()
-        }) {
+        }
+    ) {
         Box(
             Modifier
                 .fillMaxWidth()
                 .padding(8.dp)){
             Column(modifier = Modifier
-                .padding(8.dp)) {
+                .padding(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 ThemeText(text = client.name)
                 ThemeText(text = client.phoneNumber)
             }
@@ -146,9 +152,12 @@ fun ClientRow(client: Client, onDeleteClicked: () -> Unit, onItemClicked: () -> 
 @Composable
 @Preview
 fun ClientListPreview(){
-    ClientListUI(listOf(Client(0, "Test name", "12345")), onFilterTextChanged = {
+    SmartAppointmentTheme {
+        ClientListUI(listOf(Client(0, "Test name", "12345")), onFilterTextChanged = {
 
-    }, onItemClicked = {
+        }, onItemClicked = {
 
-    }, onDeleteClicked = {}){}
+        }, onDeleteClicked = {}){}
+    }
+
 }

@@ -74,23 +74,24 @@ fun ThemeTextField(modifier: Modifier = Modifier, label: String = "", value: Str
 }
 
 @Composable
-fun RequiredTextField(label: String, value: String, onChanged: (text: String) -> Unit){
-    ThemeTextField(label = label.ifEmpty { label }, value = value, keyboardType = KeyboardType.Password, errorMessage = if(value.isEmpty()) stringResource(
+fun RequiredTextField(label: String, value: String, keyboardType: KeyboardType = KeyboardType.Text, onChanged: (text: String) -> Unit){
+    ThemeTextField(label = label.ifEmpty { label }, value = value, keyboardType = keyboardType, errorMessage = if(value.isEmpty()) stringResource(
         id = R.string.field_required, label) else "") {
         onChanged(it)
     }
 }
 
 @Composable
-fun PasswordTextField(errorMessage: String = "", label: String = "", onChanged: (text: String) -> Unit){
-    ThemeTextField(label = label.ifEmpty { stringResource(id = R.string.password) }, keyboardType = KeyboardType.Password, errorMessage = errorMessage) {
+fun PasswordTextField(label: String = "", onChanged: (text: String) -> Unit){
+    //"Password must be of at least length 5"
+    RequiredTextField(label =  stringResource(id = R.string.password), keyboardType = KeyboardType.Password, value = "") {
         onChanged(it)
     }
 }
 
 @Composable
-fun EmailTextField(errorMessage: String = "", onChanged: (text: String) -> Unit){
-    ThemeTextField(label = stringResource(id = R.string.email), keyboardType = KeyboardType.Email, errorMessage = errorMessage) {
+fun EmailTextField(onChanged: (text: String) -> Unit){
+    RequiredTextField(label = stringResource(id = R.string.email), keyboardType = KeyboardType.Email, value = "") {
         onChanged(it)
     }
 }

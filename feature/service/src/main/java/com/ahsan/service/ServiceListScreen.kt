@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -29,11 +30,14 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ahsan.composable.ConfirmationDialog
+import com.ahsan.composable.PrimaryColor
 import com.ahsan.composable.R
+import com.ahsan.composable.ThemeCard
 import com.ahsan.composable.ThemeFloatingActionButton
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.ThemeTextField
 import com.ahsan.composable.TopBar
+import com.ahsan.composable.theme.SmartAppointmentTheme
 import com.ahsan.core.AppRoute.ServiceCreateRoute
 import com.ahsan.data.models.Currency
 import com.ahsan.data.models.Service
@@ -120,13 +124,15 @@ fun ServiceListUI(list: List<ServiceAndCurrency>, onDeleteClicked: (ServiceAndCu
 }
 
 @Composable
-fun ServiceItem(service: ServiceAndCurrency, onDeleteClicked: () -> Unit, onServiceClick: () -> Unit){
-    Card(modifier = Modifier.padding(8.dp)) {
+fun ServiceItem(service: ServiceAndCurrency, onDeleteClicked: () -> Unit, onServiceClick: () -> Unit) {
+    ThemeCard {
         Box(
             Modifier
                 .fillMaxWidth()
-                .padding(8.dp)) {
-            Column(verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier
+                .padding(8.dp)
+        ) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier
                 .fillMaxWidth()
                 .clickable {
                     onServiceClick()
@@ -135,18 +141,22 @@ fun ServiceItem(service: ServiceAndCurrency, onDeleteClicked: () -> Unit, onServ
                 ThemeText(text = service.service.name)
                 ThemeText(text = "${service.currency.symbol}${service.service.price}")
             }
-            Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete", modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .clickable {
-                    onDeleteClicked()
-                })
+            Icon(
+                imageVector = Icons.Default.Delete,
+                contentDescription = "Delete",
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .clickable {
+                        onDeleteClicked()
+                    })
         }
     }
-
 }
 
 @Composable
 @Preview
 fun ServiceListPreview(){
-    ServiceListUI(listOf(ServiceAndCurrency(Service(0, "Test", 10.0, 0), Currency(0, "", ""))), {}, {}, onServiceClick = {}, onAddClick = {})
+    SmartAppointmentTheme {
+        ServiceListUI(listOf(ServiceAndCurrency(Service(0, "Test", 10.0, 0), Currency(0, "", ""))), {}, {}, onServiceClick = {}, onAddClick = {})
+    }
 }

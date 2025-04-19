@@ -50,7 +50,7 @@ fun ChangePasswordUI(isLoading: Boolean, onSubmitPress: (String) -> Unit, onBack
                 var password by remember {
                     mutableStateOf("")
                 }
-                PasswordTextField(if(password.length < 6) "Password must be of at least length 5" else "", "New password") {
+                PasswordTextField( "New password") {
                     password = it
                 }
                 ThemeButton(text = stringResource(id = R.string.submit)) {

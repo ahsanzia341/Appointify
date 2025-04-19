@@ -60,7 +60,7 @@ fun RegisterUI(error: String, emailValidationError: String, passwordValidationEr
                 .padding(padding), verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            EmailTextField(emailValidationError) {
+            EmailTextField {
                 email = it
             }
             PasswordTextField(passwordValidationError) {

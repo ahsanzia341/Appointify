@@ -1,6 +1,9 @@
 package com.ahsan.backup
 
-data class ViewState(val isLoading: Boolean = false, val isSubmitted: Boolean = false)
+import java.util.Date
+
+data class ViewState(val lastBackupDate: Date)
 
 sealed class BackupEvent {
+    data object BackupData: BackupEvent()
 }

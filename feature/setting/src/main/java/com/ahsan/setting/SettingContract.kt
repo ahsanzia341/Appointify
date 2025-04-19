@@ -9,7 +9,6 @@ import java.util.Date
 data class ViewState(val settings: List<SettingRow>, val isLoading: Boolean = true, val email: String? = null, val lastBackupDate: Date? = null, val billingProducts: List<ProductDetails>? = null)
 
 sealed class SettingEvent{
-    data object BackupData: SettingEvent()
     data object Logout: SettingEvent()
     data object IsLoggedIn: SettingEvent()
     data object ScheduleBackup: SettingEvent()

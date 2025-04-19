@@ -60,22 +60,22 @@ class SettingRepository @Inject constructor(@ApplicationContext private val cont
         }
         if(appointments.isNotEmpty())
             appointments.forEach {
-                if(it.userId == null){
-                    it.userId = currentUser?.uid
+                if(it.businessId == null){
+                    it.businessId = currentUser?.uid
                 }
                 appointmentsRef.add(it)
             }
         if(services.isNotEmpty())
             services.forEach{
-                if(it.userId == null){
-                    it.userId = currentUser?.uid
+                if(it.businessId == null){
+                    it.businessId = currentUser?.uid
                 }
                 servicesRef.add(it)
             }
         if(clients.isNotEmpty())
             clients.forEach {
-                if(it.userId == null){
-                    it.userId = currentUser?.uid
+                if(it.businessId == null){
+                    it.businessId = currentUser?.uid
                 }
                 clientsRef.add(it)
             }

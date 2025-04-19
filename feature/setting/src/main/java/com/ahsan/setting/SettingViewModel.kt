@@ -28,7 +28,6 @@ class SettingViewModel @Inject constructor(private val backupUseCase: PostBackup
     private val launchBillingUseCase: LaunchBillingUseCase): BaseViewModel<ViewState, SettingEvent>() {
     override fun onTriggerEvent(event: SettingEvent) {
         when (event) {
-            SettingEvent.BackupData -> backupData()
             SettingEvent.Logout -> logout()
             SettingEvent.IsLoggedIn -> isLoggedIn()
             SettingEvent.CancelScheduleBackup -> cancelScheduleBackup()
@@ -36,14 +35,6 @@ class SettingViewModel @Inject constructor(private val backupUseCase: PostBackup
             SettingEvent.LoadBackup -> loadBackup()
             SettingEvent.DeleteAccount -> deleteAccount()
             is SettingEvent.LaunchBillingFlow -> launchBilling(event.activity, event.productDetails)
-        }
-    }
-
-    private fun backupData() {
-        viewModelScope.launch {
-            updateState(ViewState(settings = settings, isLoading = true))
-            backupUseCase()
-            getLastBackupDate()
         }
     }
 

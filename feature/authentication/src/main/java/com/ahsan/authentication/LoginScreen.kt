@@ -80,7 +80,7 @@ fun LoginUI(error: String, emailValidationError: String, passwordValidationError
                 .padding(padding), verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            EmailTextField(emailValidationError) {
+            EmailTextField {
                 email = it
             }
             PasswordTextField(passwordValidationError) {

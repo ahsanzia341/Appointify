@@ -28,17 +28,14 @@ import androidx.navigation.NavController
 import com.ahsan.composable.ConfirmationDialog
 import com.ahsan.composable.R
 import com.ahsan.composable.SettingRowUI
-import com.ahsan.composable.SettingSwitchRowUI
 import com.ahsan.composable.TopBar
 import com.ahsan.core.AppRoute.AccountSettingRoute
-import com.ahsan.core.Constant
 import com.ahsan.core.AppRoute.CreateBusinessRoute
 import com.ahsan.core.AppRoute.CurrencyRoute
 import com.ahsan.core.AppRoute.LoginRoute
 import com.ahsan.core.AppRoute.WebViewRoute
+import com.ahsan.core.Constant
 import com.android.billingclient.api.ProductDetails
-import java.util.Date
-import androidx.core.content.edit
 
 @Composable
 fun SettingScreen(navController: NavController) {
@@ -49,15 +46,11 @@ fun SettingScreen(navController: NavController) {
         viewModel.onTriggerEvent(SettingEvent.IsLoggedIn)
     }
 
-    SettingUI(viewState?.settings ?: listOf(), viewState?.isLoading ?: true, viewState?.email, viewState?.lastBackupDate, viewState?.billingProducts ?: listOf(),
-        onBackupPress = {
-        viewModel.onTriggerEvent(SettingEvent.BackupData)
-    }, onLogoutPress = {
+    SettingUI(viewState?.settings ?: listOf(), viewState?.isLoading ?: true, viewState?.email, viewState?.billingProducts ?: listOf(),
+         onLogoutPress = {
         viewModel.onTriggerEvent(SettingEvent.Logout)
     }, onPrivacyPolicyPressed = {
         navController.navigate(WebViewRoute(it))
-    }, onAutoBackupSwitched = {
-        if(it) viewModel.onTriggerEvent(SettingEvent.ScheduleBackup) else viewModel.onTriggerEvent(SettingEvent.CancelScheduleBackup)
     }, onAccountDetailsPress = {
         navController.navigate(AccountSettingRoute)
     }, onCurrencyPress = {
@@ -73,17 +66,14 @@ fun SettingScreen(navController: NavController) {
 }
 
 @Composable
-fun SettingUI(settings: List<SettingRow>, isLoading: Boolean, email: String?, lastBackup: Date?, products: List<ProductDetails>, onBackupPress: () -> Unit, onLogoutPress:() -> Unit,
-              onAccountDetailsPress: () -> Unit, onPrivacyPolicyPressed: (String) -> Unit, onAutoBackupSwitched: (Boolean) -> Unit,
+fun SettingUI(settings: List<SettingRow>, isLoading: Boolean, email: String?, products: List<ProductDetails>, onLogoutPress:() -> Unit,
+              onAccountDetailsPress: () -> Unit, onPrivacyPolicyPressed: (String) -> Unit,
               onCurrencyPress: () -> Unit, onBusinessPress:() -> Unit, onSubscribePress: (ProductDetails) -> Unit, onLoginPress: () -> Unit) {
     val context = LocalContext.current
-    val sharedPref = context.getSharedPreferences(Constant.SHARED_PREF_KEY, Context.MODE_PRIVATE)
     var showConfirmation by remember {
         mutableStateOf(false)
     }
-    val backupState by remember {
-        mutableStateOf(sharedPref.getBoolean(Constant.IS_AUTO_BACKUP, false))
-    }
+
 
     Scaffold(topBar = {
         TopBar(title = stringResource(id = R.string.settings), navIcon = null)
@@ -111,7 +101,6 @@ fun SettingUI(settings: List<SettingRow>, isLoading: Boolean, email: String?, la
                                 R.string.business -> onBusinessPress()
                                 R.string.account_settings -> onAccountDetailsPress()
                                 R.string.go_pro -> onSubscribePress(products[0])
-                                R.string.backup_data -> onBackupPress()
                                 R.string.currency -> onCurrencyPress()
                                 R.string.privacy_policy -> onPrivacyPolicyPressed(
                                     "https://www.termsfeed.com/live/2b1724ab-a3a7-4bfa-b4aa-0573ee4abcf3"
@@ -119,14 +108,6 @@ fun SettingUI(settings: List<SettingRow>, isLoading: Boolean, email: String?, la
                                 R.string.feedback -> onLoginPress()
                                 R.string.logout -> onLogoutPress()
                             }
-                        }
-                    } else {
-                        SettingSwitchRowUI(
-                            text = stringResource(id = it.title),
-                            backupState
-                        ) { checked ->
-                            onAutoBackupSwitched(checked)
-                            sharedPref.edit { putBoolean(Constant.IS_AUTO_BACKUP, checked) }
                         }
                     }
                 }
@@ -152,7 +133,7 @@ fun SettingUI(settings: List<SettingRow>, isLoading: Boolean, email: String?, la
 @Preview
 fun SettingPreview(){
     MaterialTheme {
-        SettingUI(settings,false, null, Date(), listOf(), {}, {}, {}, {}, {}, {}, {}, {}){
+        SettingUI(settings,false, "", listOf(), {}, {}, {}, {}, {}, {}){
 
         }
     }

@@ -12,7 +12,7 @@ class BusinessRepository @Inject constructor() {
     suspend fun create(business: Business) {
         if(currentUser == null)
             return
-
+        business.ownerId = currentUser.uid
         FirebaseFirestore.getInstance().collection(FirestoreConstant.BUSINESS_COLLECTION).document(currentUser.uid).set(business).await()
     }
 

@@ -11,7 +11,7 @@ import java.util.Date
 ])
 data class Appointment(@PrimaryKey(autoGenerate = true) val appointmentId: Int = 0, val title: String = "", @ColumnInfo(index = true) val clientId: Int = 0,
                        val startDate: Date? = null, val endDate: Date? = null, val location: String = "", val notes: String = "",
-                       var status: AppointmentStatus = AppointmentStatus.NOT_STARTED, val createdAt: Date = Date(), var userId: String? = null)
+                       var status: AppointmentStatus = AppointmentStatus.NOT_STARTED, val createdAt: Date = Date(), var businessId: String? = null)
 
 enum class AppointmentStatus{
     NOT_STARTED,
