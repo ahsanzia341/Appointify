@@ -26,10 +26,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import com.ahsan.composable.EmailTextField
+import com.ahsan.composable.GoogleSignInButton
 import com.ahsan.composable.PasswordTextField
 import com.ahsan.composable.ThemeButton
+import com.ahsan.composable.ThemeHeaderText
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.TopBar
+import com.ahsan.composable.theme.SmartAppointmentTheme
 import com.ahsan.core.AppRoute.ForgotPasswordRoute
 import com.ahsan.core.AppRoute.HomeRoute
 import com.ahsan.core.AppRoute.RegisterRoute
@@ -40,29 +43,36 @@ fun LoginScreen(navController: NavController) {
     val viewState by viewModel.viewState.collectAsState()
     val context = LocalContext.current
     LaunchedEffect(key1 = viewState?.loginState) {
-        if(viewState?.loginState == true){
+        if (viewState?.loginState == true) {
             navController.navigate(route = HomeRoute)
         }
     }
-    LoginUI(viewState?.error ?: "", viewState?.emailValidationError ?: "", viewState?.passwordValidationError ?: "",
+    LoginUI(
+        viewState?.error ?: "",
         viewState?.isLoading == true,
         onRegisterClick = {
-            navController.navigate(RegisterRoute, NavOptions.Builder().setPopUpTo(RegisterRoute, true).build())
+            navController.navigate(
+                RegisterRoute,
+                NavOptions.Builder().setPopUpTo(RegisterRoute, true).build()
+            )
         }, onForgotPasswordClick = {
             navController.navigate(ForgotPasswordRoute)
         },
         onLoginPress = { email, password ->
-        viewModel.onTriggerEvent(AuthEvent.ValidateForLogin(context, email, password))
-    }) {
+            viewModel.onTriggerEvent(AuthEvent.ValidateForLogin(context, email, password))
+        }, onSignInWithGooglePressed = {
+            viewModel.onTriggerEvent(AuthEvent.SignInWithGoogle(context))
+        }) {
         navController.popBackStack()
     }
 }
 
 @Composable
-fun LoginUI(error: String, emailValidationError: String, passwordValidationError: String, isLoading: Boolean, onForgotPasswordClick: () -> Unit, onRegisterClick: () -> Unit,
-            onLoginPress: (String, String) -> Unit, onBackPress: () -> Unit) {
+fun LoginUI(error: String, isLoading: Boolean, onForgotPasswordClick: () -> Unit, onRegisterClick: () -> Unit,
+            onLoginPress: (String, String) -> Unit, onSignInWithGooglePressed: () -> Unit, onBackPress: () -> Unit) {
     Scaffold(topBar = {
-        TopBar(title = stringResource(id = com.ahsan.composable.R.string.login),
+        TopBar(
+            title = stringResource(id = com.ahsan.composable.R.string.login),
             onClickNavIcon = {
                 onBackPress()
             })
@@ -83,7 +93,7 @@ fun LoginUI(error: String, emailValidationError: String, passwordValidationError
             EmailTextField {
                 email = it
             }
-            PasswordTextField(passwordValidationError) {
+            PasswordTextField(false) {
                 password = it
             }
             TextButton(
@@ -103,24 +113,29 @@ fun LoginUI(error: String, emailValidationError: String, passwordValidationError
                 ThemeText(text = error, color = Color.Red)
 
             Row(verticalAlignment = Alignment.CenterVertically) {
-                ThemeText(text = "Don't have an account?")
+                ThemeText(text = stringResource(com.ahsan.composable.R.string.don_t_have_an_account))
                 TextButton(onClick = { onRegisterClick() }) {
                     Text(text = stringResource(id = com.ahsan.composable.R.string.register))
                 }
             }
-
+            ThemeHeaderText(text = "OR")
+            GoogleSignInButton {
+                onSignInWithGooglePressed()
+            }
         }
     }
 }
 
 @Composable
 @Preview
-fun LoginPreview(){
-    LoginUI("", "", "", false, onRegisterClick = {
+fun LoginPreview() {
+    SmartAppointmentTheme {
+        LoginUI("", false, onRegisterClick = {
 
-    }, onForgotPasswordClick = {}, onLoginPress = { _, _ ->
+        }, onForgotPasswordClick = {}, onLoginPress = { _, _ ->
 
-    }){
+        }, onSignInWithGooglePressed = {}) {
 
+        }
     }
 }

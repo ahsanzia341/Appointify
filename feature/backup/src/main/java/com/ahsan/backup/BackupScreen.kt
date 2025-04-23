@@ -27,12 +27,22 @@ import com.ahsan.composable.theme.SmartAppointmentTheme
 import com.ahsan.core.Constant
 import com.ahsan.core.extension.toEasyFormat
 import java.util.Date
+import androidx.core.content.edit
 
 @Composable
 fun BackupScreen(navController: NavController) {
     val viewModel = hiltViewModel<BackupViewModel>()
     val viewState by viewModel.viewState.collectAsState()
-    BackupUI(viewState?.lastBackupDate, {}, {}) {
+    BackupUI(viewState?.lastBackupDate, {
+        if(it){
+            viewModel.onTriggerEvent(BackupEvent.ScheduleBackup)
+        }
+        else{
+            viewModel.onTriggerEvent(BackupEvent.CancelScheduleBackup)
+        }
+    }, {
+        viewModel.onTriggerEvent(BackupEvent.BackupData)
+    }) {
         navController.popBackStack()
     }
 }
@@ -54,6 +64,7 @@ fun BackupUI(lastBackupDate: Date?, onAutoBackupSwitched: (Boolean) -> Unit, onB
             }
             ThemeSwitch(stringResource(R.string.automatic_daily_backup)) {
                 backupState = it
+                sharedPref.edit { putBoolean(Constant.IS_AUTO_BACKUP, it) }
                 onAutoBackupSwitched(it)
             }
         }

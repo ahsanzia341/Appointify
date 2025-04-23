@@ -24,6 +24,7 @@ import com.ahsan.composable.PasswordTextField
 import com.ahsan.composable.TopBar
 import com.ahsan.composable.R
 import com.ahsan.composable.ThemeButton
+import com.ahsan.composable.theme.SmartAppointmentTheme
 
 @Composable
 fun ChangePasswordScreen(navController: NavController) {
@@ -50,13 +51,11 @@ fun ChangePasswordUI(isLoading: Boolean, onSubmitPress: (String) -> Unit, onBack
                 var password by remember {
                     mutableStateOf("")
                 }
-                PasswordTextField( "New password") {
+                PasswordTextField( true) {
                     password = it
                 }
                 ThemeButton(text = stringResource(id = R.string.submit)) {
-                    if(password.length > 5){
-                        onSubmitPress(password)
-                    }
+                    onSubmitPress(password)
                 }
             }
         }
@@ -66,7 +65,9 @@ fun ChangePasswordUI(isLoading: Boolean, onSubmitPress: (String) -> Unit, onBack
 @Composable
 @Preview
 fun Preview(){
-    ChangePasswordUI(false, onSubmitPress = {
+    SmartAppointmentTheme {
+        ChangePasswordUI(false, onSubmitPress = {
 
-    }){}
+        }){}
+    }
 }

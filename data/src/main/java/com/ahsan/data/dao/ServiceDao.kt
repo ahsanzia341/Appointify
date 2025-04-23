@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.ahsan.data.models.Appointment
+import com.ahsan.data.models.Client
 import com.ahsan.data.models.Service
 import com.ahsan.data.models.ServiceAndCurrency
 
@@ -30,6 +31,9 @@ interface ServiceDao {
 
     @Query("Select Count() from service")
     suspend fun getServiceCount(): Int
+
+    @Query("Select * from service where isSynchronized == 0")
+    suspend fun getAllUnSynchronized(): List<Service>
 
     @Insert
     suspend fun insert(service: Service)

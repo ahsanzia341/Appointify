@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ahsan.composable.theme.SmartAppointmentTheme
 
 @Composable
 fun ThemeButton(modifier: Modifier = Modifier, text: String, enabled: Boolean = true, onClick: () -> Unit) {
@@ -49,5 +50,8 @@ fun GoogleSignInButton(onClick: () -> Unit){
 @Preview
 @Composable
 fun ThemeButtonPreview(){
-    GoogleSignInButton() {  }
+    SmartAppointmentTheme {
+        GoogleSignInButton() {  }
+    }
+
 }

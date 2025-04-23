@@ -19,6 +19,9 @@ interface ClientDao {
     @Query("Select Count() from client")
     suspend fun getClientCount(): Int
 
+    @Query("Select * from client where isSynchronized == 0")
+    suspend fun getAllUnSynchronized(): List<Client>
+
     @Insert
     suspend fun insert(client: Client)
 
@@ -30,6 +33,9 @@ interface ClientDao {
 
     @Update
     suspend fun update(client: Client)
+
+    @Update
+    suspend fun updateList(clients: List<Client>)
 
     @Query("Delete from client")
     suspend fun deleteAll()

@@ -9,77 +9,75 @@ import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.edit
+import androidx.room.Room
 import androidx.work.CoroutineWorker
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.ahsan.core.Constant
 import com.ahsan.core.FirestoreConstant.APPOINTMENT_COLLECTION
+import com.ahsan.core.FirestoreConstant.BACKUP_DATE_COLLECTION
+import com.ahsan.core.FirestoreConstant.BUSINESS_COLLECTION
 import com.ahsan.core.FirestoreConstant.CLIENT_COLLECTION
 import com.ahsan.core.FirestoreConstant.SERVICE_COLLECTION
 import com.ahsan.data.AppDatabase
 import com.ahsan.data.models.Appointment
+import com.ahsan.data.models.Business
 import com.ahsan.data.models.Client
 import com.ahsan.data.models.Service
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.tasks.await
+import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import androidx.core.content.edit
-import androidx.room.Room
 
 class SettingRepository @Inject constructor(@ApplicationContext private val context: Context,
     private val appDatabase: AppDatabase) {
 
-    //private val dbPath = context.getDatabasePath("my_db")
-    private val storageReference = FirebaseStorage.getInstance().reference
     private val currentUser = FirebaseAuth.getInstance().currentUser
     private val firestore = FirebaseFirestore.getInstance()
 
     suspend fun backupData() {
         val batch = firestore.batch()
-        val appointments = appDatabase.getAppointmentDao().getAll()
-        val clients = appDatabase.getClientDao().getAll()
-        val services = appDatabase.getServiceDao().getAll()
-        val appointmentsRef = firestore.collection(APPOINTMENT_COLLECTION)
-        val servicesRef = firestore.collection(SERVICE_COLLECTION)
-        val clientsRef = firestore.collection(CLIENT_COLLECTION)
-        appointmentsRef.whereEqualTo("userId", currentUser?.uid).get().await().documents.forEach {
-            batch.delete(it.reference)
+        val appointments = appDatabase.getAppointmentDao().getAllUnSynchronized()
+        val clients = appDatabase.getClientDao().getAllUnSynchronized()
+        val services = appDatabase.getServiceDao().getAllUnSynchronized()
+        val appointmentsRef = firestore.collection(APPOINTMENT_COLLECTION).document()
+        val servicesRef = firestore.collection(SERVICE_COLLECTION).document()
+        val clientsRef = firestore.collection(CLIENT_COLLECTION).document()
+        val businessRef =
+            firestore.collection(BUSINESS_COLLECTION).whereEqualTo("ownerId", currentUser?.uid)
+                .get().await()
+        val backupDatesRef = firestore.collection(BACKUP_DATE_COLLECTION)
+        if (currentUser == null) {
+            return
         }
-        servicesRef.whereEqualTo("userId", currentUser?.uid).get().await().documents.forEach {
-            batch.delete(it.reference)
-        }
-        clientsRef.whereEqualTo("userId", currentUser?.uid).get().await().documents.forEach {
-            batch.delete(it.reference)
-        }
-        if(appointments.isNotEmpty())
+        businessRef.documents.forEach { business ->
+            batch.set(
+                backupDatesRef.document(currentUser.uid),
+                hashMapOf("lastBackupDate" to Date())
+            )
             appointments.forEach {
-                if(it.businessId == null){
-                    it.businessId = currentUser?.uid
-                }
-                appointmentsRef.add(it)
+                if (it.businessId == null)
+                    it.businessId = business.id
+                batch.set(appointmentsRef, it)
             }
-        if(services.isNotEmpty())
-            services.forEach{
-                if(it.businessId == null){
-                    it.businessId = currentUser?.uid
+            services.forEach {
+                if (it.businessId == null) {
+                    it.businessId = currentUser.uid
                 }
-                servicesRef.add(it)
+                batch.set(servicesRef, it)
             }
-        if(clients.isNotEmpty())
             clients.forEach {
-                if(it.businessId == null){
-                    it.businessId = currentUser?.uid
+                if (it.businessId == null) {
+                    it.businessId = currentUser.uid
                 }
-                clientsRef.add(it)
+                batch.set(clientsRef, it)
             }
-
+        }
         batch.commit()
         /*appDatabase.close()
         storageReference.child("DbBackups/${currentUser?.email}/user_db.db")
@@ -87,34 +85,27 @@ class SettingRepository @Inject constructor(@ApplicationContext private val cont
     }
 
     suspend fun loadBackup() {
-        /*val dbPath = context.getDatabasePath("my_db")
-        appDatabase.close()
-        try{
-            storageReference.child("DbBackups/${currentUser?.email}/user_db.db")
-                .getFile(dbPath).await()
+        val businessCollection = firestore.collection(BUSINESS_COLLECTION).whereEqualTo("ownerId", currentUser?.uid).get().await().toObjects(Business::class.java)
+        businessCollection.forEach {
+            val appointments = firestore.collection(APPOINTMENT_COLLECTION).whereEqualTo("businessId", it.id).get().await().toObjects(Appointment::class.java)
+            val clients = firestore.collection(CLIENT_COLLECTION).whereEqualTo("businessId", it.id).get().await().toObjects(Client::class.java)
+            val services = firestore.collection(SERVICE_COLLECTION).whereEqualTo("businessId", it.id).get().await().toObjects(Service::class.java)
+            appDatabase.getAppointmentDao().insertAll(appointments)
+            appDatabase.getServiceDao().insertAll(services)
+            appDatabase.getClientDao().insertAll(clients)
         }
-        catch (e: Exception){
-            e.printStackTrace()
-        }
-        appDatabase.getAppointmentDao().deleteAll()
-        appDatabase.getServiceDao().deleteAll()
-        appDatabase.getClientDao().deleteAll()*/
 
-        val appointments = firestore.collection(APPOINTMENT_COLLECTION).whereEqualTo("userId", currentUser?.uid).get().await().toObjects(Appointment::class.java)
-        val clients = firestore.collection(CLIENT_COLLECTION).whereEqualTo("userId", currentUser?.uid).get().await().toObjects(Client::class.java)
-        val services = firestore.collection(SERVICE_COLLECTION).whereEqualTo("userId", currentUser?.uid).get().await().toObjects(Service::class.java)
-        appDatabase.getAppointmentDao().insertAll(appointments)
-        appDatabase.getServiceDao().insertAll(services)
-        appDatabase.getClientDao().insertAll(clients)
     }
 
     suspend fun getLastBackupDate(): Long? {
-        return try{
-            storageReference.child("DbBackups/${currentUser?.email}/user_db.db")
-                .metadata.await().updatedTimeMillis
-        } catch(e: Exception){
-            null
-        }
+        if (currentUser != null)
+            return try {
+                firestore.collection(BACKUP_DATE_COLLECTION).document(currentUser.uid).get().await()
+                    .get("lastBackupDate", Date::class.java)?.time
+            } catch (e: Exception) {
+                null
+            }
+        return null
     }
 
     fun setDefaultCurrency(currencyId: Int){
@@ -125,18 +116,6 @@ class SettingRepository @Inject constructor(@ApplicationContext private val cont
     fun getDefaultCurrency(): Int{
         val sharedPref = context.getSharedPreferences(Constant.SHARED_PREF_KEY, Context.MODE_PRIVATE)
         return sharedPref.getInt(Constant.CURRENCY_ID, 1)
-    }
-
-    fun hasBackup(): Flow<Boolean?> {
-        val backupFoundState = MutableStateFlow<Boolean?>(null)
-        storageReference.child("DbBackups/${currentUser?.email}/user_db.db")
-            .downloadUrl.addOnSuccessListener {
-                backupFoundState.value = true
-            }
-            .addOnFailureListener {
-                backupFoundState.value = false
-            }
-        return backupFoundState
     }
 
     fun scheduleBackup() {

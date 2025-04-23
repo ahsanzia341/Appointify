@@ -8,7 +8,7 @@ import javax.inject.Inject
 class RegisterUseCase @Inject constructor(
     private val repository: AuthRepository,
 ) {
-    operator fun invoke(email: String, password: String): Flow<AuthUiState?>{
+    suspend operator fun invoke(email: String, password: String): Flow<AuthUiState?>{
         return repository.register(email, password)
     }
 }

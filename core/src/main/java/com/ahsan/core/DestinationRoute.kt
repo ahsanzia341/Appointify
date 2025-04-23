@@ -31,6 +31,9 @@ sealed class AppRoute {
     data object CreateBusinessRoute : AppRoute()
 
     @Serializable
+    data object BusinessDetailRoute: AppRoute()
+
+    @Serializable
     data object ServiceListRoute : AppRoute()
 
     @Serializable

@@ -27,6 +27,7 @@
             <option value="$PROJECT_DIR$/feature/changepassword" />
             <option value="$PROJECT_DIR$/feature/client" />
             <option value="$PROJECT_DIR$/feature/currency" />
+            <option value="$PROJECT_DIR$/feature/feedback" />
             <option value="$PROJECT_DIR$/feature/home" />
             <option value="$PROJECT_DIR$/feature/service" />
             <option value="$PROJECT_DIR$/feature/setting" />

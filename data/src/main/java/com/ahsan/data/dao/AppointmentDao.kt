@@ -9,6 +9,7 @@ import androidx.room.Update
 import com.ahsan.data.models.Appointment
 import com.ahsan.data.models.AppointmentAndClient
 import com.ahsan.data.models.AppointmentServiceCrossRef
+import com.ahsan.data.models.Service
 
 @Dao
 interface AppointmentDao {
@@ -26,6 +27,9 @@ interface AppointmentDao {
 
     @Query("Select * from appointment")
     suspend fun getAll(): List<Appointment>
+
+    @Query("Select * from appointment where isSynchronized == 0")
+    suspend fun getAllUnSynchronized(): List<Appointment>
 
     @Insert
     suspend fun insertServices(services: List<AppointmentServiceCrossRef>)

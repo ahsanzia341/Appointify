@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ahsan.core.Validator
 
 @Composable
 fun ThemeTextField(modifier: Modifier = Modifier, label: String = "", value: String = "", isReadOnly: Boolean = false,
@@ -73,26 +75,48 @@ fun ThemeTextField(modifier: Modifier = Modifier, label: String = "", value: Str
     }
 }
 
+
 @Composable
-fun RequiredTextField(label: String, value: String, keyboardType: KeyboardType = KeyboardType.Text, onChanged: (text: String) -> Unit){
-    ThemeTextField(label = label.ifEmpty { label }, value = value, keyboardType = keyboardType, errorMessage = if(value.isEmpty()) stringResource(
-        id = R.string.field_required, label) else "") {
+fun RequiredTextField(label: String, value: String = "", errorMessage: String? = null, keyboardType: KeyboardType = KeyboardType.Text, onChanged: (text: String) -> Unit){
+    val context = LocalContext.current
+    var error by remember { mutableStateOf("") }
+    ThemeTextField(label = label, value = value, keyboardType = keyboardType, errorMessage = error ?: "") {
         onChanged(it)
+        if(errorMessage == null && it.isEmpty()){
+            error = context.getString(R.string.field_required, label)
+        }
+        else{
+            error = errorMessage ?: ""
+        }
     }
 }
 
 @Composable
-fun PasswordTextField(label: String = "", onChanged: (text: String) -> Unit){
-    //"Password must be of at least length 5"
-    RequiredTextField(label =  stringResource(id = R.string.password), keyboardType = KeyboardType.Password, value = "") {
+fun PasswordTextField(isValidationRequired: Boolean = false, onChanged: (text: String) -> Unit){
+    val context = LocalContext.current
+
+    var errorMessage by remember {
+        mutableStateOf("")
+    }
+    RequiredTextField(label =  stringResource(id = R.string.password), errorMessage = errorMessage, keyboardType = KeyboardType.Password) {
         onChanged(it)
+        if(it.length < 5 && isValidationRequired) {
+            errorMessage = context.getString(R.string.password_error)
+        }
     }
 }
 
 @Composable
 fun EmailTextField(onChanged: (text: String) -> Unit){
-    RequiredTextField(label = stringResource(id = R.string.email), keyboardType = KeyboardType.Email, value = "") {
+    val context = LocalContext.current
+    var errorMessage by remember {
+        mutableStateOf("")
+    }
+    RequiredTextField(label = stringResource(id = R.string.email), keyboardType = KeyboardType.Email) {
         onChanged(it)
+        if(Validator.isValidEmail(it)){
+            errorMessage = context.getString(R.string.email_error)
+        }
     }
 }
 

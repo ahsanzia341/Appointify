@@ -25,6 +25,7 @@ import com.ahsan.composable.ThemeButton
 import com.ahsan.composable.ThemeTextField
 import com.ahsan.composable.TopBar
 import com.ahsan.composable.theme.SmartAppointmentTheme
+import com.ahsan.core.AppRoute
 import com.ahsan.data.models.Business
 
 @Composable
@@ -32,7 +33,7 @@ fun CreateBusinessScreen(navController: NavController) {
     val viewModel = hiltViewModel<CreateBusinessViewModel>()
     CreateBusinessUI({
         viewModel.onTriggerEvent(CreateBusinessEvent.CreateBusiness(it))
-        navController.popBackStack()
+        navController.navigate(AppRoute.BusinessDetailRoute)
     }) {
         navController.popBackStack()
     }

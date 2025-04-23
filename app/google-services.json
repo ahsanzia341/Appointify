@@ -12,7 +12,20 @@
           "package_name": "com.ahsan.smartappointment"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "260728293947-2nfrk6ebov0u8j0jrur10f2k0nqpvmnp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ahsan.smartappointment",
+            "certificate_hash": "dd49b7fcce269c11dc25907b60da5f17a955e961"
+          }
+        },
+        {
+          "client_id": "260728293947-045ipi5kh386gleh506q27f756j1o1us.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAXnxwpBuqIktuzDhdvrQrO-uniD_ELGhU"
@@ -20,7 +33,12 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "260728293947-045ipi5kh386gleh506q27f756j1o1us.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

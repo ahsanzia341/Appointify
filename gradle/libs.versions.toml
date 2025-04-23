@@ -25,6 +25,7 @@ kotlin-serialize = "1.7.3"
 kotlin-serialize-plugin = "2.0.21"
 navCompose = "2.8.4"
 material = "1.10.0"
+materialVersion = "1.12.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -58,7 +59,10 @@ firebase-storage = { group = "com.google.firebase", name = "firebase-storage", v
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson"}
 work-manager = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "work"}
 kotlin-serialization = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlin-serialize" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+credentials = {group = "androidx.credentials", name = "credentials", version = "1.5.0"}
+credentials-play = { group = "androidx.credentials", "name" = "credentials-play-services-auth", version = "1.5.0"}
+identity-google-id = { group = "com.google.android.libraries.identity.googleid", name ="googleid", version = "1.1.1"}
+material = { group = "com.google.android.material", name = "material", version.ref = "materialVersion" }
 
 [bundles]
 compose = [

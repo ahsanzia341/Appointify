@@ -54,21 +54,6 @@ fun SettingRowUI(text: String, isNextPage: Boolean = false, onClick: () -> Unit 
 }
 
 @Composable
-fun SettingSwitchRowUI(text: String, checkValue: Boolean, onCheckChanged: (Boolean) -> Unit){
-    BaseSettingRowUI(text = text) {
-        var checkChanged by remember {
-            mutableStateOf(checkValue)
-        }
-        Box(Modifier.fillMaxWidth()) {
-            Switch(checked = checkChanged, onCheckedChange = {
-                checkChanged = it
-                onCheckChanged(it)
-            }, modifier = Modifier.align(Alignment.CenterEnd))
-        }
-    }
-}
-
-@Composable
 @Preview
 fun PreviewSettingRowUI(){
     Column(Modifier.background(Color.White)) {

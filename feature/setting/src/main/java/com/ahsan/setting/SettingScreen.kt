@@ -1,6 +1,6 @@
 package com.ahsan.setting
 
-import android.content.Context
+import android.widget.Toast
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -19,7 +18,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -29,12 +27,13 @@ import com.ahsan.composable.ConfirmationDialog
 import com.ahsan.composable.R
 import com.ahsan.composable.SettingRowUI
 import com.ahsan.composable.TopBar
+import com.ahsan.composable.theme.SmartAppointmentTheme
+import com.ahsan.core.AppRoute
 import com.ahsan.core.AppRoute.AccountSettingRoute
 import com.ahsan.core.AppRoute.CreateBusinessRoute
 import com.ahsan.core.AppRoute.CurrencyRoute
 import com.ahsan.core.AppRoute.LoginRoute
 import com.ahsan.core.AppRoute.WebViewRoute
-import com.ahsan.core.Constant
 import com.android.billingclient.api.ProductDetails
 
 @Composable
@@ -46,34 +45,49 @@ fun SettingScreen(navController: NavController) {
         viewModel.onTriggerEvent(SettingEvent.IsLoggedIn)
     }
 
-    SettingUI(viewState?.settings ?: listOf(), viewState?.isLoading ?: true, viewState?.email, viewState?.billingProducts ?: listOf(),
-         onLogoutPress = {
-        viewModel.onTriggerEvent(SettingEvent.Logout)
-    }, onPrivacyPolicyPressed = {
-        navController.navigate(WebViewRoute(it))
-    }, onAccountDetailsPress = {
-        navController.navigate(AccountSettingRoute)
-    }, onCurrencyPress = {
-        navController.navigate(CurrencyRoute)
-    }, onSubscribePress = {
-        if(activity != null)
-        viewModel.onTriggerEvent(SettingEvent.LaunchBillingFlow(activity, it))
-    }, onBusinessPress = {
-        navController.navigate(CreateBusinessRoute)
-        }){
+    SettingUI(
+        viewState?.settings ?: listOf(),
+        viewState?.isLoading ?: true,
+        viewState?.email,
+        viewState?.billingProducts ?: listOf(),
+        onLogoutPress = {
+            viewModel.onTriggerEvent(SettingEvent.Logout)
+        },
+        onPrivacyPolicyPressed = {
+            navController.navigate(WebViewRoute(it))
+        },
+        onAccountDetailsPress = {
+            navController.navigate(AccountSettingRoute)
+        },
+        onCurrencyPress = {
+            navController.navigate(CurrencyRoute)
+        },
+        onSubscribePress = {
+            if (activity != null)
+                viewModel.onTriggerEvent(SettingEvent.LaunchBillingFlow(activity, it))
+        },
+        onBusinessPress = {
+            navController.navigate(CreateBusinessRoute)
+        },
+        onBackupPress = {
+            if(viewState?.isBusinessPresent == true){
+                navController.navigate(AppRoute.BackupRoute)
+            }
+            else{
+                Toast.makeText(activity, activity?.getString(R.string.please_add_your_business_details_before_creating_backup), Toast.LENGTH_LONG).show()
+            }
+        }) {
         navController.navigate(LoginRoute)
     }
 }
 
 @Composable
 fun SettingUI(settings: List<SettingRow>, isLoading: Boolean, email: String?, products: List<ProductDetails>, onLogoutPress:() -> Unit,
-              onAccountDetailsPress: () -> Unit, onPrivacyPolicyPressed: (String) -> Unit,
+              onAccountDetailsPress: () -> Unit, onPrivacyPolicyPressed: (String) -> Unit, onBackupPress: () -> Unit,
               onCurrencyPress: () -> Unit, onBusinessPress:() -> Unit, onSubscribePress: (ProductDetails) -> Unit, onLoginPress: () -> Unit) {
-    val context = LocalContext.current
     var showConfirmation by remember {
         mutableStateOf(false)
     }
-
 
     Scaffold(topBar = {
         TopBar(title = stringResource(id = R.string.settings), navIcon = null)
@@ -99,12 +113,14 @@ fun SettingUI(settings: List<SettingRow>, isLoading: Boolean, email: String?, pr
                             when (it.title) {
                                 R.string.login -> onLoginPress()
                                 R.string.business -> onBusinessPress()
+                                R.string.backup_data -> onBackupPress()
                                 R.string.account_settings -> onAccountDetailsPress()
                                 R.string.go_pro -> onSubscribePress(products[0])
                                 R.string.currency -> onCurrencyPress()
                                 R.string.privacy_policy -> onPrivacyPolicyPressed(
                                     "https://www.termsfeed.com/live/2b1724ab-a3a7-4bfa-b4aa-0573ee4abcf3"
                                 )
+
                                 R.string.feedback -> onLoginPress()
                                 R.string.logout -> onLogoutPress()
                             }
@@ -128,14 +144,12 @@ fun SettingUI(settings: List<SettingRow>, isLoading: Boolean, email: String?, pr
     }
 }
 
-
 @Composable
 @Preview
 fun SettingPreview(){
-    MaterialTheme {
-        SettingUI(settings,false, "", listOf(), {}, {}, {}, {}, {}, {}){
+    SmartAppointmentTheme {
+        SettingUI(settings,false, "", listOf(), {}, {}, {}, {}, {}, {}, {}){
 
         }
     }
-
 }
