@@ -25,7 +25,7 @@ android {
         applicationId = "com.ahsan.smartappointment"
         minSdk = 24
         targetSdk = 35
-        versionCode = 11
+        versionCode = 12
         versionName = "0.10"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
