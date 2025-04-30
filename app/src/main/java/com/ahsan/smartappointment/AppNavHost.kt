@@ -11,12 +11,15 @@ import com.ahsan.appointmenthistory.appointmentHistoryNavigation
 import com.ahsan.authentication.authenticationNavigation
 import com.ahsan.backup.backupNavigation
 import com.ahsan.business.createBusinessNavigation
+import com.ahsan.businessdetail.businessDetailNavigation
 import com.ahsan.changepassword.changePasswordNavigation
 import com.ahsan.client.clientNavigation
 import com.ahsan.currency.currencyNavigation
+import com.ahsan.feedback.feedbackNavigation
 import com.ahsan.home.homeNavigation
 import com.ahsan.service.serviceNavigation
 import com.ahsan.setting.settingNavigation
+import com.ahsan.teams.createTeamsNavigation
 import com.ahsan.webview.webViewNavigation
 
 /**
@@ -35,8 +38,11 @@ fun AppNavHost(
             appointmentNavigation(navController)
             appointmentHistoryNavigation(navController)
             backupNavigation(navController)
+            businessDetailNavigation(navController)
             createBusinessNavigation(navController)
+            createTeamsNavigation(navController)
             changePasswordNavigation(navController)
+            feedbackNavigation(navController)
             homeNavigation(navController)
             currencyNavigation(navController)
             clientNavigation(navController)

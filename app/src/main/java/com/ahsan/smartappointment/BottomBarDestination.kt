@@ -23,28 +23,38 @@ enum class BottomBarDestination(val route: Any,
                                 @StringRes val title: Int,
                                 val unFilledIcon: ImageVector,
                                 val filledIcon: ImageVector) {
-    HOME(route = HomeRoute,
+    HOME(
+        route = HomeRoute,
         title = com.ahsan.composable.R.string.home,
         unFilledIcon = Icons.Outlined.Home,
-        filledIcon = Icons.Filled.Home),
+        filledIcon = Icons.Filled.Home
+    ),
 
-    CLIENT(route = ClientListRoute,
-    title = com.ahsan.composable.R.string.client,
-    unFilledIcon = Icons.Outlined.Person,
-    filledIcon = Icons.Filled.Person),
+    CLIENT(
+        route = ClientListRoute,
+        title = com.ahsan.composable.R.string.client,
+        unFilledIcon = Icons.Outlined.Person,
+        filledIcon = Icons.Filled.Person
+    ),
 
-    SERVICE(route = ServiceListRoute,
-    title = com.ahsan.composable.R.string.service,
-    unFilledIcon = Icons.Outlined.MailOutline,
-    filledIcon = Icons.Filled.MailOutline),
+    SERVICE(
+        route = ServiceListRoute,
+        title = com.ahsan.composable.R.string.service,
+        unFilledIcon = Icons.Outlined.MailOutline,
+        filledIcon = Icons.Filled.MailOutline
+    ),
 
-    APPOINTMENT_HISTORY(route = AppointmentHistoryRoute,
-    title = com.ahsan.composable.R.string.history,
-    unFilledIcon = Icons.Outlined.DateRange,
-    filledIcon = Icons.Filled.DateRange),
+    APPOINTMENT_HISTORY(
+        route = AppointmentHistoryRoute,
+        title = com.ahsan.composable.R.string.history,
+        unFilledIcon = Icons.Outlined.DateRange,
+        filledIcon = Icons.Filled.DateRange
+    ),
 
-    SETTINGS(route = SettingsRoute,
-    title = com.ahsan.composable.R.string.settings,
-    unFilledIcon = Icons.Outlined.Settings,
-    filledIcon = Icons.Filled.Settings)
+    SETTINGS(
+        route = SettingsRoute,
+        title = com.ahsan.composable.R.string.settings,
+        unFilledIcon = Icons.Outlined.Settings,
+        filledIcon = Icons.Filled.Settings
+    )
 }

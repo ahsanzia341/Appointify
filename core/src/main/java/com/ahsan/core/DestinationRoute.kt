@@ -28,10 +28,13 @@ sealed class AppRoute {
     data object ChangePasswordRoute : AppRoute()
 
     @Serializable
-    data object CreateBusinessRoute : AppRoute()
+    data class CreateBusinessRoute(val isEdit: Boolean = false) : AppRoute()
 
     @Serializable
-    data object BusinessDetailRoute: AppRoute()
+    data class CreateTeamsRoute(val isEdit: Boolean = false) : AppRoute()
+
+    @Serializable
+    data object BusinessDetailRoute : AppRoute()
 
     @Serializable
     data object ServiceListRoute : AppRoute()
@@ -65,4 +68,7 @@ sealed class AppRoute {
 
     @Serializable
     data object ServiceCreateRoute : AppRoute()
+
+    @Serializable
+    data object FeedbackRoute : AppRoute()
 }

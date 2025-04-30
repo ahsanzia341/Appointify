@@ -55,8 +55,11 @@ class AuthRepository @Inject constructor(private val appDatabase: AppDatabase) {
     }
 
     suspend fun isServerDataEmpty(): Boolean {
-        val businesses = firestore.collection(FirestoreConstant.BUSINESS_COLLECTION).whereEqualTo("ownerId", auth.currentUser?.uid).get().await()
-        return businesses.isEmpty
+        if(auth.currentUser != null){
+            val businesses = firestore.collection(FirestoreConstant.BUSINESS_COLLECTION).whereEqualTo("ownerId", auth.currentUser?.uid).get().await()
+            return businesses.isEmpty
+        }
+        return false
     }
 
     /*private suspend fun isDatabaseEmpty(): Boolean {
@@ -69,12 +72,13 @@ class AuthRepository @Inject constructor(private val appDatabase: AppDatabase) {
         val businesses = firestore.collection(FirestoreConstant.BUSINESS_COLLECTION).whereEqualTo("ownerId", auth.currentUser?.uid).get().await()
         val dbClients = appDatabase.getClientDao().getAllUnSynchronized()
         businesses.documents.forEach { business ->
-            val clients = firestore.collection(FirestoreConstant.CLIENT_COLLECTION).whereNotIn("id", dbClients.map { it.id }).whereEqualTo("businessId", business.id).get().await().toObjects(Client::class.java)
+            val clients = firestore.collection(FirestoreConstant.CLIENT_COLLECTION).whereNotIn("id", dbClients.map { it.id } + 0).whereEqualTo("businessId", business.id).get().await().toObjects(Client::class.java)
             val services = firestore.collection(FirestoreConstant.SERVICE_COLLECTION).whereEqualTo("businessId", business.id).get().await().toObjects(Service::class.java)
             val appointments = firestore.collection(FirestoreConstant.APPOINTMENT_COLLECTION).whereEqualTo("businessId", business.id).get().await().toObjects(Appointment::class.java)
-            appDatabase.getClientDao().insertAll(clients)
             appDatabase.getServiceDao().insertAll(services)
             appDatabase.getAppointmentDao().insertAll(appointments)
+            appDatabase.getClientDao().insertAll(clients)
+
             /*val batchClients = dbClients.windowed(25, partialWindows = true)
             batchClients.forEach { clientBatch ->
                 val clients = firestore.collection(FirestoreConstant.CLIENT_COLLECTION).whereNotIn("id", clientBatch.map { it.id }).whereEqualTo("businessId", business.id).get().await().toObjects(Client::class.java)

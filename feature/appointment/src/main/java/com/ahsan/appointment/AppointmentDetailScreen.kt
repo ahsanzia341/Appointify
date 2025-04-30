@@ -19,7 +19,7 @@ import com.ahsan.composable.ThemeButton
 import com.ahsan.composable.ThemeHeaderText
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.TopBar
-import com.ahsan.core.AppRoute.CreateBusinessRoute
+import com.ahsan.core.AppRoute
 import com.ahsan.core.extension.toEasyFormat
 import com.ahsan.data.models.Appointment
 import com.ahsan.data.models.AppointmentAndClient
@@ -36,7 +36,7 @@ fun AppointmentDetailScreen(navController: NavController, id: Int) {
     AppointmentDetailUI(viewState?.appointment ?: AppointmentAndClient(Appointment(), Client(name = "", phoneNumber = ""), listOf()), onCancelPress = {
         viewModel.onTriggerEvent(AppointmentEvent.UpdateAppointment(it, listOf()))
     }, onUpdatePress = {
-        navController.navigate(CreateBusinessRoute)
+        navController.navigate(AppRoute.CreateAppointmentRoute)
     }){
         navController.popBackStack()
     }

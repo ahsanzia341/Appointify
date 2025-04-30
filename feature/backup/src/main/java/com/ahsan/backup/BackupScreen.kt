@@ -57,12 +57,12 @@ fun BackupUI(lastBackupDate: Date?, onAutoBackupSwitched: (Boolean) -> Unit, onB
     }
     Scaffold(topBar = { TopBar(title = stringResource(id = R.string.backup_data), onClickNavIcon = { onBackPress() }) }, modifier = Modifier.padding(8.dp)) { padding ->
         Column(modifier = Modifier.padding(padding), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            ThemeText(text = "Use this feature to share your data across multiple devices and teams.")
+            ThemeText(text = stringResource(R.string.use_this_feature_to_share_your_data_across_multiple_devices_and_teams))
             ThemeText(text = "Last backup date: ${lastBackupDate?.toEasyFormat() ?: "Never"}")
             ThemeButton(text = stringResource(id = R.string.backup_data)) {
                 onBackupDataPressed()
             }
-            ThemeSwitch(stringResource(R.string.automatic_daily_backup)) {
+            ThemeSwitch(label = stringResource(R.string.automatic_daily_backup)) {
                 backupState = it
                 sharedPref.edit { putBoolean(Constant.IS_AUTO_BACKUP, it) }
                 onAutoBackupSwitched(it)

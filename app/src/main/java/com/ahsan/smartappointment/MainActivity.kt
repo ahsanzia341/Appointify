@@ -1,7 +1,6 @@
 package com.ahsan.smartappointment
 
 import android.Manifest
-import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -39,7 +38,7 @@ class MainActivity : ComponentActivity() {
             val navController = rememberNavController()
             val currentBackStackEntryAsState by navController.currentBackStackEntryAsState()
             val currentDestination = currentBackStackEntryAsState?.destination
-            val sharedPref = getSharedPreferences(Constant.SHARED_PREF_KEY, Context.MODE_PRIVATE)
+            val sharedPref = getSharedPreferences(Constant.SHARED_PREF_KEY, MODE_PRIVATE)
             var startDestination: Any = HomeRoute
             if (sharedPref.getString("isFirstTime", "true") == "true") {
                 startDestination = WelcomeRoute

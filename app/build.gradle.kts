@@ -25,7 +25,7 @@ android {
         applicationId = "com.ahsan.smartappointment"
         minSdk = 24
         targetSdk = 35
-        versionCode = 12
+        versionCode = 13
         versionName = "0.10"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -79,6 +79,7 @@ dependencies {
     implementation(project(mapOf("path" to ":feature:backup")))
     implementation(project(mapOf("path" to ":feature:businessdetail")))
     implementation(project(mapOf("path" to ":feature:business")))
+    implementation(project(mapOf("path" to ":feature:teams")))
     implementation(project(mapOf("path" to ":feature:changepassword")))
     implementation(project(mapOf("path" to ":feature:feedback")))
     implementation(project(mapOf("path" to ":feature:home")))

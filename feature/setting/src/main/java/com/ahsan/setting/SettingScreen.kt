@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ahsan.composable.ConfirmationDialog
+import com.ahsan.composable.InfoDialog
 import com.ahsan.composable.R
 import com.ahsan.composable.SettingRowUI
 import com.ahsan.composable.TopBar
@@ -41,13 +42,14 @@ fun SettingScreen(navController: NavController) {
     val viewModel = hiltViewModel<SettingViewModel>()
     val viewState by viewModel.viewState.collectAsState()
     val activity = LocalActivity.current
+    var showConfirmation by remember { mutableStateOf(false) }
     LaunchedEffect(key1 = true) {
         viewModel.onTriggerEvent(SettingEvent.IsLoggedIn)
     }
 
     SettingUI(
         viewState?.settings ?: listOf(),
-        viewState?.isLoading ?: true,
+        viewState?.isLoading == true,
         viewState?.email,
         viewState?.billingProducts ?: listOf(),
         onLogoutPress = {
@@ -67,10 +69,26 @@ fun SettingScreen(navController: NavController) {
                 viewModel.onTriggerEvent(SettingEvent.LaunchBillingFlow(activity, it))
         },
         onBusinessPress = {
-            navController.navigate(CreateBusinessRoute)
+            if (viewState?.isBusinessPresent == true) {
+                navController.navigate(AppRoute.BusinessDetailRoute)
+            }
+            else{
+                navController.navigate(CreateBusinessRoute(false))
+            }
+        },
+        onTeamsPress = {
+            if (viewState?.isBusinessPresent == true) {
+                navController.navigate(AppRoute.CreateTeamsRoute)
+            }
+            else{
+                showConfirmation = true
+            }
+        },
+        onFeedbackPress = {
+            navController.navigate(AppRoute.FeedbackRoute)
         },
         onBackupPress = {
-            if(viewState?.isBusinessPresent == true){
+            if (viewState?.isBusinessPresent == true) {
                 navController.navigate(AppRoute.BackupRoute)
             }
             else{
@@ -79,12 +97,22 @@ fun SettingScreen(navController: NavController) {
         }) {
         navController.navigate(LoginRoute)
     }
+
+    if (showConfirmation) {
+        InfoDialog(
+            title = stringResource(id = R.string.confirmation),
+            text = "Please create a business before adding a team.",
+            {
+                showConfirmation = false
+            })
+    }
 }
 
 @Composable
 fun SettingUI(settings: List<SettingRow>, isLoading: Boolean, email: String?, products: List<ProductDetails>, onLogoutPress:() -> Unit,
               onAccountDetailsPress: () -> Unit, onPrivacyPolicyPressed: (String) -> Unit, onBackupPress: () -> Unit,
-              onCurrencyPress: () -> Unit, onBusinessPress:() -> Unit, onSubscribePress: (ProductDetails) -> Unit, onLoginPress: () -> Unit) {
+              onCurrencyPress: () -> Unit, onBusinessPress: () -> Unit, onTeamsPress: () -> Unit, onFeedbackPress: () -> Unit,
+              onSubscribePress: (ProductDetails) -> Unit, onLoginPress: () -> Unit) {
     var showConfirmation by remember {
         mutableStateOf(false)
     }
@@ -99,8 +127,7 @@ fun SettingUI(settings: List<SettingRow>, isLoading: Boolean, email: String?, pr
             return@Scaffold
         }
         Column(
-            Modifier
-                .padding(padding), verticalArrangement = Arrangement.spacedBy(8.dp)
+            Modifier.padding(padding), verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 settings.forEach {
@@ -113,6 +140,7 @@ fun SettingUI(settings: List<SettingRow>, isLoading: Boolean, email: String?, pr
                             when (it.title) {
                                 R.string.login -> onLoginPress()
                                 R.string.business -> onBusinessPress()
+                                R.string.teams -> onTeamsPress()
                                 R.string.backup_data -> onBackupPress()
                                 R.string.account_settings -> onAccountDetailsPress()
                                 R.string.go_pro -> onSubscribePress(products[0])
@@ -120,8 +148,7 @@ fun SettingUI(settings: List<SettingRow>, isLoading: Boolean, email: String?, pr
                                 R.string.privacy_policy -> onPrivacyPolicyPressed(
                                     "https://www.termsfeed.com/live/2b1724ab-a3a7-4bfa-b4aa-0573ee4abcf3"
                                 )
-
-                                R.string.feedback -> onLoginPress()
+                                R.string.feedback -> onFeedbackPress()
                                 R.string.logout -> onLogoutPress()
                             }
                         }
@@ -148,7 +175,7 @@ fun SettingUI(settings: List<SettingRow>, isLoading: Boolean, email: String?, pr
 @Preview
 fun SettingPreview(){
     SmartAppointmentTheme {
-        SettingUI(settings,false, "", listOf(), {}, {}, {}, {}, {}, {}, {}){
+        SettingUI(settings,false, "", listOf(), {}, {}, {}, {}, {}, {}, {}, {}, {}){
 
         }
     }

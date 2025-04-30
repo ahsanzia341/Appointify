@@ -47,7 +47,7 @@ class SettingRepository @Inject constructor(@ApplicationContext private val cont
         val services = appDatabase.getServiceDao().getAllUnSynchronized()
         val appointmentsRef = firestore.collection(APPOINTMENT_COLLECTION).document()
         val servicesRef = firestore.collection(SERVICE_COLLECTION).document()
-        val clientsRef = firestore.collection(CLIENT_COLLECTION).document()
+
         val businessRef =
             firestore.collection(BUSINESS_COLLECTION).whereEqualTo("ownerId", currentUser?.uid)
                 .get().await()
@@ -75,6 +75,7 @@ class SettingRepository @Inject constructor(@ApplicationContext private val cont
                 if (it.businessId == null) {
                     it.businessId = currentUser.uid
                 }
+                val clientsRef = firestore.collection(CLIENT_COLLECTION).document(it.id.toString())
                 batch.set(clientsRef, it)
             }
         }

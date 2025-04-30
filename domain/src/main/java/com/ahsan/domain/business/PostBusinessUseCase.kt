@@ -7,7 +7,7 @@ import javax.inject.Inject
 class PostBusinessUseCase @Inject constructor(
     private val repository: BusinessRepository,
 ) {
-    suspend operator fun invoke(business: Business){
-        repository.create(business)
+    suspend operator fun invoke(business: Business): Boolean{
+        return repository.create(business)
     }
 }

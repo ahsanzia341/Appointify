@@ -20,6 +20,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -29,12 +30,14 @@ import com.ahsan.composable.ThemeCard
 import com.ahsan.composable.ThemeFloatingActionButton
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.TopBar
+import com.ahsan.composable.theme.SmartAppointmentTheme
 import com.ahsan.core.AppRoute.AppointmentDetailRoute
 import com.ahsan.core.AppRoute.CreateAppointmentRoute
 import com.ahsan.core.AppRoute.CreateClientRoute
 import com.ahsan.core.AppRoute.ServiceCreateRoute
 import com.ahsan.core.extension.toEasyFormat
 import com.ahsan.data.models.AppointmentAndClient
+import com.ahsan.home.calendarview.CalendarView
 
 @Composable
 fun HomeScreen(navController: NavController) {
@@ -64,7 +67,7 @@ fun HomeScreen(navController: NavController) {
     }
     if(showClientDialog){
         ConfirmationDialog(
-            title = "No clients exist",
+            title = stringResource(R.string.no_clients),
             text = "Please add at least one client to schedule an appointment",
             onDismissRequest = { showClientDialog = false }) {
             navController.navigate(CreateClientRoute)
@@ -73,7 +76,7 @@ fun HomeScreen(navController: NavController) {
     }
     if(showServiceDialog){
         ConfirmationDialog(
-            title = "No services exist",
+            title = stringResource(R.string.no_services),
             text = "Please add at least one service to schedule an appointment",
             onDismissRequest = { showServiceDialog = false }) {
             navController.navigate(ServiceCreateRoute)
@@ -84,8 +87,17 @@ fun HomeScreen(navController: NavController) {
 
 @Composable
 fun HomeUI(list: List<AppointmentAndClient>, onAddClicked: () -> Unit, onItemClick: (Int) -> Unit) {
+    val calendarView by remember {
+        mutableStateOf(false)
+    }
     Scaffold(topBar = {
-        TopBar(title = stringResource(id = R.string.upcoming_appointments), navIcon = null)
+        Column {
+            TopBar(title = stringResource(id = R.string.upcoming_appointments), navIcon = null)
+            /*ThemeSwitch(Modifier.align(Alignment.End),"CalendarView/ListView") {
+                calendarView = it
+            }*/
+        }
+
     }, modifier = Modifier.padding(8.dp), bottomBar = {
         Column(Modifier.fillMaxWidth()) {
             ThemeFloatingActionButton(
@@ -96,23 +108,31 @@ fun HomeUI(list: List<AppointmentAndClient>, onAddClicked: () -> Unit, onItemCli
                 onAddClicked()
             }
         }
-    }) {
+    }) { padding ->
+
         Box(modifier = Modifier
             .fillMaxSize()
-            .padding(it)) {
+            .padding(padding)) {
+
+
             if (list.isEmpty())
                 ThemeText(
                     text = stringResource(id = R.string.no_appointments),
                     modifier = Modifier.align(Alignment.Center)
                 )
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp)
-            ) {
-                items(list) { item ->
-                    AppointmentRow(item) {
-                        onItemClick(item.appointment.appointmentId)
+            if(calendarView){
+                CalendarView()
+            }
+            else{
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
+                ) {
+                    items(list) { item ->
+                        AppointmentRow(item) {
+                            onItemClick(item.appointment.appointmentId)
+                        }
                     }
                 }
             }
@@ -133,5 +153,13 @@ fun AppointmentRow(appointmentAndClient: AppointmentAndClient, onClick: () -> Un
             ThemeText(text = appointmentAndClient.client.name)
             ThemeText(text = appointmentAndClient.appointment.startDate?.toEasyFormat() ?: "")
         }
+    }
+}
+
+@Preview
+@Composable
+fun Preview(){
+    SmartAppointmentTheme {
+        HomeUI(listOf(), {}) { }
     }
 }

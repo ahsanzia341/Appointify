@@ -14,16 +14,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.ahsan.composable.PhoneTextField
 import com.ahsan.composable.RequiredTextField
 import com.ahsan.composable.ThemeButton
-import com.ahsan.composable.ThemeTextField
 import com.ahsan.composable.TopBar
+import com.ahsan.composable.theme.SmartAppointmentTheme
 import com.ahsan.data.models.Client
 
 @Composable
@@ -64,8 +63,7 @@ fun CreateClientUI(clientObject: Client?, onSubmit: (Client) -> Unit, onBackPres
             RequiredTextField(label = stringResource(id = com.ahsan.composable.R.string.name), value = client.name) {
                 client = client.copy(name = it)
             }
-            ThemeTextField(label = stringResource(id = com.ahsan.composable.R.string.phone_number), value = client.phoneNumber, keyboardType = KeyboardType.Phone, errorMessage = if(client.phoneNumber.isEmpty()) stringResource(
-                id = com.ahsan.composable.R.string.field_required, stringResource(id = com.ahsan.composable.R.string.phone_number)) else "", imeAction = ImeAction.Done) {
+            PhoneTextField(value = client.phoneNumber) {
                 client = client.copy(phoneNumber = it)
             }
             ThemeButton(text = stringResource(id = com.ahsan.composable.R.string.submit)) {
@@ -78,7 +76,9 @@ fun CreateClientUI(clientObject: Client?, onSubmit: (Client) -> Unit, onBackPres
 @Composable
 @Preview
 fun CreateClientPreview(){
-    CreateClientUI(null, onSubmit = {
+    SmartAppointmentTheme {
+        CreateClientUI(null, onSubmit = {
 
-    }){}
+        }){}
+    }
 }

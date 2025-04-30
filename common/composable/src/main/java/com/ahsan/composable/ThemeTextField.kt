@@ -27,6 +27,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.ahsan.composable.transformation.NanpVisualTransformation
 import com.ahsan.core.Validator
 
 @Composable
@@ -54,7 +55,11 @@ fun ThemeTextField(modifier: Modifier = Modifier, label: String = "", value: Str
                 },
             enabled = enabled,
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
-            visualTransformation = if(keyboardType == KeyboardType.Password) PasswordVisualTransformation() else VisualTransformation.None,
+            visualTransformation = when (keyboardType) {
+                KeyboardType.Password -> PasswordVisualTransformation()
+                KeyboardType.Phone -> NanpVisualTransformation()
+                else -> VisualTransformation.None
+            },
             readOnly = isReadOnly,
             trailingIcon = {
                 if(trailingIcon != 0)
@@ -80,13 +85,12 @@ fun ThemeTextField(modifier: Modifier = Modifier, label: String = "", value: Str
 fun RequiredTextField(label: String, value: String = "", errorMessage: String? = null, keyboardType: KeyboardType = KeyboardType.Text, onChanged: (text: String) -> Unit){
     val context = LocalContext.current
     var error by remember { mutableStateOf("") }
-    ThemeTextField(label = label, value = value, keyboardType = keyboardType, errorMessage = error ?: "") {
+    ThemeTextField(label = stringResource(R.string.required_field_label, label), value = value, keyboardType = keyboardType, errorMessage = error) {
         onChanged(it)
-        if(errorMessage == null && it.isEmpty()){
-            error = context.getString(R.string.field_required, label)
-        }
-        else{
-            error = errorMessage ?: ""
+        error = if(errorMessage == null && it.isEmpty()){
+            context.getString(R.string.field_required, label)
+        } else{
+            errorMessage ?: ""
         }
     }
 }
@@ -107,16 +111,32 @@ fun PasswordTextField(isValidationRequired: Boolean = false, onChanged: (text: S
 }
 
 @Composable
-fun EmailTextField(onChanged: (text: String) -> Unit){
+fun EmailTextField(value: String = "", onChanged: (text: String) -> Unit){
     val context = LocalContext.current
     var errorMessage by remember {
         mutableStateOf("")
     }
-    RequiredTextField(label = stringResource(id = R.string.email), keyboardType = KeyboardType.Email) {
+    RequiredTextField(label = stringResource(id = R.string.email), value = value, keyboardType = KeyboardType.Email) {
         onChanged(it)
         if(Validator.isValidEmail(it)){
             errorMessage = context.getString(R.string.email_error)
         }
+    }
+}
+
+@Composable
+fun PhoneTextField(value: String = "", onChanged: (text: String) -> Unit){
+    val context = LocalContext.current
+    var errorMessage by remember {
+        mutableStateOf("")
+    }
+    RequiredTextField(label = stringResource(id = R.string.phone_number), value = value, keyboardType = KeyboardType.Phone) {
+        onChanged(it)
+        if (value.length < 9){
+            errorMessage = context.getString(R.string.invalid_phone)
+        }
+        else if(value.isEmpty())
+            errorMessage = context.getString(R.string.field_required, "Phone")
     }
 }
 

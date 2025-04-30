@@ -7,6 +7,6 @@ class CheckIfBusinessPresentUseCase @Inject constructor(
     private val repository: AuthRepository,
 ) {
     suspend operator fun invoke(): Boolean{
-        return repository.isServerDataEmpty()
+        return !repository.isServerDataEmpty()
     }
 }

@@ -1,6 +1,8 @@
 package com.ahsan.businessdetail
 
-data class ViewState(val isLoading: Boolean)
+import com.ahsan.data.models.Business
+
+data class ViewState(val isLoading: Boolean, val business: Business)
 
 sealed class BusinessDetailEvent{
 

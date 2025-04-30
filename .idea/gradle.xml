@@ -31,6 +31,7 @@
             <option value="$PROJECT_DIR$/feature/home" />
             <option value="$PROJECT_DIR$/feature/service" />
             <option value="$PROJECT_DIR$/feature/setting" />
+            <option value="$PROJECT_DIR$/feature/teams" />
             <option value="$PROJECT_DIR$/feature/webview" />
           </set>
         </option>
