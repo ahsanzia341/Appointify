@@ -11,6 +11,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -19,6 +20,7 @@ import com.ahsan.composable.ThemeButton
 import com.ahsan.composable.ThemeHeaderText
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.TopBar
+import com.ahsan.composable.theme.SmartAppointmentTheme
 import com.ahsan.core.AppRoute
 import com.ahsan.core.extension.toEasyFormat
 import com.ahsan.data.models.Appointment
@@ -56,14 +58,15 @@ fun AppointmentDetailUI(appointmentAndClient: AppointmentAndClient, onUpdatePres
             RowField("End Date:", appointment.endDate?.toEasyFormat() ?: "")
             RowField("Client name:", client.name)
             RowField("Client phone:", client.phoneNumber)
+            ThemeText(text = appointment.location)
             ThemeText(text = appointment.notes)
 
-            ThemeButton(text = "Cancel Appointment") {
+            ThemeButton(text = stringResource(com.ahsan.composable.R.string.cancel_appointment)) {
                 appointment.status = AppointmentStatus.CANCELED
                 onCancelPress(appointment)
                 onBackPressed()
             }
-            ThemeButton(text = "Update Appointment") {
+            ThemeButton(text = stringResource(com.ahsan.composable.R.string.update_appointment)) {
                 onUpdatePress(appointment)
             }
         }
@@ -81,7 +84,9 @@ fun RowField(label: String, value: String){
 @Composable
 @Preview
 fun AppointmentDetailPreview(){
-    AppointmentDetailUI(AppointmentAndClient(Appointment(0, "New Appointment"), Client(name = "Test", phoneNumber = "1234"), services = listOf()), {}, {}){
+    SmartAppointmentTheme {
+        AppointmentDetailUI(AppointmentAndClient(Appointment(0, "New Appointment"), Client(name = "Test", phoneNumber = "1234"), services = listOf()), {}, {}){
 
+        }
     }
 }

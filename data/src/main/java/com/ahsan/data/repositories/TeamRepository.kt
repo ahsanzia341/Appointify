@@ -4,11 +4,12 @@ import com.ahsan.core.FirestoreConstant
 import com.ahsan.data.models.Team
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
+import javax.inject.Inject
 
-class TeamRepository {
+class TeamRepository @Inject constructor(){
     val firestore = FirebaseFirestore.getInstance()
-    suspend fun create(team: Team){
 
+    suspend fun post(team: Team){
         firestore.collection(FirestoreConstant.TEAM_COLLECTION).add(team).await()
     }
 

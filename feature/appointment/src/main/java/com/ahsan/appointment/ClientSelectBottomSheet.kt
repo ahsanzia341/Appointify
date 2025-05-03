@@ -17,7 +17,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.ahsan.composable.R
+import com.ahsan.composable.ThemeCard
 import com.ahsan.composable.ThemeText
+import com.ahsan.composable.theme.SmartAppointmentTheme
 import com.ahsan.data.models.Client
 
 @Composable
@@ -46,12 +48,9 @@ fun ClientSelectScreen(clients: List<Client>, onSelected: (Client) -> Unit) {
 
 @Composable
 fun ClientRow(client: Client, onItemClicked: () -> Unit){
-    Card(modifier = Modifier
-        .padding(8.dp)
-        .fillMaxWidth()
-        .clickable {
-            onItemClicked()
-        }) {
+    ThemeCard(Modifier.clickable{
+        onItemClicked()
+    }) {
         Box(
             Modifier
                 .fillMaxWidth()
@@ -68,5 +67,7 @@ fun ClientRow(client: Client, onItemClicked: () -> Unit){
 @Composable
 @Preview
 fun ClientSelectPreview(){
-    ClientSelectScreen(clients = listOf(Client(0, "Test", "12345"))) { }
+    SmartAppointmentTheme {
+        ClientSelectScreen(clients = listOf(Client(0, "Test", "12345"))) { }
+    }
 }

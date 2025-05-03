@@ -24,7 +24,6 @@ fun ThemeDropDown(label: String, list: List<String>, onSelected: (String) -> Uni
             onClick = {
                 expanded = true
             }) {
-
         }
         DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
             list.forEach {

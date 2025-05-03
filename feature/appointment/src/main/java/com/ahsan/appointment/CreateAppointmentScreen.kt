@@ -27,10 +27,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.ahsan.composable.DisabledTextField
 import com.ahsan.composable.InfoDialog
+import com.ahsan.composable.RequiredTextField
 import com.ahsan.composable.ThemeButton
 import com.ahsan.composable.ThemeDatePicker
 import com.ahsan.composable.ThemeTextField
 import com.ahsan.composable.TopBar
+import com.ahsan.composable.theme.SmartAppointmentTheme
 import com.ahsan.data.models.Appointment
 import com.ahsan.data.models.Client
 import com.ahsan.data.models.Service
@@ -105,13 +107,7 @@ fun CreateAppointmentUI(appointmentObject: Appointment, clients: List<Client>, s
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                ThemeTextField(
-                    errorMessage = if (appointment.title.isEmpty()) stringResource(
-                        id = com.ahsan.composable.R.string.field_required,
-                        stringResource(id = com.ahsan.composable.R.string.title)
-                    ) else "",
-                    label = stringResource(id = com.ahsan.composable.R.string.title)
-                ) {
+                RequiredTextField(label = stringResource(com.ahsan.composable.R.string.title)){
                     appointment = appointment.copy(title = it)
                 }
                 ThemeDatePicker(
@@ -204,7 +200,9 @@ fun CreateAppointmentUI(appointmentObject: Appointment, clients: List<Client>, s
 @Composable
 @Preview
 fun CreatePreview(){
-    CreateAppointmentUI(Appointment(clientId = 1, title = "", startDate = null, endDate = Date(), location = ""),
-        listOf(Client(1, "Test Client", "12345")), isShowDialog = Pair(false, false),
-        serviceAndCurrency = listOf(), onCreate = {_, _ -> }, onFail = {}){}
+    SmartAppointmentTheme {
+        CreateAppointmentUI(Appointment(clientId = 1, title = "", startDate = null, endDate = Date(), location = ""),
+            listOf(Client(1, "Test Client", "12345")), isShowDialog = Pair(false, false),
+            serviceAndCurrency = listOf(), onCreate = {_, _ -> }, onFail = {}){}
+    }
 }

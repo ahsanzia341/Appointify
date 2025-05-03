@@ -3,11 +3,15 @@ package com.ahsan.composable
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
@@ -18,6 +22,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -41,16 +47,22 @@ fun ThemeTextField(modifier: Modifier = Modifier, label: String = "", value: Str
         text = value
     }
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        TextField(value = text, onValueChange = {
+        OutlinedTextField(value = text, onValueChange = {
             text = it
             onChanged(text)
         },
             modifier
-                .border(1.dp, Color.Black, RoundedCornerShape(4.dp))
                 .fillMaxWidth()
-                .onFocusChanged {
-                    if (it.hasFocus) {
-                        onClick()
+                .pointerInput(value) {
+                    awaitEachGesture {
+                        // Modifier.clickable doesn't work for text fields, so we use Modifier.pointerInput
+                        // in the Initial pass to observe events before the text field consumes them
+                        // in the Main pass.
+                        awaitFirstDown(pass = PointerEventPass.Initial)
+                        val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
+                        if (upEvent != null) {
+                            onClick()
+                        }
                     }
                 },
             enabled = enabled,
@@ -69,10 +81,7 @@ fun ThemeTextField(modifier: Modifier = Modifier, label: String = "", value: Str
             },
             label = {
                 ThemeText(text = label)
-            }, shape = RoundedCornerShape(4.dp),
-            colors = TextFieldDefaults.colors(focusedContainerColor = Color.White, unfocusedContainerColor = Color.White,
-                focusedIndicatorColor = Color.White, unfocusedIndicatorColor = Color.White,
-                errorContainerColor = Color.White)
+            },
         )
         if(errorMessage.isNotEmpty()){
             ThemeText(text = errorMessage, color = Color.Red)
