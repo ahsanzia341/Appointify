@@ -62,7 +62,7 @@ fun BackupUI(lastBackupDate: Date?, onAutoBackupSwitched: (Boolean) -> Unit, onB
             ThemeButton(text = stringResource(id = R.string.backup_data)) {
                 onBackupDataPressed()
             }
-            ThemeSwitch(label = stringResource(R.string.automatic_daily_backup)) {
+            ThemeSwitch(label = stringResource(R.string.automatic_daily_backup), value = backupState) {
                 backupState = it
                 sharedPref.edit { putBoolean(Constant.IS_AUTO_BACKUP, it) }
                 onAutoBackupSwitched(it)

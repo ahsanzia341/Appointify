@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "260728293947-oop3kde7ndcmouos7dlb9lseqi319h76.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ahsan.smartappointment",
+            "certificate_hash": "f1dec08bf9df719d4f17d4f21182cb16b1f38bfe"
+          }
+        },
+        {
           "client_id": "260728293947-045ipi5kh386gleh506q27f756j1o1us.apps.googleusercontent.com",
           "client_type": 3
         }

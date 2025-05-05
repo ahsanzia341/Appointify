@@ -45,7 +45,7 @@ fun ServiceCreateScreen(navController: NavController, id: Int = 0) {
 }
 
 @Composable
-fun ServiceCreateUI(serviceAndCurrency: ServiceAndCurrency?, onSubmit: (Service) -> Unit, onBackPress: () -> Unit){
+fun ServiceCreateUI(serviceAndCurrency: ServiceAndCurrency?, onSubmit: (Service) -> Unit, onBackPress: () -> Unit) {
     Scaffold(topBar = {
         TopBar(title = stringResource(id = R.string.create_service), onClickNavIcon = {
             onBackPress()
@@ -59,7 +59,24 @@ fun ServiceCreateUI(serviceAndCurrency: ServiceAndCurrency?, onSubmit: (Service)
             RequiredTextField(label = stringResource(id = R.string.name), value = service.name) {
                 service = service.copy(name = it)
             }
-            ThemeTextField(label = stringResource(id = R.string.price), keyboardType = KeyboardType.Number, imeAction = ImeAction.Done) {
+            ThemeTextField(
+                label = stringResource(R.string.description),
+                value = service.description
+            ) {
+                service = service.copy(description = it)
+            }
+            RequiredTextField(
+                label = stringResource(id = R.string.duration),
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done
+            ) {
+                service = service.copy(price = it.toDouble())
+            }
+            RequiredTextField(
+                label = stringResource(id = R.string.price),
+                keyboardType = KeyboardType.Number,
+                imeAction = ImeAction.Done
+            ) {
                 service = service.copy(price = it.toDouble())
             }
             ThemeButton(text = stringResource(id = R.string.submit)) {

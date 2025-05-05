@@ -1,7 +1,6 @@
 package com.ahsan.composable
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -9,18 +8,14 @@ import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
@@ -46,18 +41,27 @@ fun ThemeTextField(modifier: Modifier = Modifier, label: String = "", value: Str
     if(value.isNotEmpty()){
         text = value
     }
+    val numericRegex = Regex("[^0-9]")
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
         OutlinedTextField(value = text, onValueChange = {
-            text = it
-            onChanged(text)
+            if (keyboardType == KeyboardType.Phone){
+                val stripped = numericRegex.replace(it, "")
+                text = if (stripped.length >= 10) {
+                    stripped.substring(0..9)
+                } else {
+                    stripped
+                }
+                onChanged(text)
+            }
+            else{
+                text = it
+                onChanged(text)
+            }
         },
             modifier
                 .fillMaxWidth()
                 .pointerInput(value) {
                     awaitEachGesture {
-                        // Modifier.clickable doesn't work for text fields, so we use Modifier.pointerInput
-                        // in the Initial pass to observe events before the text field consumes them
-                        // in the Main pass.
                         awaitFirstDown(pass = PointerEventPass.Initial)
                         val upEvent = waitForUpOrCancellation(pass = PointerEventPass.Initial)
                         if (upEvent != null) {
@@ -91,10 +95,10 @@ fun ThemeTextField(modifier: Modifier = Modifier, label: String = "", value: Str
 
 
 @Composable
-fun RequiredTextField(label: String, value: String = "", errorMessage: String? = null, keyboardType: KeyboardType = KeyboardType.Text, onChanged: (text: String) -> Unit){
+fun RequiredTextField(label: String, value: String = "", errorMessage: String? = null, keyboardType: KeyboardType = KeyboardType.Text, imeAction: ImeAction = ImeAction.Next, onChanged: (text: String) -> Unit){
     val context = LocalContext.current
     var error by remember { mutableStateOf("") }
-    ThemeTextField(label = stringResource(R.string.required_field_label, label), value = value, keyboardType = keyboardType, errorMessage = error) {
+    ThemeTextField(label = stringResource(R.string.required_field_label, label), value = value, imeAction = imeAction, keyboardType = keyboardType, errorMessage = error) {
         onChanged(it)
         error = if(errorMessage == null && it.isEmpty()){
             context.getString(R.string.field_required, label)

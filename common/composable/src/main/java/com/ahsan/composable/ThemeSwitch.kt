@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 import com.ahsan.composable.theme.SmartAppointmentTheme
 
 @Composable
-fun ThemeSwitch(modifier: Modifier = Modifier, label: String, onCheckChanged: (Boolean) -> Unit){
-    var checkChanged by remember { mutableStateOf(false) }
+fun ThemeSwitch(modifier: Modifier = Modifier, label: String, value: Boolean, onCheckChanged: (Boolean) -> Unit){
+    var checkChanged by remember { mutableStateOf(value) }
     Row(modifier = modifier.padding(8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically) {
         ThemeText(text = label)
@@ -32,6 +32,6 @@ fun ThemeSwitch(modifier: Modifier = Modifier, label: String, onCheckChanged: (B
 @Preview
 fun SwitchPreview(){
     SmartAppointmentTheme {
-        ThemeSwitch(label = "My Switch"){}
+        ThemeSwitch(label = "My Switch", value = false){}
     }
 }

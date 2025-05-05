@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -31,6 +34,7 @@ import com.ahsan.composable.ThemeFloatingActionButton
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.TopBar
 import com.ahsan.composable.theme.SmartAppointmentTheme
+import com.ahsan.core.AppRoute
 import com.ahsan.core.AppRoute.AppointmentDetailRoute
 import com.ahsan.core.AppRoute.CreateAppointmentRoute
 import com.ahsan.core.AppRoute.CreateClientRoute
@@ -52,7 +56,9 @@ fun HomeScreen(navController: NavController) {
     var showClientDialog by remember {
         mutableStateOf(false)
     }
-    HomeUI(viewState?.appointments ?: listOf(), onAddClicked = {
+    HomeUI(viewState?.appointments ?: listOf(), onHistoryClicked = {
+        navController.navigate(AppRoute.AppointmentHistoryRoute)
+    }, onAddClicked = {
         if (viewState?.clientCount == 0) {
             showClientDialog = true
         } else if (viewState?.serviceCount == 0) {
@@ -86,13 +92,18 @@ fun HomeScreen(navController: NavController) {
 }
 
 @Composable
-fun HomeUI(list: List<AppointmentAndClient>, onAddClicked: () -> Unit, onItemClick: (Int) -> Unit) {
+fun HomeUI(list: List<AppointmentAndClient>, onHistoryClicked: () -> Unit, onAddClicked: () -> Unit, onItemClick: (Int) -> Unit) {
     val calendarView by remember {
         mutableStateOf(false)
     }
     Scaffold(topBar = {
         Column {
-            TopBar(title = stringResource(id = R.string.upcoming_appointments), navIcon = null)
+            TopBar(title = stringResource(id = R.string.upcoming_appointments), navIcon = null,
+                actions = {
+                    Icon(imageVector = Icons.Outlined.DateRange, contentDescription = "", modifier = Modifier.clickable{
+                        onHistoryClicked()
+                    })
+                })
             /*ThemeSwitch(Modifier.align(Alignment.End),"CalendarView/ListView") {
                 calendarView = it
             }*/
@@ -160,6 +171,6 @@ fun AppointmentRow(appointmentAndClient: AppointmentAndClient, onClick: () -> Un
 @Composable
 fun Preview(){
     SmartAppointmentTheme {
-        HomeUI(listOf(), {}) { }
+        HomeUI(listOf(), {}, {}) { }
     }
 }

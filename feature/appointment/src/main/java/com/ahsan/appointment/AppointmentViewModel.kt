@@ -1,6 +1,9 @@
 package com.ahsan.appointment
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
+import com.ahsan.core.AppRoute
 import com.ahsan.core.BaseViewModel
 import com.ahsan.data.models.Appointment
 import com.ahsan.data.models.Client
@@ -20,13 +23,13 @@ class AppointmentViewModel @Inject constructor(
     private val updateAppointmentUseCase: UpdateAppointmentUseCase,
     private val findByIdAppointmentsUseCase: FindByIdAppointmentsUseCase,
     private val getServicesUseCase: GetServicesUseCase,
+    savedStateHandle: SavedStateHandle,
     private val getClientsUseCase: GetClientsUseCase): BaseViewModel<ViewState, AppointmentEvent>() {
-
+        private val route = savedStateHandle.toRoute<AppRoute.AppointmentDetailRoute>()
     override fun onTriggerEvent(event: AppointmentEvent) {
         when (event) {
             is AppointmentEvent.PostAppointment -> postAppointment(event.appointment, event.services)
             is AppointmentEvent.UpdateAppointment -> updateAppointment(event.appointment, event.services)
-            is AppointmentEvent.FindById -> findById(event.id)
             AppointmentEvent.OnFail -> updateState(ViewState(services = services, clients = clients))
         }
     }
@@ -35,7 +38,7 @@ class AppointmentViewModel @Inject constructor(
     private var services: List<ServiceAndCurrency>? = null
 
     init {
-        getAllServicesAndClients()
+        init(route.id)
     }
 
     private fun postAppointment(appointment: Appointment, services: List<Int>) {
@@ -60,17 +63,11 @@ class AppointmentViewModel @Inject constructor(
         }
     }
 
-    private fun getAllServicesAndClients(){
+    private fun init(id: Int){
         viewModelScope.launch {
             services = getServicesUseCase()
             clients = getClientsUseCase()
-            updateState(ViewState(services = services, clients = clients))
-        }
-    }
-
-    private fun findById(id: Int){
-        viewModelScope.launch {
-            updateState(ViewState(appointment = findByIdAppointmentsUseCase(id)))
+            updateState(ViewState(appointment = findByIdAppointmentsUseCase(id), services = services, clients = clients))
         }
     }
 }

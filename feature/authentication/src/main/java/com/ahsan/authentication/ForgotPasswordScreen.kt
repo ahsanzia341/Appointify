@@ -20,6 +20,7 @@ import com.ahsan.composable.EmailTextField
 import com.ahsan.composable.ErrorText
 import com.ahsan.composable.ThemeButton
 import com.ahsan.composable.TopBar
+import com.ahsan.composable.theme.SmartAppointmentTheme
 
 @Composable
 fun ForgotPasswordScreen(navController: NavController) {
@@ -57,5 +58,8 @@ fun ForgotPasswordUI(error: String, isLoading: Boolean, onSubmit: (String) -> Un
 @Composable
 @Preview
 fun ForgotPasswordPreview(){
-    ForgotPasswordUI("Error", false, onSubmit = {}){}
+    SmartAppointmentTheme {
+        ForgotPasswordUI("", false, onSubmit = {}){}
+    }
+
 }

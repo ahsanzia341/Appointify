@@ -23,6 +23,7 @@
     <string name="currency">Currency</string>
     <string name="register">Register</string>
     <string name="login">Login</string>
+    <string name="or">OR</string>
     <string name="go_pro">Go Pro</string>
     <string name="create_account">Create Account</string>
     <string name="business">Business</string>
@@ -33,6 +34,7 @@
     <string name="don_t_have_an_account">Don\'t have an account?</string>
     <string name="password">Password</string>
     <string name="name">Name</string>
+    <string name="duration">Duration</string>
     <string name="address">Address</string>
     <string name="description">Description</string>
     <string name="phone_number">Phone Number</string>

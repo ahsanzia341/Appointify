@@ -118,7 +118,7 @@ fun LoginUI(error: String, isLoading: Boolean, onForgotPasswordClick: () -> Unit
                     Text(text = stringResource(id = com.ahsan.composable.R.string.register))
                 }
             }
-            ThemeHeaderText(text = "OR")
+            ThemeHeaderText(text = stringResource(com.ahsan.composable.R.string.or))
             GoogleSignInButton {
                 onSignInWithGooglePressed()
             }

@@ -12,6 +12,5 @@ data class ViewState(val appointments: List<AppointmentAndClient>? = null,
 sealed class AppointmentEvent {
     data class PostAppointment(val appointment: Appointment, val services: List<Int>): AppointmentEvent()
     data class UpdateAppointment(val appointment: Appointment, val services: List<Int>): AppointmentEvent()
-    data class FindById(val id: Int): AppointmentEvent()
     data object OnFail: AppointmentEvent()
 }

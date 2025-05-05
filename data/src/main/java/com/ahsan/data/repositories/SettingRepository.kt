@@ -34,8 +34,7 @@ import java.util.Date
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class SettingRepository @Inject constructor(@ApplicationContext private val context: Context,
-    private val appDatabase: AppDatabase) {
+class SettingRepository @Inject constructor(@ApplicationContext private val context: Context, private val appDatabase: AppDatabase) {
 
     private val currentUser = FirebaseAuth.getInstance().currentUser
     private val firestore = FirebaseFirestore.getInstance()
@@ -104,6 +103,7 @@ class SettingRepository @Inject constructor(@ApplicationContext private val cont
                 firestore.collection(BACKUP_DATE_COLLECTION).document(currentUser.uid).get().await()
                     .get("lastBackupDate", Date::class.java)?.time
             } catch (e: Exception) {
+                e.printStackTrace()
                 null
             }
         return null

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -29,12 +28,9 @@ import com.ahsan.data.models.AppointmentStatus
 import com.ahsan.data.models.Client
 
 @Composable
-fun AppointmentDetailScreen(navController: NavController, id: Int) {
+fun AppointmentDetailScreen(navController: NavController) {
     val viewModel = hiltViewModel<AppointmentViewModel>()
     val viewState by viewModel.viewState.collectAsState()
-    LaunchedEffect(key1 = true) {
-        viewModel.onTriggerEvent(AppointmentEvent.FindById(id))
-    }
     AppointmentDetailUI(viewState?.appointment ?: AppointmentAndClient(Appointment(), Client(name = "", phoneNumber = ""), listOf()), onCancelPress = {
         viewModel.onTriggerEvent(AppointmentEvent.UpdateAppointment(it, listOf()))
     }, onUpdatePress = {
