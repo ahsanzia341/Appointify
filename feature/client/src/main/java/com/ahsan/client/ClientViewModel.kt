@@ -1,6 +1,9 @@
 package com.ahsan.client
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
+import com.ahsan.core.AppRoute
 import com.ahsan.core.BaseViewModel
 import com.ahsan.data.models.Client
 import com.ahsan.domain.client.DeleteClientUseCase
@@ -16,10 +19,11 @@ class ClientViewModel @Inject constructor(
     private val postClientUseCase: PostClientUseCase,
     private val getClientsUseCase: GetClientsUseCase,
     private val deleteClientUseCase: DeleteClientUseCase,
+    savedStateHandle: SavedStateHandle,
     private val findClientByIdUseCase: FindClientByIdUseCase): BaseViewModel<ViewState, ClientEvent>() {
 
     private var clients: List<Client> = listOf()
-
+    private val route = savedStateHandle.toRoute<AppRoute.CreateClientRoute>()
     override fun onTriggerEvent(event: ClientEvent) {
         when (event) {
             is ClientEvent.PostClient -> postClient(event.client)
@@ -27,7 +31,6 @@ class ClientViewModel @Inject constructor(
             is ClientEvent.FilterClients -> filterClients(event.name)
             is ClientEvent.DeleteClient -> delete(event.client)
             is ClientEvent.Validate -> validate(event.client)
-            is ClientEvent.FindClientById -> findById(event.id)
         }
     }
 
@@ -38,9 +41,9 @@ class ClientViewModel @Inject constructor(
         }
     }
 
-    private fun findById(id: Int){
+    init {
         viewModelScope.launch {
-            updateState(ViewState(client = findClientByIdUseCase(id)))
+            updateState(ViewState(client = findClientByIdUseCase(route.id)))
         }
     }
 

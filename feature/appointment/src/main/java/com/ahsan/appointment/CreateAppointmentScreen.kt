@@ -11,7 +11,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,14 +39,10 @@ import com.ahsan.data.models.ServiceAndCurrency
 import java.util.Date
 
 @Composable
-fun CreateAppointmentScreen(navController: NavController, id: Int = 0) {
+fun CreateAppointmentScreen(navController: NavController) {
     val viewModel = hiltViewModel<AppointmentViewModel>()
     val viewState by viewModel.viewState.collectAsState()
-    LaunchedEffect(key1 = true) {
-        if(id != 0){
-            viewModel.onTriggerEvent(AppointmentEvent.FindById(id))
-        }
-    }
+
     CreateAppointmentUI(Appointment(
         clientId = 0,
         title = "",

@@ -7,7 +7,7 @@ import javax.inject.Inject
 class GetBusinessUseCase @Inject constructor(
     private val repository: BusinessRepository,
 ) {
-    suspend operator fun invoke(): Business{
+    suspend operator fun invoke(): Business? {
         return repository.get()
     }
 }

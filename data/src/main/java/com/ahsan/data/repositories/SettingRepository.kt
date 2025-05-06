@@ -44,8 +44,6 @@ class SettingRepository @Inject constructor(@ApplicationContext private val cont
         val appointments = appDatabase.getAppointmentDao().getAllUnSynchronized()
         val clients = appDatabase.getClientDao().getAllUnSynchronized()
         val services = appDatabase.getServiceDao().getAllUnSynchronized()
-        val appointmentsRef = firestore.collection(APPOINTMENT_COLLECTION).document()
-        val servicesRef = firestore.collection(SERVICE_COLLECTION).document()
 
         val businessRef =
             firestore.collection(BUSINESS_COLLECTION).whereEqualTo("ownerId", currentUser?.uid)
@@ -62,19 +60,22 @@ class SettingRepository @Inject constructor(@ApplicationContext private val cont
             appointments.forEach {
                 if (it.businessId == null)
                     it.businessId = business.id
+
+                val appointmentsRef = firestore.collection(APPOINTMENT_COLLECTION).document()
                 batch.set(appointmentsRef, it)
             }
             services.forEach {
                 if (it.businessId == null) {
                     it.businessId = currentUser.uid
                 }
+                val servicesRef = firestore.collection(SERVICE_COLLECTION).document()
                 batch.set(servicesRef, it)
             }
             clients.forEach {
                 if (it.businessId == null) {
                     it.businessId = currentUser.uid
                 }
-                val clientsRef = firestore.collection(CLIENT_COLLECTION).document(it.id.toString())
+                val clientsRef = firestore.collection(CLIENT_COLLECTION).document()
                 batch.set(clientsRef, it)
             }
         }

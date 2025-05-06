@@ -88,5 +88,5 @@ fun ServiceRow(serviceAndCurrency: ServiceAndCurrency, onItemClicked: () -> Unit
 @Preview
 @Composable
 fun Preview(){
-    ServicesBottomSheet(services = listOf(ServiceAndCurrency(Service(0, "My service", 10.0, 1), Currency(0, "Dollar", "$")))) {}
+    ServicesBottomSheet(services = listOf(ServiceAndCurrency(Service(0, "My service", 10.0,""), Currency(0, "Dollar", "$")))) {}
 }

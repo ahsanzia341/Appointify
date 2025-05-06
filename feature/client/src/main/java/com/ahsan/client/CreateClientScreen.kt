@@ -21,20 +21,18 @@ import androidx.navigation.NavController
 import com.ahsan.composable.PhoneTextField
 import com.ahsan.composable.RequiredTextField
 import com.ahsan.composable.ThemeButton
+import com.ahsan.composable.ThemeTextField
 import com.ahsan.composable.TopBar
 import com.ahsan.composable.theme.SmartAppointmentTheme
 import com.ahsan.data.models.Client
 
 @Composable
-fun CreateClientScreen(navController: NavController, id: Int = 0) {
+fun CreateClientScreen(navController: NavController) {
     val viewModel = hiltViewModel<ClientViewModel>()
     val viewState by viewModel.viewState.collectAsState()
-    LaunchedEffect(key1 = true) {
-        if (id > 0)
-            viewModel.onTriggerEvent(ClientEvent.FindClientById(id))
-    }
+
     LaunchedEffect(key1 = viewState?.validate) {
-        if (viewState?.validate != null && viewState?.validate == true) {
+        if (viewState?.validate == true) {
             navController.popBackStack()
         }
     }
@@ -63,6 +61,8 @@ fun CreateClientUI(clientObject: Client?, onSubmit: (Client) -> Unit, onBackPres
             RequiredTextField(label = stringResource(id = com.ahsan.composable.R.string.name), value = client.name) {
                 client = client.copy(name = it)
             }
+            ThemeTextField(label = stringResource(com.ahsan.composable.R.string.email)) {  }
+            ThemeTextField(label = stringResource(com.ahsan.composable.R.string.notes)) {  }
             PhoneTextField(value = client.phoneNumber) {
                 client = client.copy(phoneNumber = it)
             }

@@ -58,13 +58,13 @@ sealed class AppRoute {
     data object EditAccountRoute : AppRoute()
 
     @Serializable
-    data object CreateAppointmentRoute : AppRoute()
+    data class CreateAppointmentRoute(val id: Int = 0) : AppRoute()
 
     @Serializable
     data class AppointmentDetailRoute(val id: Int) : AppRoute()
 
     @Serializable
-    data object CreateClientRoute : AppRoute()
+    data class CreateClientRoute(val id: Int = 0) : AppRoute()
 
     @Serializable
     data object ServiceCreateRoute : AppRoute()

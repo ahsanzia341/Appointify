@@ -34,7 +34,7 @@ fun AppointmentDetailScreen(navController: NavController) {
     AppointmentDetailUI(viewState?.appointment ?: AppointmentAndClient(Appointment(), Client(name = "", phoneNumber = ""), listOf()), onCancelPress = {
         viewModel.onTriggerEvent(AppointmentEvent.UpdateAppointment(it, listOf()))
     }, onUpdatePress = {
-        navController.navigate(AppRoute.CreateAppointmentRoute)
+        navController.navigate(AppRoute.CreateAppointmentRoute(it.appointmentId))
     }){
         navController.popBackStack()
     }

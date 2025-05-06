@@ -157,6 +157,6 @@ fun ServiceItem(service: ServiceAndCurrency, onDeleteClicked: () -> Unit, onServ
 @Preview
 fun ServiceListPreview(){
     SmartAppointmentTheme {
-        ServiceListUI(listOf(ServiceAndCurrency(Service(0, "Test", 10.0, 0), Currency(0, "", ""))), {}, {}, onServiceClick = {}, onAddClick = {})
+        ServiceListUI(listOf(ServiceAndCurrency(Service(0, "Test", 10.0, 0.toString()), Currency(0, "", ""))), {}, {}, onServiceClick = {}, onAddClick = {})
     }
 }

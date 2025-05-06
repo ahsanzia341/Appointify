@@ -8,7 +8,6 @@ data class ViewState(
 sealed class ClientEvent {
     data class PostClient(val client: Client): ClientEvent()
     data object GetClients: ClientEvent()
-    data class FindClientById(val id: Int): ClientEvent()
     data class FilterClients(val name: String): ClientEvent()
     data class DeleteClient(val client: Client): ClientEvent()
     data class Validate(val client: Client): ClientEvent()

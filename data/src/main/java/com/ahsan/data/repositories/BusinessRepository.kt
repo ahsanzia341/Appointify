@@ -38,11 +38,11 @@ class BusinessRepository @Inject constructor() {
         firestore.collection(FirestoreConstant.BUSINESS_COLLECTION).document(currentUser.uid).set(business).await()
     }
 
-    suspend fun get(): Business {
+    suspend fun get(): Business? {
         if(currentUser == null)
-            return Business()
+            return null
 
         return firestore.collection(FirestoreConstant.BUSINESS_COLLECTION)
-            .document(currentUser.uid).get().await().toObject(Business::class.java) ?: Business()
+            .document(currentUser.uid).get().await().toObject(Business::class.java)
     }
 }
