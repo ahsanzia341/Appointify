@@ -79,7 +79,8 @@ class SettingRepository @Inject constructor(@ApplicationContext private val cont
                 batch.set(clientsRef, it)
             }
         }
-        batch.commit()
+        batch.commit().await()
+        appDatabase.getClientDao().updateSynchronized(clients.map { it.id }, true)
         /*appDatabase.close()
         storageReference.child("DbBackups/${currentUser?.email}/user_db.db")
             .putFile(dbPath.toUri()).await()*/

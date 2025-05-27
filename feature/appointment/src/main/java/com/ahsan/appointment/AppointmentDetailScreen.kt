@@ -1,9 +1,11 @@
 package com.ahsan.appointment
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -31,7 +33,7 @@ import com.ahsan.data.models.Client
 fun AppointmentDetailScreen(navController: NavController) {
     val viewModel = hiltViewModel<AppointmentViewModel>()
     val viewState by viewModel.viewState.collectAsState()
-    AppointmentDetailUI(viewState?.appointment ?: AppointmentAndClient(Appointment(), Client(name = "", phoneNumber = ""), listOf()), onCancelPress = {
+    AppointmentDetailUI(viewState?.appointment, onCancelPress = {
         viewModel.onTriggerEvent(AppointmentEvent.UpdateAppointment(it, listOf()))
     }, onUpdatePress = {
         navController.navigate(AppRoute.CreateAppointmentRoute(it.appointmentId))
@@ -41,29 +43,35 @@ fun AppointmentDetailScreen(navController: NavController) {
 }
 
 @Composable
-fun AppointmentDetailUI(appointmentAndClient: AppointmentAndClient, onUpdatePress: (Appointment) -> Unit, onCancelPress: (Appointment) -> Unit, onBackPressed: () -> Unit) {
-    val appointment = appointmentAndClient.appointment
-    val client = appointmentAndClient.client
+fun AppointmentDetailUI(appointmentAndClient: AppointmentAndClient?, onUpdatePress: (Appointment) -> Unit, onCancelPress: (Appointment) -> Unit, onBackPressed: () -> Unit) {
+    val appointment = appointmentAndClient?.appointment
+    val client = appointmentAndClient?.client
     Scaffold(topBar = {
-        TopBar(title = appointment.title, onClickNavIcon = {
+        TopBar(title = appointment?.title, onClickNavIcon = {
             onBackPressed()
         })
     }, modifier = Modifier.padding(8.dp)) {
-        Column(Modifier.padding(it), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            RowField("Start Date:", appointment.startDate?.toEasyFormat() ?: "")
-            RowField("End Date:", appointment.endDate?.toEasyFormat() ?: "")
-            RowField("Client name:", client.name)
-            RowField("Client phone:", client.phoneNumber)
-            ThemeText(text = appointment.location)
-            ThemeText(text = appointment.notes)
-
-            ThemeButton(text = stringResource(com.ahsan.composable.R.string.cancel_appointment)) {
-                appointment.status = AppointmentStatus.CANCELED
-                onCancelPress(appointment)
-                onBackPressed()
+        Box(Modifier.padding(it)) {
+            if(appointment == null || client == null){
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
             }
-            ThemeButton(text = stringResource(com.ahsan.composable.R.string.update_appointment)) {
-                onUpdatePress(appointment)
+            else {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    RowField("Start Date:", appointment.startDate?.toEasyFormat() ?: "")
+                    RowField("End Date:", appointment.endDate?.toEasyFormat() ?: "")
+                    RowField("Client name:", client.name)
+                    RowField("Client phone:", client.phoneNumber)
+                    ThemeText(text = appointment.location)
+                    ThemeText(text = appointment.notes)
+                    ThemeButton(text = stringResource(com.ahsan.composable.R.string.cancel_appointment)) {
+                        appointment.status = AppointmentStatus.CANCELED
+                        onCancelPress(appointment)
+                        onBackPressed()
+                    }
+                    ThemeButton(text = stringResource(com.ahsan.composable.R.string.update_appointment)) {
+                        onUpdatePress(appointment)
+                    }
+                }
             }
         }
     }

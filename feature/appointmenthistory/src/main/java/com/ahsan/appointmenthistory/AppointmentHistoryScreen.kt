@@ -24,6 +24,7 @@ import androidx.navigation.NavController
 import com.ahsan.composable.R
 import com.ahsan.composable.ThemeText
 import com.ahsan.composable.TopBar
+import com.ahsan.composable.theme.SmartAppointmentTheme
 import com.ahsan.core.AppRoute.AppointmentDetailRoute
 import com.ahsan.core.extension.toEasyFormat
 import com.ahsan.data.models.AppointmentAndClient
@@ -33,15 +34,19 @@ import com.ahsan.data.models.AppointmentStatus
 fun AppointmentHistoryScreen(navController: NavController) {
     val viewModel = hiltViewModel<AppointmentHistoryViewModel>()
     val viewState by viewModel.viewState.collectAsState()
-    AppointmentHistoryUI(list = viewState?.appointments ?: listOf()){
+    AppointmentHistoryUI(list = viewState?.appointments ?: listOf(), onItemClick = {
         navController.navigate(AppointmentDetailRoute(it))
+    }){
+        navController.popBackStack()
     }
 }
 
 @Composable
-fun AppointmentHistoryUI(list: List<AppointmentAndClient>, onItemClick: (Int) -> Unit){
+fun AppointmentHistoryUI(list: List<AppointmentAndClient>, onItemClick: (Int) -> Unit, onBackPress: () -> Unit){
     Scaffold(topBar = {
-        TopBar(title = stringResource(id = R.string.appointment_history), navIcon = null)
+        TopBar(title = stringResource(id = R.string.appointment_history), onClickNavIcon = {
+            onBackPress()
+        })
     }, modifier = Modifier.padding(8.dp)) { padding ->
         Box(modifier = Modifier
             .fillMaxSize()
@@ -86,5 +91,6 @@ fun AppointmentRow(appointmentAndClient: AppointmentAndClient, onClick: () -> Un
 @Composable
 @Preview
 fun AppointmentHistoryPreview(){
-    AppointmentHistoryUI(listOf()){}
+    SmartAppointmentTheme { AppointmentHistoryUI(listOf(),{}){} }
+
 }

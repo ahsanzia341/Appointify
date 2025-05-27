@@ -32,7 +32,7 @@ class FeedbackViewModel @Inject constructor(
         updateState(ViewState(isLoading = true, feedbackCategories = categories))
         viewModelScope.launch {
             feedbackUseCase(feedback)
-            updateState(ViewState(isLoading = false, feedbackCategories = categories))
+            updateState(ViewState(isLoading = false, feedbackCategories = categories, isSubmitted = true))
         }
     }
 

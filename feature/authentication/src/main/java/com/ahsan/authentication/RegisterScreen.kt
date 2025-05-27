@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -19,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import com.ahsan.composable.EmailTextField
 import com.ahsan.composable.ErrorText
 import com.ahsan.composable.GoogleSignInButton
@@ -27,17 +29,27 @@ import com.ahsan.composable.ThemeButton
 import com.ahsan.composable.ThemeHeaderText
 import com.ahsan.composable.TopBar
 import com.ahsan.composable.theme.SmartAppointmentTheme
+import com.ahsan.core.AppRoute
+import com.ahsan.core.AppRoute.RegisterRoute
 
 @Composable
 fun RegisterScreen(navController: NavController) {
     val viewModel = hiltViewModel<AuthViewModel>()
     val context = LocalContext.current
     val viewState by viewModel.viewState.collectAsState()
+    LaunchedEffect(viewState?.loginState) {
+        if(viewState?.loginState == true){
+            navController.navigate(
+                AppRoute.HomeRoute,
+                NavOptions.Builder().setPopUpTo(AppRoute.HomeRoute, true).build()
+            )
+        }
+    }
     RegisterUI(
         viewState?.error ?: "",
         viewState?.isLoading == true,
         onLoginPress = { email, password ->
-            viewModel.onTriggerEvent(AuthEvent.ValidateForRegister(context, email, password))
+            viewModel.onTriggerEvent(AuthEvent.ValidateForRegister(context, email.trim(), password.trim()))
         },
         onSignInWithGooglePressed = {
             viewModel.onTriggerEvent(AuthEvent.SignInWithGoogle(context))
@@ -78,7 +90,7 @@ fun RegisterUI(error: String, isLoading: Boolean,
                 onLoginPress(email, password)
             }
             ErrorText(text = error)
-            ThemeHeaderText(text = "OR")
+            ThemeHeaderText(text = stringResource(com.ahsan.composable.R.string.or))
             GoogleSignInButton {
                 onSignInWithGooglePressed()
             }

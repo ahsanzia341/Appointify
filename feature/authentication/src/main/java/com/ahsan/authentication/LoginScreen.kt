@@ -59,7 +59,7 @@ fun LoginScreen(navController: NavController) {
             navController.navigate(ForgotPasswordRoute)
         },
         onLoginPress = { email, password ->
-            viewModel.onTriggerEvent(AuthEvent.ValidateForLogin(context, email, password))
+            viewModel.onTriggerEvent(AuthEvent.ValidateForLogin(context, email.trim(), password.trim()))
         }, onSignInWithGooglePressed = {
             viewModel.onTriggerEvent(AuthEvent.SignInWithGoogle(context))
         }) {

@@ -27,7 +27,7 @@ fun ForgotPasswordScreen(navController: NavController) {
     val viewModel = hiltViewModel<AuthViewModel>()
     val viewState by viewModel.viewState.collectAsState()
     ForgotPasswordUI(viewState?.error ?: "", viewState?.isLoading == true, onSubmit = {
-        viewModel.onTriggerEvent(AuthEvent.ForgotPassword(it))
+        viewModel.onTriggerEvent(AuthEvent.ForgotPassword(it.trim()))
     }){
         navController.popBackStack()
     }

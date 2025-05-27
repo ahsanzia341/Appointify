@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
                 Scaffold(bottomBar = {
                     if (currentDestination?.let {
                             it.hasRoute(HomeRoute::class) || it.hasRoute(ClientListRoute::class)
-                                    || it.hasRoute(SettingsRoute::class) || it.hasRoute(AppointmentHistoryRoute::class)
+                                    || it.hasRoute(SettingsRoute::class)
                                     || it.hasRoute(ServiceListRoute::class)
                         } == true) {
                         BottomBar(navController = navController, currentDestination.route ?: "")

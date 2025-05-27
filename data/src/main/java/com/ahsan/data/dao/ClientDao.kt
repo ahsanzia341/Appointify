@@ -22,6 +22,9 @@ interface ClientDao {
     @Query("Select * from client where isSynchronized == 0")
     suspend fun getAllUnSynchronized(): List<Client>
 
+    @Query("UPDATE client SET isSynchronized = :isSynchronized WHERE id IN (:ids)")
+    fun updateSynchronized(ids: List<Int>, isSynchronized: Boolean)
+
     @Insert
     suspend fun insert(client: Client)
 

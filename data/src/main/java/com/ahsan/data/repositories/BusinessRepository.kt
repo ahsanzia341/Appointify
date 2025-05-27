@@ -19,11 +19,13 @@ class BusinessRepository @Inject constructor() {
             return false
         business.ownerId = currentUser.uid
         try {
-            firestore.collection(FirestoreConstant.BUSINESS_COLLECTION).document(currentUser.uid).set(business).await()
-            val id = firestore.collection(FirestoreConstant.BUSINESS_COLLECTION).document(currentUser.uid).get().await().id
+            val businessDoc = firestore.collection(FirestoreConstant.BUSINESS_COLLECTION).document()
+            businessDoc.set(business)
+            val businessData = businessDoc.get().await()
+            businessData.data?.set("id", businessData.id)
             if(business.logo != null){
                 val ref = storage.reference
-                ref.child("businesses/$id/logo.jpg").putFile(business.logo)
+                ref.child("businesses/${businessData.id}/logo.jpg").putFile(business.logo)
             }
             return true
         } catch (e: Exception) {
@@ -35,14 +37,17 @@ class BusinessRepository @Inject constructor() {
         if(currentUser == null)
             return
 
-        firestore.collection(FirestoreConstant.BUSINESS_COLLECTION).document(currentUser.uid).set(business).await()
+        firestore.collection(FirestoreConstant.BUSINESS_COLLECTION).document(business.id).set(business).await()
     }
 
     suspend fun get(): Business? {
         if(currentUser == null)
             return null
 
-        return firestore.collection(FirestoreConstant.BUSINESS_COLLECTION)
-            .document(currentUser.uid).get().await().toObject(Business::class.java)
+        val businesses = firestore.collection(FirestoreConstant.BUSINESS_COLLECTION)
+            .whereEqualTo("ownerId", currentUser.uid).get().await().map {
+                it.toObject(Business::class.java)
+            }
+        return if(businesses.isEmpty()) null else businesses[0]
     }
 }

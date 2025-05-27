@@ -30,7 +30,7 @@ import com.ahsan.composable.theme.SmartAppointmentTheme
 fun ChangePasswordScreen(navController: NavController) {
     val viewModel = hiltViewModel<ChangePasswordViewModel>()
     val viewState by viewModel.viewState.collectAsState()
-    ChangePasswordUI(viewState?.isLoading ?: false, onSubmitPress = {
+    ChangePasswordUI(viewState?.isLoading == true, onSubmitPress = {
         viewModel.onTriggerEvent(ChangePasswordEvent.SubmitNewPassword(it))
         navController.popBackStack()
     }) {
@@ -51,7 +51,7 @@ fun ChangePasswordUI(isLoading: Boolean, onSubmitPress: (String) -> Unit, onBack
                 var password by remember {
                     mutableStateOf("")
                 }
-                PasswordTextField( true) {
+                PasswordTextField(true) {
                     password = it
                 }
                 ThemeButton(text = stringResource(id = R.string.submit)) {

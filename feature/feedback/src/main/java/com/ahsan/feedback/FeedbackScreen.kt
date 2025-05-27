@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.ahsan.composable.InfoDialog
 import com.ahsan.composable.R
 import com.ahsan.composable.RequiredTextField
 import com.ahsan.composable.ThemeButton
@@ -29,6 +30,9 @@ import com.ahsan.data.models.FeedbackCategory
 fun FeedbackScreen(navController: NavController){
     val viewModel = hiltViewModel<FeedbackViewModel>()
     val viewState by viewModel.viewState.collectAsState()
+    if(viewState?.isSubmitted == true){
+        InfoDialog(title = stringResource(R.string.info), stringResource(R.string.feedback_submitted)) { navController.popBackStack() }
+    }
     FeedbackUI(viewState?.feedbackCategories ?: listOf(), viewState?.isLoading == true, {
         viewModel.onTriggerEvent(FeedbackEvent.Submit(it))
     }) {
@@ -39,6 +43,7 @@ fun FeedbackScreen(navController: NavController){
 @Composable
 fun FeedbackUI(categories: List<FeedbackCategory>, isLoading: Boolean,
                onSubmitPress: (Feedback) -> Unit, onBackPress: () -> Unit){
+
     Scaffold(topBar = {
         TopBar(title = stringResource(id = R.string.feedback), onClickNavIcon = onBackPress)
     }, modifier = Modifier.padding(8.dp)) { padding ->

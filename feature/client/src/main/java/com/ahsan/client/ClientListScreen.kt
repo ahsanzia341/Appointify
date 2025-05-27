@@ -52,7 +52,7 @@ fun ClientListScreen(navController: NavController) {
     }, onDeleteClicked = {
         viewModel.onTriggerEvent(ClientEvent.DeleteClient(it))
     }){
-        navController.navigate(CreateClientRoute)
+        navController.navigate(CreateClientRoute(0))
     }
 }
 

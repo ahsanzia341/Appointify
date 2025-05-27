@@ -115,10 +115,13 @@ fun PasswordTextField(isValidationRequired: Boolean = false, onChanged: (text: S
     var errorMessage by remember {
         mutableStateOf("")
     }
-    RequiredTextField(label =  stringResource(id = R.string.password), errorMessage = errorMessage, keyboardType = KeyboardType.Password) {
+    RequiredTextField(label = stringResource(id = R.string.password), errorMessage = errorMessage, keyboardType = KeyboardType.Password) {
         onChanged(it)
         if(it.length < 5 && isValidationRequired) {
             errorMessage = context.getString(R.string.password_error)
+        }
+        else{
+            errorMessage = ""
         }
     }
 }
@@ -129,10 +132,13 @@ fun EmailTextField(value: String = "", onChanged: (text: String) -> Unit){
     var errorMessage by remember {
         mutableStateOf("")
     }
-    RequiredTextField(label = stringResource(id = R.string.email), value = value, keyboardType = KeyboardType.Email) {
+    RequiredTextField(label = stringResource(id = R.string.email), value = value, keyboardType = KeyboardType.Email, errorMessage = errorMessage) {
         onChanged(it)
-        if(Validator.isValidEmail(it)){
+        if(!Validator.isValidEmail(it)){
             errorMessage = context.getString(R.string.email_error)
+        }
+        else{
+            errorMessage = ""
         }
     }
 }
@@ -143,13 +149,15 @@ fun PhoneTextField(value: String = "", onChanged: (text: String) -> Unit){
     var errorMessage by remember {
         mutableStateOf("")
     }
-    RequiredTextField(label = stringResource(id = R.string.phone_number), value = value, keyboardType = KeyboardType.Phone) {
+    RequiredTextField(label = stringResource(id = R.string.phone_number), value = value, keyboardType = KeyboardType.Phone, errorMessage = errorMessage) {
         onChanged(it)
         if (value.length < 9){
             errorMessage = context.getString(R.string.invalid_phone)
         }
         else if(value.isEmpty())
             errorMessage = context.getString(R.string.field_required, "Phone")
+        else
+            errorMessage = ""
     }
 }
 

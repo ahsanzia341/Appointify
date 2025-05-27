@@ -24,6 +24,8 @@
     <string name="register">Register</string>
     <string name="login">Login</string>
     <string name="or">OR</string>
+    <string name="info">Info</string>
+    <string name="feedback_submitted">Your feedback has been submitted. These feedbacks helps improve our app and provide better experience for you and your business. Thank you very much.</string>
     <string name="go_pro">Go Pro</string>
     <string name="create_account">Create Account</string>
     <string name="business">Business</string>
